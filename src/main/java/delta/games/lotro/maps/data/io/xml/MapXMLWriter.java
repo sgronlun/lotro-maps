@@ -88,8 +88,10 @@ public class MapXMLWriter
   {
     AttributesImpl attrs=new AttributesImpl();
     Map map=mapBundle.getMap();
+    // Key
     String key=map.getKey();
     attrs.addAttribute("","",MapXMLConstants.MAP_KEY_ATTR,CDATA,key);
+    // Last update
     Date lastUpdate=map.getLastUpdate();
     if (lastUpdate!=null)
     {
@@ -104,7 +106,7 @@ public class MapXMLWriter
     {
       AttributesImpl geoAttrs=new AttributesImpl();
       float factor=geoRef.getGeo2PixelFactor();
-      attrs.addAttribute("","",MapXMLConstants.GEO_FACTOR_ATTR,CDATA,String.valueOf(factor));
+      geoAttrs.addAttribute("","",MapXMLConstants.GEO_FACTOR_ATTR,CDATA,String.valueOf(factor));
       hd.startElement("","",MapXMLConstants.GEO_TAG,geoAttrs);
       GeoPoint start=geoRef.getStart();
       if (start!=null)
@@ -115,7 +117,7 @@ public class MapXMLWriter
     }
     // Labels
     Labels labels=map.getLabels();
-    write(hd,labels);
+    MapXMLWriterUtils.write(hd,labels);
 
     // Data
     MarkersManager markers=mapBundle.getData();
@@ -144,31 +146,6 @@ public class MapXMLWriter
   }
 
   /**
-   * Write a labels structure to the given XML stream.
-   * @param hd XML output stream.
-   * @param labels Labels to write.
-   * @throws Exception
-   */
-  private void write(TransformerHandler hd, Labels labels) throws Exception
-  {
-    AttributesImpl attrs=new AttributesImpl();
-    hd.startElement("","",MapXMLConstants.LABELS_TAG,attrs);
-    List<String> locales=labels.getLocales();
-    for(String locale : locales)
-    {
-      AttributesImpl labelAttrs=new AttributesImpl();
-      // Locale
-      labelAttrs.addAttribute("","",MapXMLConstants.LABEL_LOCALE_ATTR,CDATA,locale);
-      // Value
-      String value=labels.getLabel(locale);
-      labelAttrs.addAttribute("","",MapXMLConstants.LABEL_VALUE_ATTR,CDATA,value);
-      hd.startElement("","",MapXMLConstants.LABEL_TAG,attrs);
-      hd.endElement("","",MapXMLConstants.LABEL_TAG);
-    }
-    hd.endElement("","",MapXMLConstants.LABELS_TAG);
-  }
-
-  /**
    * Write a markers structure to the given XML stream.
    * @param hd XML output stream.
    * @param markersManager Markers to write.
@@ -181,16 +158,17 @@ public class MapXMLWriter
     List<Marker> markers=markersManager.getAllMarkers();
     for(Marker marker : markers)
     {
-      AttributesImpl labelAttrs=new AttributesImpl();
+      AttributesImpl markerAttrs=new AttributesImpl();
       // Category
       int category=marker.getCategoryCode();
-      labelAttrs.addAttribute("","",MapXMLConstants.CATEGORY_ATTR,CDATA,String.valueOf(category));
+      markerAttrs.addAttribute("","",MapXMLConstants.CATEGORY_ATTR,CDATA,String.valueOf(category));
       // Comments
       String comment=marker.getComment();
       if (comment!=null)
       {
-        labelAttrs.addAttribute("","",MapXMLConstants.COMMENT_ATTR,CDATA,comment);
+        markerAttrs.addAttribute("","",MapXMLConstants.COMMENT_ATTR,CDATA,comment);
       }
+      hd.startElement("","",MapXMLConstants.MARKER_TAG,markerAttrs);
       // Position
       GeoPoint position=marker.getPosition();
       if (position!=null)
@@ -199,8 +177,7 @@ public class MapXMLWriter
       }
       // Labels
       Labels labels=marker.getLabels();
-      write(hd,labels);
-      hd.startElement("","",MapXMLConstants.MARKER_TAG,attrs);
+      MapXMLWriterUtils.write(hd,labels);
       hd.endElement("","",MapXMLConstants.MARKER_TAG);
     }
     hd.endElement("","",MapXMLConstants.MARKERS_TAG);

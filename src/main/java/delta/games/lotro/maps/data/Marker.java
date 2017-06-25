@@ -1,7 +1,8 @@
 package delta.games.lotro.maps.data;
 
 /**
- * @author dm
+ * Marker.
+ * @author DAM
  */
 public class Marker
 {
@@ -10,13 +11,17 @@ public class Marker
   private Category _category;
   private String _comment;
 
+  /**
+   * Constructor.
+   */
   public Marker()
   {
     _labels=new Labels();
   }
 
   /**
-   * @return the position
+   * Get the position of this marker.
+   * @return a geographic position or <code>null</code> if not set.
    */
   public GeoPoint getPosition()
   {
@@ -24,7 +29,8 @@ public class Marker
   }
 
   /**
-   * @param position the position to set
+   * Set the position of this marker.
+   * @param position the position to set (may be <code>null</code>).
    */
   public void setPosition(GeoPoint position)
   {
@@ -32,32 +38,43 @@ public class Marker
   }
 
   /**
-   * @return the labels
+   * Get the labels for this marker.
+   * @return a labels manager.
    */
   public Labels getLabels()
   {
     return _labels;
   }
 
+  /**
+   * Get the default label for this marker.
+   * @return a label.
+   */
   public String getLabel()
   {
     return _labels.getLabel();
   }
 
   /**
-   * @return the category
+   * Get the category of this marker.
+   * @return a category or <code>null</code> if not set.
    */
   public Category getCategory()
   {
     return _category;
   }
 
+  /**
+   * Get the category code for this marker.
+   * @return a category code (<code>0</code> as default).
+   */
   public int getCategoryCode()
   {
     return _category!=null?_category.getCode():0;
   }
   /**
-   * @param category the category to set
+   * Set the category for this marker.
+   * @param category the category to set (may be <code>null</code>).
    */
   public void setCategory(Category category)
   {
@@ -65,7 +82,8 @@ public class Marker
   }
 
   /**
-   * @return the comment
+   * Get the comment for this marker.
+   * @return a comment or <code>null</code> if not set.
    */
   public String getComment()
   {
@@ -73,7 +91,8 @@ public class Marker
   }
 
   /**
-   * @param comment the comment to set
+   * Set the comment for this marker.
+   * @param comment the comment to set (may be <code>null</code>).
    */
   public void setComment(String comment)
   {

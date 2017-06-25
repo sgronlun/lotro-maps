@@ -1,9 +1,13 @@
 package delta.games.lotro.maps.data;
 
 /**
- * @author dm
+ * Locale names.
+ * @author DAM
  */
 public class LocaleNames
 {
+  /**
+   * English.
+   */
   public static final String DEFAULT_LOCALE="en";
 }
