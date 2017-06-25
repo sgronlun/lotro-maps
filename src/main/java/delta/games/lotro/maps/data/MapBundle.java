@@ -31,6 +31,15 @@ public class MapBundle
   }
 
   /**
+   * Get the name of this map in the default locale.
+   * @return a map name.
+   */
+  public String getLabel()
+  {
+    return _map.getLabel();
+  }
+
+  /**
    * Get the managed map.
    * @return the managed map.
    */

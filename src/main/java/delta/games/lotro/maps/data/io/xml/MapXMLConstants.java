@@ -58,7 +58,7 @@ public class MapXMLConstants
    */
   public static final String CATEGORY_ATTR="category";
   /**
-   * Tag 'marker', attribute 'longitude'.
+   * Tag 'marker', attribute 'comment'.
    */
   public static final String COMMENT_ATTR="comment";
 
