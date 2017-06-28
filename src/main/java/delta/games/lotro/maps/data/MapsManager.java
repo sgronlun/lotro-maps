@@ -58,6 +58,28 @@ public class MapsManager
     }
   }
 
+  /**
+   * Get a map using its identifying key.
+   * @param key Key to use.
+   * @return A map bundle or <code>null</code> if not found.
+   */
+  public MapBundle getMapByKey(String key)
+  {
+    return _maps.get(key);
+  }
+
+  /**
+   * Get the directory for a single map.
+   * @param key Map identifier.
+   * @return A directory.
+   */
+  public File getMapDir(String key)
+  {
+    File mapsDir=new File(_rootDir,"maps");
+    File mapDir=new File(mapsDir,key);
+    return mapDir;
+  }
+
   private void addMap(MapBundle bundle)
   {
     String key=bundle.getKey();
