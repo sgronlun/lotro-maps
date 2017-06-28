@@ -72,6 +72,7 @@ public class Marker
   {
     return _category!=null?_category.getCode():0;
   }
+
   /**
    * Set the category for this marker.
    * @param category the category to set (may be <code>null</code>).

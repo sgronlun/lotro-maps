@@ -80,6 +80,18 @@ public class MapsManager
     return mapDir;
   }
 
+  /**
+   * Get the file for a marker icon.
+   * @param iconName Icon name.
+   * @return A file.
+   */
+  public File getIconFile(String iconName)
+  {
+    File iconsDir=new File(_rootDir,"images");
+    String pathName=iconName+".gif";
+    return new File(iconsDir,pathName);
+  }
+
   private void addMap(MapBundle bundle)
   {
     String key=bundle.getKey();

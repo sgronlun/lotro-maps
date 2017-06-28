@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -13,6 +14,7 @@ import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
 
+import delta.games.lotro.maps.data.Category;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.LocaleNames;
 import delta.games.lotro.maps.data.Map;
@@ -32,6 +34,7 @@ public class MapCanvas extends JPanel
   private MapsManager _mapsManager;
   private MapBundle _currentMap;
   private BufferedImage _background;
+  private HashMap<String,BufferedImage> _markerIcons;
 
   /**
    * Constructor.
@@ -40,6 +43,7 @@ public class MapCanvas extends JPanel
   public MapCanvas(MapsManager mapsManager)
   {
     _mapsManager=mapsManager;
+    _markerIcons=new HashMap<String,BufferedImage>();
   }
 
   /**
@@ -54,7 +58,7 @@ public class MapCanvas extends JPanel
     File mapDir=_mapsManager.getMapDir(key);
     String mapFilename="map_"+LocaleNames.DEFAULT_LOCALE+".jpg";
     File mapImageFile=new File(mapDir,mapFilename);
-    _background=loadMap(mapImageFile);
+    _background=loadImage(mapImageFile);
   }
 
   @Override
@@ -98,11 +102,39 @@ public class MapCanvas extends JPanel
     Map map=_currentMap.getMap();
     GeoReference geoReference=map.getGeoReference();
     Dimension pixelPosition=geoReference.geo2pixel(marker.getPosition());
-    g.setColor(Color.RED);
-    g.drawRect(pixelPosition.width,pixelPosition.height,4,4);
+
+    // Grab icon
+    BufferedImage image=null;
+    Category category = marker.getCategory();
+    if (category != null) {
+      String icon = category.getIcon();
+      image=getIcon(icon);
+    }
+    if (image!=null)
+    {
+      int width=image.getWidth();
+      int height=image.getHeight();
+      g.drawImage(image,pixelPosition.width-width/2,pixelPosition.height-height/2,null);
+    }
+    else
+    {
+      g.setColor(Color.RED);
+      g.drawRect(pixelPosition.width,pixelPosition.height,4,4);
+    }
   }
 
-  private BufferedImage loadMap(File inputFile)
+  private BufferedImage getIcon(String name)
+  {
+    BufferedImage image=_markerIcons.get(name);
+    if (image==null) {
+      File iconFile=_mapsManager.getIconFile(name);
+      image=loadImage(iconFile);
+      _markerIcons.put(name,image);
+    }
+    return image;
+  }
+
+  private BufferedImage loadImage(File inputFile)
   {
     BufferedImage image=null;
     try
