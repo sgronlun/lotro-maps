@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
 
+import delta.common.utils.collections.filters.Filter;
 import delta.games.lotro.maps.data.Category;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.LocaleNames;
@@ -35,6 +36,8 @@ public class MapCanvas extends JPanel
   private MapBundle _currentMap;
   private BufferedImage _background;
   private HashMap<String,BufferedImage> _markerIcons;
+  private boolean _useLabels;
+  private Filter<Marker> _filter;
 
   /**
    * Constructor.
@@ -44,6 +47,26 @@ public class MapCanvas extends JPanel
   {
     _mapsManager=mapsManager;
     _markerIcons=new HashMap<String,BufferedImage>();
+    _useLabels=false;
+    _filter=null;
+  }
+
+  /**
+   * Set a filter.
+   * @param filter Filter to set or <code>null</code> to remove it.
+   */
+  public void setFilter(Filter<Marker> filter)
+  {
+    _filter=filter;
+  }
+
+  /**
+   * Set the flag to use labels or not.
+   * @param useLabels <code>true</code> to display labels, <code>false</code> to hide them.
+   */
+  public void useLabels(boolean useLabels)
+  {
+    _useLabels=useLabels;
   }
 
   /**
@@ -92,7 +115,11 @@ public class MapCanvas extends JPanel
       List<Marker> markers=markersManager.getAllMarkers();
       for(Marker marker : markers)
       {
-        paintMarker(marker,g);
+        boolean ok=((_filter==null)||(_filter.accept(marker)));
+        if (ok)
+        {
+          paintMarker(marker,g);
+        }
       }
     }
   }
@@ -110,17 +137,45 @@ public class MapCanvas extends JPanel
       String icon = category.getIcon();
       image=getIcon(icon);
     }
+    int x=pixelPosition.width;
+    int y=pixelPosition.height;
     if (image!=null)
     {
       int width=image.getWidth();
       int height=image.getHeight();
-      g.drawImage(image,pixelPosition.width-width/2,pixelPosition.height-height/2,null);
+      g.drawImage(image,x-width/2,y-height/2,null);
     }
     else
     {
       g.setColor(Color.RED);
-      g.drawRect(pixelPosition.width,pixelPosition.height,4,4);
+      g.drawRect(x,y,4,4);
     }
+    // Label
+    if (_useLabels)
+    {
+      String label=marker.getLabel();
+      if ((label!=null) && (label.length()>0))
+      {
+        drawStringWithHalo(g,x+10,y,label,Color.BLACK,Color.WHITE);
+      }
+    }
+  }
+
+  private void drawStringWithHalo(Graphics g, int x, int y, String text, Color foreground, Color halo)
+  {
+    g.setColor(halo);
+    for(int i=x-1;i<=x+1;i++)
+    {
+      for(int j=y-1;j<=y+1;j++)
+      {
+        if ((i!=x) || (j!=y))
+        {
+          g.drawString(text, i, j);
+        }
+      }
+    }
+    g.setColor(foreground);
+    g.drawString(text, x, y);
   }
 
   private BufferedImage getIcon(String name)

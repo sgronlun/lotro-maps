@@ -5,8 +5,10 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
+import delta.common.utils.collections.filters.Filter;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
+import delta.games.lotro.maps.data.Marker;
 
 /**
  * Test class for the map canvas.
@@ -24,9 +26,25 @@ public class MainTestMapCanvas
     MapsManager mapsManager=new MapsManager(rootDir);
     mapsManager.load();
     List<MapBundle> bundles=mapsManager.getMaps();
+
+    Filter<Marker> filter=new Filter<Marker>() {
+
+      public boolean accept(Marker item)
+      {
+        // Treasure
+        if (item.getCategoryCode()==27)
+        {
+          return true;
+        }
+        return false;
+      }
+    };
+
     for(MapBundle bundle : bundles)
     {
       MapCanvas canvas=new MapCanvas(mapsManager);
+      canvas.setFilter(filter);
+      canvas.useLabels(true);
       String key=bundle.getKey();
       canvas.setMap(key);
       JFrame f=new JFrame();

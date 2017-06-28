@@ -33,6 +33,15 @@ public class MapsManager
   }
 
   /**
+   * Get the categories manager.
+   * @return the categories manager.
+   */
+  public CategoriesManager getCategories()
+  {
+    return _categoriesManager;
+  }
+
+  /**
    * Load map data.
    */
   public void load()
