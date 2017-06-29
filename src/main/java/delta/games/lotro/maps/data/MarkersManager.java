@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import delta.common.utils.collections.filters.Filter;
+
 /**
  * Manager for a collection of markers.
  * @author DAM
@@ -60,6 +62,24 @@ public class MarkersManager
     List<String> ret=new ArrayList<String>(names);
     Collections.sort(ret);
     return ret;
+  }
+
+  /**
+   * Get a list of all markers that pass the given filter.
+   * @param filter A filter or <code>null</code> to accept all.
+   * @return A possibly empty but not null list of markers.
+   */
+  public List<Marker> getMarkers(Filter<Marker> filter)
+  {
+    List<Marker> markers=new ArrayList<Marker>();
+    for(Marker marker : _markers)
+    {
+      if ((filter==null) || (filter.accept(marker)))
+      {
+        markers.add(marker);
+      }
+    }
+    return markers;
   }
 
   /**
