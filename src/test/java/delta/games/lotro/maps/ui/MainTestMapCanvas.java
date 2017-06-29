@@ -9,6 +9,7 @@ import delta.common.utils.collections.filters.Filter;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
+import delta.games.lotro.maps.data.MarkersManager;
 
 /**
  * Test class for the map canvas.
@@ -45,15 +46,20 @@ public class MainTestMapCanvas
       MapCanvas canvas=new MapCanvas(mapsManager);
       canvas.setFilter(filter);
       canvas.useLabels(true);
-      String key=bundle.getKey();
-      canvas.setMap(key);
-      JFrame f=new JFrame();
-      String title=bundle.getLabel();
-      f.setTitle(title);
-      f.getContentPane().add(canvas);
-      f.pack();
-      f.setVisible(true);
-      f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      MarkersManager markersManager=bundle.getData();
+      List<Marker> markers=markersManager.getMarkers(filter);
+      if (markers.size()>0)
+      {
+        String key=bundle.getKey();
+        canvas.setMap(key);
+        JFrame f=new JFrame();
+        String title=bundle.getLabel();
+        f.setTitle(title);
+        f.getContentPane().add(canvas);
+        f.pack();
+        f.setVisible(true);
+        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      }
     }
   }
 }
