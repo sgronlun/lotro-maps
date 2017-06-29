@@ -156,7 +156,7 @@ public class MapCanvas extends JPanel
       String label=marker.getLabel();
       if ((label!=null) && (label.length()>0))
       {
-        drawStringWithHalo(g,x+10,y,label,Color.BLACK,Color.WHITE);
+        drawStringWithHalo(g,x+10,y,label,Color.WHITE,Color.BLACK);
       }
     }
   }
