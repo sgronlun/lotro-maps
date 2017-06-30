@@ -59,8 +59,8 @@ public class GeoReference
    */
   public GeoPoint pixel2geo(Dimension pixels)
   {
-    float longitude = Math.round((((pixels.width * _pixel2geo) / 10) + _start.getLongitude())*10) / 10;
-    float latitude = Math.round((((pixels.height * _pixel2geo) / 10) + _start.getLatitude())*10) / 10;
+    float longitude=_start.getLongitude() + ((pixels.width * _pixel2geo) / 10);
+    float latitude=_start.getLatitude() - ((pixels.height * _pixel2geo) / 10);
     return new GeoPoint(longitude, latitude);
   }
 
