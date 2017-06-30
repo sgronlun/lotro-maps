@@ -9,8 +9,10 @@ import java.util.List;
 
 import delta.common.utils.files.FilesFinder;
 import delta.common.utils.files.filter.FileTypePredicate;
+import delta.common.utils.text.EncodingNames;
 import delta.games.lotro.maps.data.io.xml.CategoriesXMLParser;
 import delta.games.lotro.maps.data.io.xml.MapXMLParser;
+import delta.games.lotro.maps.data.io.xml.MapXMLWriter;
 
 /**
  * Maps manager.
@@ -65,6 +67,20 @@ public class MapsManager
         addMap(bundle);
       }
     }
+  }
+
+  /**
+   * Save a map to a file.
+   * @param key Key of the targeted map.
+   */
+  public void saveMap(String key)
+  {
+    File mapsDir=new File(_rootDir,"maps");
+    File mapDir=new File(mapsDir,key);
+    File mapFile=new File(mapDir,"markers.xml");
+    MapXMLWriter writer=new MapXMLWriter();
+    MapBundle bundle=_maps.get(key);
+    writer.write(mapFile,bundle,EncodingNames.UTF_8);
   }
 
   /**
