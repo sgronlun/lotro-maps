@@ -15,6 +15,7 @@ import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.Labels;
 import delta.games.lotro.maps.data.Map;
 import delta.games.lotro.maps.data.MapBundle;
+import delta.games.lotro.maps.data.MapLink;
 import delta.games.lotro.maps.data.Marker;
 import delta.games.lotro.maps.data.MarkersManager;
 
@@ -76,6 +77,16 @@ public class MapXMLParser
     {
       parseLabels(labelsTag,map.getLabels());
     }
+    // Links
+    List<Element> linkTags=DOMParsingTools.getChildTagsByName(root,MapXMLConstants.LINK_TAG,true);
+    for(Element linkTag : linkTags)
+    {
+      MapLink link=parseLink(linkTag);
+      if (link!=null)
+      {
+        map.addLink(link);
+      }
+    }
 
     // Markers
     MarkersManager markersManager=bundle.getData();
@@ -114,11 +125,36 @@ public class MapXMLParser
   }
 
   /**
+   * Build a link from an XML tag.
+   * @param linkTag Link tag.
+   * @return A link.
+   */
+  private MapLink parseLink(Element linkTag)
+  {
+    NamedNodeMap attrs=linkTag.getAttributes();
+    // Target
+    String target=DOMParsingTools.getStringAttribute(attrs,MapXMLConstants.LINK_TARGET_ATTR,null);
+    // Position
+    Element positionTag=DOMParsingTools.getChildTagByName(linkTag,MapXMLConstants.POINT_TAG);
+    GeoPoint hotPoint=null;
+    if (positionTag!=null)
+    {
+      hotPoint=parsePoint(positionTag);
+    }
+    MapLink link=null;
+    if ((target!=null) && (hotPoint!=null))
+    {
+      link=new MapLink(target,hotPoint);
+    }
+    return link;
+  }
+
+  /**
    * Build a marker from an XML tag.
    * @param markerTag Marker tag.
    * @return A marker.
    */
-  public Marker parseMarker(Element markerTag)
+  private Marker parseMarker(Element markerTag)
   {
     Marker marker=new Marker();
     NamedNodeMap attrs=markerTag.getAttributes();
@@ -130,7 +166,6 @@ public class MapXMLParser
     String comment=DOMParsingTools.getStringAttribute(attrs,MapXMLConstants.COMMENT_ATTR,null);
     marker.setComment(comment);
     // Position
-    // Start point
     Element positionTag=DOMParsingTools.getChildTagByName(markerTag,MapXMLConstants.POINT_TAG);
     if (positionTag!=null)
     {

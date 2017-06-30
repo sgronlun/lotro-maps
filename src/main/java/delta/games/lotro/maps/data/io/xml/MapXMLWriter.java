@@ -21,6 +21,7 @@ import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.Labels;
 import delta.games.lotro.maps.data.Map;
 import delta.games.lotro.maps.data.MapBundle;
+import delta.games.lotro.maps.data.MapLink;
 import delta.games.lotro.maps.data.Marker;
 import delta.games.lotro.maps.data.MarkersManager;
 
@@ -118,6 +119,18 @@ public class MapXMLWriter
     // Labels
     Labels labels=map.getLabels();
     MapXMLWriterUtils.write(hd,labels);
+    // Links
+    List<MapLink> links=map.getAllLinks();
+    for(MapLink link : links)
+    {
+      AttributesImpl linkAttrs=new AttributesImpl();
+      String target=link.getTargetMapKey();
+      linkAttrs.addAttribute("","",MapXMLConstants.LINK_TARGET_ATTR,CDATA,target);
+      hd.startElement("","",MapXMLConstants.LINK_TAG,linkAttrs);
+      GeoPoint hotPoint=link.getHotPoint();
+      write(hd,hotPoint);
+      hd.endElement("","",MapXMLConstants.LINK_TAG);
+    }
 
     // Data
     MarkersManager markers=mapBundle.getData();

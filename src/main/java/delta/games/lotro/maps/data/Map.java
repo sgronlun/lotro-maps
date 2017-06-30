@@ -1,6 +1,8 @@
 package delta.games.lotro.maps.data;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Map description.
@@ -12,6 +14,7 @@ public class Map
   private GeoReference _geoRef;
   private Labels _labels;
   private Date _lastUpdate;
+  private List<MapLink> _links;
 
   /**
    * Constructor.
@@ -21,6 +24,7 @@ public class Map
   {
     _key=key;
     _labels=new Labels();
+    _links=new ArrayList<MapLink>();
   }
 
   /**
@@ -84,6 +88,24 @@ public class Map
   public void setLastUpdate(Date lastUpdate)
   {
     _lastUpdate=lastUpdate;
+  }
+
+  /**
+   * Add a new link.
+   * @param link Link to add.
+   */
+  public void addLink(MapLink link)
+  {
+    _links.add(link);
+  }
+
+  /**
+   * Get a list of all links.
+   * @return a possibly empty but not <code>null</code> list of links.
+   */
+  public List<MapLink> getAllLinks()
+  {
+    return new ArrayList<MapLink>(_links);
   }
 
   @Override

@@ -20,6 +20,7 @@ import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.LocaleNames;
 import delta.games.lotro.maps.data.Map;
 import delta.games.lotro.maps.data.MapBundle;
+import delta.games.lotro.maps.data.MapLink;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
 import delta.games.lotro.maps.data.MarkersManager;
@@ -49,6 +50,15 @@ public class MapCanvas extends JPanel
     _markerIcons=new HashMap<String,BufferedImage>();
     _useLabels=false;
     _filter=null;
+  }
+
+  /**
+   * Get the current map.
+   * @return the current map.
+   */
+  public MapBundle getCurrentMap()
+  {
+    return _currentMap;
   }
 
   /**
@@ -82,6 +92,7 @@ public class MapCanvas extends JPanel
     String mapFilename="map_"+LocaleNames.DEFAULT_LOCALE+".jpg";
     File mapImageFile=new File(mapDir,mapFilename);
     _background=loadImage(mapImageFile);
+    repaint();
   }
 
   @Override
@@ -104,7 +115,35 @@ public class MapCanvas extends JPanel
     {
       g.drawImage(_background,0,0,null);
     }
+    paintLinkPoints(g);
     paintMarkers(g);
+  }
+
+  private void paintLinkPoints(Graphics g)
+  {
+    if (_currentMap!=null)
+    {
+      List<MapLink> links=_currentMap.getMap().getAllLinks();
+      if (links.size()>0)
+      {
+        for(MapLink link : links)
+        {
+          paintLink(link,g);
+        }
+      }
+    }
+  }
+
+  private void paintLink(MapLink link, Graphics g)
+  {
+    Map map=_currentMap.getMap();
+    GeoReference geoReference=map.getGeoReference();
+    Dimension pixelPosition=geoReference.geo2pixel(link.getHotPoint());
+
+    g.setColor(Color.RED);
+    int x=pixelPosition.width;
+    int y=pixelPosition.height;
+    g.fillRect(x-10,y-10,20,20);
   }
 
   private void paintMarkers(Graphics g)
