@@ -11,6 +11,7 @@ import delta.common.utils.files.FilesFinder;
 import delta.common.utils.files.filter.FileTypePredicate;
 import delta.common.utils.text.EncodingNames;
 import delta.games.lotro.maps.data.io.xml.CategoriesXMLParser;
+import delta.games.lotro.maps.data.io.xml.CategoriesXMLWriter;
 import delta.games.lotro.maps.data.io.xml.MapXMLParser;
 import delta.games.lotro.maps.data.io.xml.MapXMLWriter;
 
@@ -81,6 +82,16 @@ public class MapsManager
     MapXMLWriter writer=new MapXMLWriter();
     MapBundle bundle=_maps.get(key);
     writer.write(mapFile,bundle,EncodingNames.UTF_8);
+  }
+
+  /**
+   * Save categories.
+   */
+  public void saveCategories()
+  {
+    CategoriesXMLWriter writer=new CategoriesXMLWriter();
+    File toFile=new File(_rootDir,"categories.xml");
+    writer.write(toFile,_categoriesManager,EncodingNames.UTF_8);
   }
 
   /**

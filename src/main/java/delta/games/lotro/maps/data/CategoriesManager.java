@@ -57,4 +57,13 @@ public class CategoriesManager
     Integer key=Integer.valueOf(category.getCode());
     _mapByCode.put(key,category);
   }
+
+  /**
+   * Remove a category.
+   * @param code Code of the targeted category.
+   */
+  public void removeCategory(int code)
+  {
+    _mapByCode.remove(Integer.valueOf(code));
+  }
 }
