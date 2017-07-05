@@ -4,12 +4,15 @@ import java.io.File;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import delta.common.utils.collections.filters.Filter;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
 import delta.games.lotro.maps.data.MarkersManager;
+import delta.games.lotro.maps.ui.location.MapLocationController;
+import delta.games.lotro.maps.ui.location.MapLocationPanelController;
 
 /**
  * Test class for the map canvas.
@@ -32,8 +35,11 @@ public class MainTestMapCanvas
 
       public boolean accept(Marker item)
       {
+        String label=item.getLabel();
+        //if (("Ancient weapon".equals(label)) || (label.startsWith("Ranger cache")))
+        if ("Ancient weapon".equals(label))
         // Treasure
-        if (item.getCategoryCode()==27)
+        //if (item.getCategoryCode()==27)
         {
           return true;
         }
@@ -43,15 +49,17 @@ public class MainTestMapCanvas
 
     for(MapBundle bundle : bundles)
     {
-      MapCanvas canvas=new MapCanvas(mapsManager);
-      canvas.setFilter(filter);
-      canvas.useLabels(true);
       MarkersManager markersManager=bundle.getData();
       List<Marker> markers=markersManager.getMarkers(filter);
       if (markers.size()>0)
       {
+        MapCanvas canvas=new MapCanvas(mapsManager);
+        canvas.setFilter(filter);
+        canvas.useLabels(true);
+
         String key=bundle.getKey();
         canvas.setMap(key);
+
         JFrame f=new JFrame();
         String title=bundle.getLabel();
         f.setTitle(title);
@@ -59,6 +67,17 @@ public class MainTestMapCanvas
         f.pack();
         f.setVisible(true);
         f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        // Add a display of the current cursor location
+        MapLocationController locationController=new MapLocationController(canvas);
+        locationController.setMap(bundle.getMap());
+        MapLocationPanelController locationPanel=new MapLocationPanelController();
+        JPanel panel=locationPanel.getPanel();
+        locationController.addListener(locationPanel);
+        JFrame locationFrame=new JFrame();
+        locationFrame.getContentPane().add(panel);
+        locationFrame.pack();
+        locationFrame.setVisible(true);
       }
     }
   }

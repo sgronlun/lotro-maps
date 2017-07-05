@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
 
+import delta.common.ui.swing.draw.HaloPainter;
 import delta.common.utils.collections.filters.Filter;
 import delta.games.lotro.maps.data.Category;
 import delta.games.lotro.maps.data.GeoReference;
@@ -195,26 +196,9 @@ public class MapCanvas extends JPanel
       String label=marker.getLabel();
       if ((label!=null) && (label.length()>0))
       {
-        drawStringWithHalo(g,x+10,y,label,Color.WHITE,Color.BLACK);
+        HaloPainter.drawStringWithHalo(g,x+10,y,label,Color.WHITE,Color.BLACK);
       }
     }
-  }
-
-  private void drawStringWithHalo(Graphics g, int x, int y, String text, Color foreground, Color halo)
-  {
-    g.setColor(halo);
-    for(int i=x-1;i<=x+1;i++)
-    {
-      for(int j=y-1;j<=y+1;j++)
-      {
-        if ((i!=x) || (j!=y))
-        {
-          g.drawString(text, i, j);
-        }
-      }
-    }
-    g.setColor(foreground);
-    g.drawString(text, x, y);
   }
 
   private BufferedImage getIcon(String name)
