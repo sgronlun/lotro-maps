@@ -9,9 +9,7 @@ import java.util.List;
 import java.util.Stack;
 
 import delta.games.lotro.maps.data.Map;
-import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapLink;
-import delta.games.lotro.maps.data.MapsManager;
 
 /**
  * Manages navigation on a map canvas.
@@ -19,23 +17,22 @@ import delta.games.lotro.maps.data.MapsManager;
  */
 public class NavigationManager
 {
-  private MapsManager _manager;
   private MapCanvas _canvas;
+  private NavigationListener _navigationListener;
 
-  private MapBundle _currentMap;
+  private Map _currentMap;
   private Stack<String> _navigationHistory;
   private List<Dimension> _hotPoints;
   private MouseListener _listener;
 
   /**
    * Constructor.
-   * @param mapsManager Maps manager.
    * @param canvas Decorated canvas.
    */
-  public NavigationManager(MapsManager mapsManager, MapCanvas canvas)
+  public NavigationManager(MapCanvas canvas)
   {
-    _manager=mapsManager;
     _canvas=canvas;
+    _navigationListener=null;
     _navigationHistory=new Stack<String>();
     _hotPoints=new ArrayList<Dimension>();
     _listener=new NavigationMouseListener();
@@ -43,11 +40,19 @@ public class NavigationManager
   }
 
   /**
+   * Set the navigation listener.
+   * @param navigationListener Listener to call on navigation events.
+   */
+  public void setNavigationListener(NavigationListener navigationListener)
+  {
+    _navigationListener=navigationListener;
+  }
+
+  /**
    * Release all managed resources.
    */
   public void dispose()
   {
-    _manager=null;
     _navigationHistory.clear();
     _hotPoints.clear();
     if (_listener!=null)
@@ -55,6 +60,8 @@ public class NavigationManager
       _canvas.removeMouseListener(_listener);
       _listener=null;
     }
+    _navigationListener=null;
+    _currentMap=null;
     _canvas=null;
   }
 
@@ -63,11 +70,10 @@ public class NavigationManager
     _hotPoints.clear();
     if (_currentMap!=null)
     {
-      Map map=_currentMap.getMap();
-      List<MapLink> links=map.getAllLinks();
+      List<MapLink> links=_currentMap.getAllLinks();
       for(MapLink link : links)
       {
-        Dimension hotPoint=map.getGeoReference().geo2pixel(link.getHotPoint());
+        Dimension hotPoint=_currentMap.getGeoReference().geo2pixel(link.getHotPoint());
         _hotPoints.add(hotPoint);
       }
     }
@@ -78,7 +84,7 @@ public class NavigationManager
     if (!_navigationHistory.isEmpty())
     {
       String old=_navigationHistory.pop();
-      setMap(old);
+      requestMap(old);
     }
   }
 
@@ -89,7 +95,15 @@ public class NavigationManager
     {
       _navigationHistory.push(_currentMap.getKey());
       String targetMapKey=link.getTargetMapKey();
-      setMap(targetMapKey);
+      requestMap(targetMapKey);
+    }
+  }
+
+  private void requestMap(String key)
+  {
+    if (_navigationListener!=null)
+    {
+      _navigationListener.mapChangeRequest(key);
     }
   }
 
@@ -103,7 +117,7 @@ public class NavigationManager
       if ((Math.abs(hotPoint.width-x) < 10) && (Math.abs(hotPoint.height-y) < 10))
       {
         // Found a hot point
-        List<MapLink> links=_currentMap.getMap().getAllLinks();
+        List<MapLink> links=_currentMap.getAllLinks();
         return links.get(i);
       }
     }
@@ -112,14 +126,13 @@ public class NavigationManager
 
   /**
    * Set the current map.
-   * @param key Key of the map to set as current.
+   * @param map Map to set as current.
    */
-  public void setMap(String key)
+  public void setMap(Map map)
   {
-    MapBundle map=_manager.getMapByKey(key);
     if (map!=null)
     {
-      _canvas.setMap(key);
+      _canvas.setMap(map.getKey());
       _currentMap=map;
       updateHotPoints();
     }

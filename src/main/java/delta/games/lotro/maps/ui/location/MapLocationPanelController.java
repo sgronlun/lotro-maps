@@ -30,6 +30,7 @@ public class MapLocationPanelController implements MapLocationListener
   public MapLocationPanelController()
   {
     _panel=new LocationDisplayPanel();
+    mapLocationUpdated(new GeoPoint(0,0));
   }
 
   /**
@@ -73,6 +74,18 @@ public class MapLocationPanelController implements MapLocationListener
     return sb.toString();
   }
 
+  /**
+   * Release all managed resources.
+   */
+  public void dispose()
+  {
+    if (_panel!=null)
+    {
+      _panel.removeAll();
+      _panel=null;
+    }
+  }
+
   private class LocationDisplayPanel extends JPanel
   {
     private String _location;
@@ -83,6 +96,7 @@ public class MapLocationPanelController implements MapLocationListener
     public LocationDisplayPanel()
     {
       _location="";
+      setOpaque(false);
     }
 
     /**
@@ -102,7 +116,7 @@ public class MapLocationPanelController implements MapLocationListener
       FontMetrics metrics=g.getFontMetrics();
       Rectangle2D r=metrics.getStringBounds(_location,g);
       int x=5;
-      int y=(int)(-r.getY());
+      int y=(int)(getHeight()-20-r.getY());
       HaloPainter.drawStringWithHalo(g,x,y,_location,Color.WHITE,Color.BLACK);
     }
   }

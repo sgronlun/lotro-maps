@@ -48,18 +48,29 @@ public class MapCanvas extends JPanel
   public MapCanvas(MapsManager mapsManager)
   {
     _mapsManager=mapsManager;
+    _currentMap=null;
+    _background=null;
     _markerIcons=new HashMap<String,BufferedImage>();
     _useLabels=false;
     _filter=null;
   }
 
   /**
-   * Get the current map.
+   * Get the current map bundle.
    * @return the current map.
    */
   public MapBundle getCurrentMap()
   {
     return _currentMap;
+  }
+
+  /**
+   * Get the current map.
+   * @return the current map.
+   */
+  public Map getMap()
+  {
+    return (_currentMap!=null)?_currentMap.getMap():null;
   }
 
   /**
