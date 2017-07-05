@@ -47,11 +47,15 @@ public class NavigationManager
    */
   public void dispose()
   {
+    _manager=null;
+    _navigationHistory.clear();
+    _hotPoints.clear();
     if (_listener!=null)
     {
       _canvas.removeMouseListener(_listener);
       _listener=null;
     }
+    _canvas=null;
   }
 
   private void updateHotPoints()
