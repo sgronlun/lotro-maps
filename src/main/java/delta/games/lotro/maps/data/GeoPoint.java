@@ -39,6 +39,35 @@ public class GeoPoint
     return _latitude;
   }
 
+  /**
+   * Get this location as a string.
+   * @return a location string.
+   */
+  public String asString()
+  {
+    int lat10=(int)(_latitude*10);
+
+    StringBuilder sb=new StringBuilder();
+    // Latitude
+    boolean south=lat10<0;
+    if (lat10<0) lat10=-lat10;
+    sb.append(lat10/10);
+    sb.append('.');
+    sb.append(lat10%10);
+    sb.append(south?'S':'N');
+    // Separator
+    sb.append(' ');
+    // Longitude
+    int lon10=(int)(_longitude*10);
+    boolean west=lon10<0;
+    if (lon10<0) lon10=-lon10;
+    sb.append(lon10/10);
+    sb.append('.');
+    sb.append(lon10%10);
+    sb.append(west?'W':'E');
+    return sb.toString();
+  }
+
   @Override
   public String toString()
   {

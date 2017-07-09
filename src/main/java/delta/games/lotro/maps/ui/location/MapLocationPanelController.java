@@ -44,34 +44,9 @@ public class MapLocationPanelController implements MapLocationListener
 
   public void mapLocationUpdated(GeoPoint point)
   {
-    String location=formatLocation(point);
+    String location=point.asString();
     _panel.setLocation(location);
     _panel.repaint();
-  }
-
-  private String formatLocation(GeoPoint point)
-  {
-    int lat10=(int)(point.getLatitude()*10);
-
-    StringBuilder sb=new StringBuilder();
-    // Latitude
-    boolean south=lat10<0;
-    if (lat10<0) lat10=-lat10;
-    sb.append(lat10/10);
-    sb.append('.');
-    sb.append(lat10%10);
-    sb.append(south?'S':'N');
-    // Separator
-    sb.append(' ');
-    // Longitude
-    int lon10=(int)(point.getLongitude()*10);
-    boolean west=lon10<0;
-    if (lon10<0) lon10=-lon10;
-    sb.append(lon10/10);
-    sb.append('.');
-    sb.append(lon10%10);
-    sb.append(west?'W':'E');
-    return sb.toString();
   }
 
   /**
