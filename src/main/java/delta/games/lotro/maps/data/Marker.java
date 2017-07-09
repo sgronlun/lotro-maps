@@ -6,6 +6,7 @@ package delta.games.lotro.maps.data;
  */
 public class Marker
 {
+  private int _id;
   private GeoPoint _position;
   private Labels _labels;
   private Category _category;
@@ -17,6 +18,24 @@ public class Marker
   public Marker()
   {
     _labels=new Labels();
+  }
+
+  /**
+   * Get the identifier of this marker.
+   * @return a map-local identifier.
+   */
+  public int getId()
+  {
+    return _id;
+  }
+
+  /**
+   * Set the identifier of this marker.
+   * @param id Identifier to set.
+   */
+  public void setId(int id)
+  {
+    _id=id;
   }
 
   /**
@@ -105,6 +124,6 @@ public class Marker
   {
     String label=_labels.getLabel();
     String category=(_category!=null)?_category.getLabel():"?";
-    return label+" @"+_position+", category="+category+", comment="+_comment;
+    return _id+":"+label+" @"+_position+", category="+category+", comment="+_comment;
   }
 }

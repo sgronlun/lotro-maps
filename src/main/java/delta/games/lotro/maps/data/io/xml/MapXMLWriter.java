@@ -172,6 +172,9 @@ public class MapXMLWriter
     for(Marker marker : markers)
     {
       AttributesImpl markerAttrs=new AttributesImpl();
+      // Identifier
+      int id=marker.getId();
+      markerAttrs.addAttribute("","",MapXMLConstants.ID_ATTR,CDATA,String.valueOf(id));
       // Category
       int category=marker.getCategoryCode();
       markerAttrs.addAttribute("","",MapXMLConstants.CATEGORY_ATTR,CDATA,String.valueOf(category));

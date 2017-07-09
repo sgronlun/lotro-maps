@@ -158,6 +158,9 @@ public class MapXMLParser
   {
     Marker marker=new Marker();
     NamedNodeMap attrs=markerTag.getAttributes();
+    // Identifier
+    int id=DOMParsingTools.getIntAttribute(attrs,MapXMLConstants.ID_ATTR,0);
+    marker.setId(id);
     // Category code
     int categoryCode=DOMParsingTools.getIntAttribute(attrs,MapXMLConstants.CATEGORY_ATTR,0);
     Category category=_categories.getByCode(categoryCode);
