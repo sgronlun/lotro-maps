@@ -5,18 +5,13 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-import org.apache.log4j.Logger;
-
+import delta.common.ui.ImageUtils;
 import delta.common.ui.swing.draw.HaloPainter;
 import delta.common.utils.collections.filters.Filter;
-import delta.games.lotro.maps.data.Category;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.LocaleNames;
 import delta.games.lotro.maps.data.Map;
@@ -32,14 +27,12 @@ import delta.games.lotro.maps.data.MarkersManager;
  */
 public class MapCanvas extends JPanel
 {
-  private static final Logger _logger=Logger.getLogger(MapCanvas.class);
-
   private MapsManager _mapsManager;
   private MapBundle _currentMap;
   private BufferedImage _background;
-  private HashMap<String,BufferedImage> _markerIcons;
   private boolean _useLabels;
   private Filter<Marker> _filter;
+  private MarkerIconProvider _iconProvider;
 
   /**
    * Constructor.
@@ -50,9 +43,9 @@ public class MapCanvas extends JPanel
     _mapsManager=mapsManager;
     _currentMap=null;
     _background=null;
-    _markerIcons=new HashMap<String,BufferedImage>();
     _useLabels=false;
     _filter=null;
+    _iconProvider=new DefaultMarkerIconsProvider(mapsManager);
   }
 
   /**
@@ -92,6 +85,15 @@ public class MapCanvas extends JPanel
   }
 
   /**
+   * Set a custom marker icon provider.
+   * @param provider Provider to set.
+   */
+  public void setMarkerIconProvider(MarkerIconProvider provider)
+  {
+    _iconProvider=provider;
+  }
+
+  /**
    * Set the map to display.
    * @param key Map identifier.
    */
@@ -103,7 +105,7 @@ public class MapCanvas extends JPanel
     File mapDir=_mapsManager.getMapDir(key);
     String mapFilename="map_"+LocaleNames.DEFAULT_LOCALE+".jpg";
     File mapImageFile=new File(mapDir,mapFilename);
-    _background=loadImage(mapImageFile);
+    _background=ImageUtils.loadImage(mapImageFile);
     repaint();
   }
 
@@ -183,10 +185,9 @@ public class MapCanvas extends JPanel
 
     // Grab icon
     BufferedImage image=null;
-    Category category = marker.getCategory();
-    if (category != null) {
-      String icon = category.getIcon();
-      image=getIcon(icon);
+    if (_iconProvider!=null)
+    {
+      image=_iconProvider.getImage(marker);
     }
     int x=pixelPosition.width;
     int y=pixelPosition.height;
@@ -195,11 +196,6 @@ public class MapCanvas extends JPanel
       int width=image.getWidth();
       int height=image.getHeight();
       g.drawImage(image,x-width/2,y-height/2,null);
-    }
-    else
-    {
-      g.setColor(Color.RED);
-      g.drawRect(x,y,4,4);
     }
     // Label
     if (_useLabels)
@@ -210,30 +206,5 @@ public class MapCanvas extends JPanel
         HaloPainter.drawStringWithHalo(g,x+10,y,label,Color.WHITE,Color.BLACK);
       }
     }
-  }
-
-  private BufferedImage getIcon(String name)
-  {
-    BufferedImage image=_markerIcons.get(name);
-    if (image==null) {
-      File iconFile=_mapsManager.getIconFile(name);
-      image=loadImage(iconFile);
-      _markerIcons.put(name,image);
-    }
-    return image;
-  }
-
-  private BufferedImage loadImage(File inputFile)
-  {
-    BufferedImage image=null;
-    try
-    {
-      image=ImageIO.read(inputFile);
-    }
-    catch(IOException ioe)
-    {
-      _logger.error("Cannot load image file: "+inputFile,ioe);
-    }
-    return image;
   }
 }
