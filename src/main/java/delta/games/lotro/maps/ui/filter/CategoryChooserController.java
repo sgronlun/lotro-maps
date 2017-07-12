@@ -75,6 +75,15 @@ public class CategoryChooserController
   }
 
   /**
+   * Set the listener for updates.
+   * @param listener Listener to set.
+   */
+  public void setListener(CategoryFilterUpdateListener listener)
+  {
+    _listener=listener;
+  }
+
+  /**
    * Set the selected categories.
    * @param selectedCategories Categories to show.
    */
@@ -94,7 +103,6 @@ public class CategoryChooserController
         checkbox.setSelected(true);
       }
     }
-    // Call listeners?
   }
 
   private JPanel build()

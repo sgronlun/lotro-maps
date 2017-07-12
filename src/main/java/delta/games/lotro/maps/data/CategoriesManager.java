@@ -3,7 +3,9 @@ package delta.games.lotro.maps.data;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Marker categories manager.
@@ -29,6 +31,15 @@ public class CategoriesManager
   public Category getByCode(int code)
   {
     return _mapByCode.get(Integer.valueOf(code));
+  }
+
+  /**
+   * Get all the category codes.
+   * @return A set of integer codes.
+   */
+  public Set<Integer> getCodes()
+  {
+    return new HashSet<Integer>(_mapByCode.keySet());
   }
 
   /**

@@ -35,6 +35,7 @@ public class MainTestMapCanvas
         String label=item.getLabel();
         //if (("Ancient weapon".equals(label)) || (label.startsWith("Ranger cache")))
         if ("Ancient weapon".equals(label))
+        //if ("Ranger cache".equals(label))
         // Treasure
         //if (item.getCategoryCode()==27)
         {

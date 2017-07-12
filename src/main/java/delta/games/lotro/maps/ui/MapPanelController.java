@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
+import delta.common.utils.ListenersManager;
 import delta.games.lotro.maps.data.Map;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.ui.location.MapLocationController;
@@ -22,10 +23,15 @@ import delta.games.lotro.maps.ui.location.MapLocationPanelController;
  */
 public class MapPanelController implements NavigationListener
 {
+  // Data
   private MapCanvas _canvas;
+  // Controllers
   private MapLocationController _locationController;
   private MapLocationPanelController _locationDisplay;
   private NavigationManager _navigation;
+  // Listeners
+  private ListenersManager<NavigationListener> _listeners;
+  // UI
   private JLayeredPane _layers;
 
   /**
@@ -45,6 +51,7 @@ public class MapPanelController implements NavigationListener
     _layers.add(locationPanel,Integer.valueOf(1),0);
     _navigation=new NavigationManager(_canvas);
     _navigation.setNavigationListener(this);
+    _listeners=new ListenersManager<NavigationListener>();
   }
 
   /**
@@ -65,9 +72,22 @@ public class MapPanelController implements NavigationListener
     return _layers;
   }
 
+  /**
+   * Get the 'navigation' listeners manager.
+   * @return A listeners manager.
+   */
+  public ListenersManager<NavigationListener> getListenersManager()
+  {
+    return _listeners;
+  }
+
   public void mapChangeRequest(String key)
   {
     setMap(key);
+    for(NavigationListener listener : _listeners)
+    {
+      listener.mapChangeRequest(key);
+    }
   }
 
   /**
@@ -96,6 +116,7 @@ public class MapPanelController implements NavigationListener
    */
   public void dispose()
   {
+    _listeners=null;
     if (_navigation!=null)
     {
       _navigation.dispose();
