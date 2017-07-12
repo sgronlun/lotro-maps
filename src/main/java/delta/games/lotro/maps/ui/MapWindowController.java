@@ -2,11 +2,15 @@ package delta.games.lotro.maps.ui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.border.TitledBorder;
 
 import delta.common.ui.swing.GuiFactory;
 import delta.common.ui.swing.windows.DefaultWindowController;
@@ -56,18 +60,37 @@ public class MapWindowController extends DefaultWindowController
   {
     JPanel panel=GuiFactory.buildBackgroundPanel(new BorderLayout());
     // Top
-    JPanel topPanel=GuiFactory.buildBackgroundPanel(new FlowLayout());
-    // Map chooser
-    JComboBox mapChooserCombo=_mapChooser.getCombo();
-    topPanel.add(mapChooserCombo);
-    // Markers filter
-    JPanel filterPanel=_filter.getPanel();
-    topPanel.add(filterPanel);
+    JPanel topPanel=buildTopPanel();
     panel.add(topPanel,BorderLayout.NORTH);
     // Center
     MapCanvas mapCanvas=_mapPanel.getCanvas();
     panel.add(mapCanvas,BorderLayout.CENTER);
     return panel;
+  }
+
+  private JPanel buildTopPanel()
+  {
+    JPanel topPanel=GuiFactory.buildPanel(new GridBagLayout());
+    // Map chooser
+    JComboBox mapChooserCombo=_mapChooser.getCombo();
+    JPanel chooserPanel=GuiFactory.buildPanel(new BorderLayout());
+    chooserPanel.add(mapChooserCombo,BorderLayout.CENTER);
+    TitledBorder mapChooserBorder=GuiFactory.buildTitledBorder("Map chooser");
+    chooserPanel.setBorder(mapChooserBorder);
+    GridBagConstraints c=new GridBagConstraints(0,0,1,1,0.0,0.0,GridBagConstraints.WEST,GridBagConstraints.NONE,new Insets(0,5,0,0),0,0);
+    topPanel.add(chooserPanel,c);
+    // Markers filter
+    JPanel filterPanel=_filter.getPanel();
+    TitledBorder filterBorder=GuiFactory.buildTitledBorder("Filter");
+    filterPanel.setBorder(filterBorder);
+    c.gridx=2;
+    topPanel.add(filterPanel,c);
+    c.gridx=3;
+    c.fill=GridBagConstraints.BOTH;
+    c.weightx=1.0;
+    JPanel emptyPanel=GuiFactory.buildPanel(new FlowLayout());
+    topPanel.add(emptyPanel,c);
+    return topPanel;
   }
 
   /**

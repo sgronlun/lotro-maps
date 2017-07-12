@@ -1,11 +1,9 @@
 package delta.games.lotro.maps.ui.filter;
 
 import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.util.Set;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -83,7 +81,7 @@ public class MapFilterPanelController
 
   private JPanel build()
   {
-    JPanel panel=GuiFactory.buildPanel(new GridBagLayout());
+    JPanel panel=GuiFactory.buildPanel(new FlowLayout());
     // Categories
     {
       CategoryFilterUpdateListener listener=new CategoryFilterUpdateListener()
@@ -92,14 +90,17 @@ public class MapFilterPanelController
         {
           Set<Integer> selectedCategories=controller.getSelectedCategories();
           _filter.getCategoryFilter().setCategories(selectedCategories);
+          filterUpdated();
         }
       };
       _categoryChooser.setListener(listener);
+      JButton button=_categoryChooser.getTriggerButton();
+      panel.add(button);
     }
     // Label filter
     {
       JPanel containsPanel=GuiFactory.buildPanel(new FlowLayout(FlowLayout.LEADING));
-      containsPanel.add(GuiFactory.buildLabel("Label filter:"));
+      containsPanel.add(GuiFactory.buildLabel("Label:"));
       _contains=GuiFactory.buildTextField("");
       _contains.setColumns(20);
       containsPanel.add(_contains);
@@ -113,8 +114,7 @@ public class MapFilterPanelController
         }
       };
       _textController=new DynamicTextEditionController(_contains,listener);
-      GridBagConstraints c=new GridBagConstraints(0,1,2,1,1.0,0,GridBagConstraints.WEST,GridBagConstraints.HORIZONTAL,new Insets(0,0,0,0),0,0);
-      panel.add(containsPanel,c);
+      panel.add(containsPanel);
     }
     return panel;
   }

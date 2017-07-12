@@ -1,8 +1,11 @@
 package delta.games.lotro.maps.ui.filter;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -14,9 +17,13 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.Popup;
+import javax.swing.PopupFactory;
+import javax.swing.Timer;
 
 import delta.common.ui.ImageUtils;
 import delta.common.ui.swing.GuiFactory;
@@ -38,6 +45,8 @@ public class CategoryChooserController
   // UI
   private JPanel _panel;
   private HashMap<Integer,JCheckBox> _checkboxes;
+  private JButton _triggerButton;
+  private Popup _popup;
   // Listeners
   private CategoryFilterUpdateListener _listener;
 
@@ -50,19 +59,16 @@ public class CategoryChooserController
     _mapsManager=mapsManager;
     _selectedCodes=new HashSet<Integer>();
     _checkboxes=new HashMap<Integer,JCheckBox>();
+    build();
   }
 
   /**
-   * Get the managed panel (build it if necessary).
-   * @return The managed panel.
+   * Get the button used to trigger the popup for choosing categories.
+   * @return A button.
    */
-  public JPanel getPanel()
+  public JButton getTriggerButton()
   {
-    if (_panel==null)
-    {
-      _panel=build();
-    }
-    return _panel;
+    return _triggerButton;
   }
 
   /**
@@ -89,11 +95,13 @@ public class CategoryChooserController
    */
   public void setSelectedCategories(Set<Integer> selectedCategories)
   {
-    // Ensure UI is build
-    getPanel();
     // Clear current codes
     _selectedCodes.clear();
     // Then update UI
+    for(JCheckBox checkbox : _checkboxes.values())
+    {
+      checkbox.setSelected(false);
+    }
     for(Integer code : selectedCategories)
     {
       JCheckBox checkbox=_checkboxes.get(code);
@@ -105,12 +113,142 @@ public class CategoryChooserController
     }
   }
 
-  private JPanel build()
+  private void build()
+  {
+    _panel=buildPanel();
+    _triggerButton=GuiFactory.buildButton("Categories...");
+    ActionListener al=new ActionListener()
+    {
+      public void actionPerformed(ActionEvent event)
+      {
+        show();
+      }
+    };
+    _triggerButton.addActionListener(al);
+  }
+
+  private void show()
+  {
+    if (_popup!=null)
+    {
+      return;
+    }
+    PopupFactory popupFactory=PopupFactory.getSharedInstance();
+    Point p=_triggerButton.getLocationOnScreen();
+    int x=p.x+_triggerButton.getWidth()/2;
+    int y=p.y+_triggerButton.getHeight()/2;
+    _popup=popupFactory.getPopup(_triggerButton,_panel,x,y);
+    _popup.show();
+    ActionListener close=new ActionListener()
+    {
+      public void actionPerformed(ActionEvent arg0)
+      {
+        hide();
+      }
+    };
+    Timer timer=new Timer(3000,close);
+    timer.setRepeats(false);
+    //timer.start();
+  }
+
+  private void selectAll()
+  {
+    for(Integer code : _checkboxes.keySet())
+    {
+      JCheckBox checkbox=_checkboxes.get(code);
+      _selectedCodes.add(code);
+      checkbox.setSelected(true);
+    }
+    if (_listener!=null)
+    {
+      _listener.categoryFilterUpdated(CategoryChooserController.this);
+    }
+  }
+
+  private void deselectAll()
+  {
+    for(Integer code : _checkboxes.keySet())
+    {
+      JCheckBox checkbox=_checkboxes.get(code);
+      _selectedCodes.remove(code);
+      checkbox.setSelected(false);
+    }
+    if (_listener!=null)
+    {
+      _listener.categoryFilterUpdated(CategoryChooserController.this);
+    }
+  }
+
+  private void hide()
+  {
+    if (_popup!=null)
+    {
+      _popup.hide();
+      _popup=null;
+    }
+  }
+
+  private JPanel buildPanel()
+  {
+    JPanel panel=GuiFactory.buildBackgroundPanel(new BorderLayout());
+    JPanel categoriesPanel=buildCategoriesPanel();
+    panel.add(categoriesPanel,BorderLayout.CENTER);
+    JPanel commandPanel=buildCommandPanel();
+    panel.add(commandPanel,BorderLayout.SOUTH);
+    return panel;
+  }
+
+  private JPanel buildCommandPanel()
+  {
+    JPanel panel=GuiFactory.buildPanel(new FlowLayout(FlowLayout.TRAILING));
+    // Select all button
+    {
+      JButton selectAllButton=GuiFactory.buildButton("Select all");
+      ActionListener al=new ActionListener()
+      {
+        public void actionPerformed(ActionEvent event)
+        {
+          selectAll();
+        }
+      };
+      selectAllButton.addActionListener(al);
+      panel.add(selectAllButton);
+    }
+    // Deselect all button
+    {
+      JButton deselectAllButton=GuiFactory.buildButton("Deselect all");
+      ActionListener al=new ActionListener()
+      {
+        public void actionPerformed(ActionEvent event)
+        {
+          deselectAll();
+        }
+      };
+      deselectAllButton.addActionListener(al);
+      panel.add(deselectAllButton);
+    }
+    // Close button
+    {
+      JButton closeButton=GuiFactory.buildButton("Close");
+      ActionListener al=new ActionListener()
+      {
+        public void actionPerformed(ActionEvent event)
+        {
+          hide();
+        }
+      };
+      closeButton.addActionListener(al);
+      panel.add(closeButton);
+    }
+    return panel;
+  }
+
+  private JPanel buildCategoriesPanel()
   {
     CategoriesManager categoriesManager=_mapsManager.getCategories();
     List<Category> categories=categoriesManager.getAllSortedByCode();
     Collections.sort(categories,new CategoryNameComparator());
-    JPanel panel=GuiFactory.buildBackgroundPanel(new GridBagLayout());
+    JPanel panel=GuiFactory.buildPanel(new GridBagLayout());
     ActionListener al=new ActionListener()
     {
       public void actionPerformed(ActionEvent event)
@@ -150,6 +288,7 @@ public class CategoryChooserController
       JCheckBox checkbox=GuiFactory.buildCheckbox("");
       checkbox.setActionCommand(String.valueOf(category.getCode()));
       checkbox.addActionListener(al);
+      _checkboxes.put(Integer.valueOf(category.getCode()),checkbox);
       x=currentColumn*3;
       GridBagConstraints c=new GridBagConstraints(x,y,1,1,0,0,GridBagConstraints.WEST,GridBagConstraints.NONE,new Insets(0,0,0,0),0,0);
       panel.add(checkbox,c);
@@ -171,11 +310,18 @@ public class CategoryChooserController
    */
   public void dispose()
   {
+    // UI
     if (_panel!=null)
     {
       _panel.removeAll();
       _panel=null;
     }
+    _checkboxes=null;
+    _triggerButton=null;
+    _popup=null;
+    // Data
     _mapsManager=null;
+    // Listeners
+    _listener=null;
   }
 }
