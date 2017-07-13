@@ -9,6 +9,7 @@ import java.awt.Insets;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
@@ -63,8 +64,8 @@ public class MapWindowController extends DefaultWindowController
     JPanel topPanel=buildTopPanel();
     panel.add(topPanel,BorderLayout.NORTH);
     // Center
-    MapCanvas mapCanvas=_mapPanel.getCanvas();
-    panel.add(mapCanvas,BorderLayout.CENTER);
+    JLayeredPane layers=_mapPanel.getLayers();
+    panel.add(layers,BorderLayout.CENTER);
     return panel;
   }
 
