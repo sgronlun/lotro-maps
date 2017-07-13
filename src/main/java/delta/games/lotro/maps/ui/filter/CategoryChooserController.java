@@ -23,7 +23,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
-import javax.swing.Timer;
+import javax.swing.border.TitledBorder;
 
 import delta.common.ui.ImageUtils;
 import delta.common.ui.swing.GuiFactory;
@@ -121,7 +121,14 @@ public class CategoryChooserController
     {
       public void actionPerformed(ActionEvent event)
       {
-        show();
+        if (_popup!=null)
+        {
+          hide();
+        }
+        else
+        {
+          show();
+        }
       }
     };
     _triggerButton.addActionListener(al);
@@ -129,26 +136,12 @@ public class CategoryChooserController
 
   private void show()
   {
-    if (_popup!=null)
-    {
-      return;
-    }
     PopupFactory popupFactory=PopupFactory.getSharedInstance();
     Point p=_triggerButton.getLocationOnScreen();
-    int x=p.x+_triggerButton.getWidth()/2;
-    int y=p.y+_triggerButton.getHeight()/2;
+    int x=p.x;
+    int y=p.y+_triggerButton.getHeight()+5;
     _popup=popupFactory.getPopup(_triggerButton,_panel,x,y);
     _popup.show();
-    ActionListener close=new ActionListener()
-    {
-      public void actionPerformed(ActionEvent arg0)
-      {
-        hide();
-      }
-    };
-    Timer timer=new Timer(3000,close);
-    timer.setRepeats(false);
-    //timer.start();
   }
 
   private void selectAll()
@@ -192,6 +185,8 @@ public class CategoryChooserController
   {
     JPanel panel=GuiFactory.buildBackgroundPanel(new BorderLayout());
     JPanel categoriesPanel=buildCategoriesPanel();
+    TitledBorder border=GuiFactory.buildTitledBorder("Categories");
+    categoriesPanel.setBorder(border);
     panel.add(categoriesPanel,BorderLayout.CENTER);
     JPanel commandPanel=buildCommandPanel();
     panel.add(commandPanel,BorderLayout.SOUTH);
