@@ -77,7 +77,7 @@ public class MapWindowController extends DefaultWindowController
     chooserPanel.add(mapChooserCombo,BorderLayout.CENTER);
     TitledBorder mapChooserBorder=GuiFactory.buildTitledBorder("Map chooser");
     chooserPanel.setBorder(mapChooserBorder);
-    GridBagConstraints c=new GridBagConstraints(0,0,1,1,0.0,0.0,GridBagConstraints.WEST,GridBagConstraints.NONE,new Insets(0,5,0,0),0,0);
+    GridBagConstraints c=new GridBagConstraints(0,0,1,1,0.0,0.0,GridBagConstraints.NORTHWEST,GridBagConstraints.NONE,new Insets(0,5,0,0),0,0);
     topPanel.add(chooserPanel,c);
     // Markers filter
     JPanel filterPanel=_filter.getPanel();
