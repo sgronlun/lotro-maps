@@ -101,4 +101,27 @@ public class MarkersManager
     ret.addAll(_markers);
     return ret;
   }
+
+  /**
+   * Get all the markers that fir a given filter and are within a box.
+   * @param filter Filter to use (or <code>null</code> to accept all).
+   * @param box Box to use.
+   * @return A possibly empty but not <code>null</code> list of markers.
+   */
+  public List<Marker> getAllMarkers(Filter<Marker> filter, GeoBox box)
+  {
+    List<Marker> ret=new ArrayList<Marker>();
+    for(Marker marker : _markers)
+    {
+      if ((filter==null) || (filter.accept(marker)))
+      {
+        boolean isInBox=box.isInBox(marker.getPosition());
+        if (isInBox)
+        {
+          ret.add(marker);
+        }
+      }
+    }
+    return ret;
+  }
 }

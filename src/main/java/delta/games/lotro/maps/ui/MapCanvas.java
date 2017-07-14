@@ -3,8 +3,10 @@ package delta.games.lotro.maps.ui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -12,6 +14,8 @@ import javax.swing.JPanel;
 import delta.common.ui.ImageUtils;
 import delta.common.ui.swing.draw.HaloPainter;
 import delta.common.utils.collections.filters.Filter;
+import delta.games.lotro.maps.data.GeoBox;
+import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.LocaleNames;
 import delta.games.lotro.maps.data.Map;
@@ -20,6 +24,7 @@ import delta.games.lotro.maps.data.MapLink;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
 import delta.games.lotro.maps.data.MarkersManager;
+import delta.games.lotro.maps.data.comparators.MarkerNameComparator;
 
 /**
  * Map display.
@@ -27,6 +32,11 @@ import delta.games.lotro.maps.data.MarkersManager;
  */
 public class MapCanvas extends JPanel
 {
+  /**
+   * Sensibility of tooltips (pixels).
+   */
+  private static final int SENSIBILITY=10;
+
   private MapsManager _mapsManager;
   private MapBundle _currentMap;
   private BufferedImage _background;
@@ -46,6 +56,7 @@ public class MapCanvas extends JPanel
     _useLabels=false;
     _filter=null;
     _iconProvider=new DefaultMarkerIconsProvider(mapsManager);
+    setToolTipText("");
   }
 
   /**
@@ -206,5 +217,39 @@ public class MapCanvas extends JPanel
         HaloPainter.drawStringWithHalo(g,x+10,y,label,Color.WHITE,Color.BLACK);
       }
     }
+  }
+
+  @Override
+  public String getToolTipText(MouseEvent event)
+  {
+    List<Marker> markers=findMarkersAtLocation(event.getX(),event.getY());
+    if (markers.size()>0)
+    {
+      Collections.sort(markers,new MarkerNameComparator());
+      StringBuilder sb=new StringBuilder();
+      sb.append("<html>");
+      int count=0;
+      for(Marker marker : markers)
+      {
+        if (count>0) sb.append("<br>");
+        sb.append(marker.getLabel());
+        count++;
+      }
+      sb.append("</html>");
+      return sb.toString();
+    }
+    return null;
+  }
+
+  private List<Marker> findMarkersAtLocation(int x, int y)
+  {
+    Map map=_currentMap.getMap();
+    GeoReference geoReference=map.getGeoReference();
+    GeoPoint topLeft=geoReference.pixel2geo(new Dimension(x-SENSIBILITY,y-SENSIBILITY));
+    GeoPoint bottomRight=geoReference.pixel2geo(new Dimension(x+SENSIBILITY,y+SENSIBILITY));
+    GeoBox box=new GeoBox(topLeft,bottomRight);
+    MarkersManager markersManager=_currentMap.getData();
+    List<Marker> markers=markersManager.getAllMarkers(_filter,box);
+    return markers;
   }
 }
