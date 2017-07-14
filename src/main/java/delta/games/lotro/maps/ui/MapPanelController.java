@@ -1,10 +1,15 @@
 package delta.games.lotro.maps.ui;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JCheckBox;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
+import delta.common.ui.swing.GuiFactory;
 import delta.common.utils.ListenersManager;
 import delta.games.lotro.maps.data.Map;
 import delta.games.lotro.maps.data.MapsManager;
@@ -33,6 +38,7 @@ public class MapPanelController implements NavigationListener
   private ListenersManager<NavigationListener> _listeners;
   // UI
   private JLayeredPane _layers;
+  private JCheckBox _labeled;
 
   /**
    * Constructor.
@@ -41,17 +47,42 @@ public class MapPanelController implements NavigationListener
   public MapPanelController(MapsManager mapsManager)
   {
     _canvas=new MapCanvas(mapsManager);
+    // Location
     _locationController=new MapLocationController(_canvas);
     _locationDisplay=new MapLocationPanelController();
     _locationController.addListener(_locationDisplay);
+    // Assembly components in a layered pane
     _layers=new JLayeredPane();
+    // - canvas
     _layers.add(_canvas,Integer.valueOf(0),0);
     _canvas.setLocation(0,0);
+    // - location
     JPanel locationPanel=_locationDisplay.getPanel();
     _layers.add(locationPanel,Integer.valueOf(1),0);
+    // - labeled checkbox
+    _labeled=buildLabeledCheckbox();
+    _layers.add(_labeled,Integer.valueOf(1),0);
+    // Navigation support
     _navigation=new NavigationManager(_canvas);
     _navigation.setNavigationListener(this);
     _listeners=new ListenersManager<NavigationListener>();
+  }
+
+  private JCheckBox buildLabeledCheckbox()
+  {
+    final JCheckBox labeled=GuiFactory.buildCheckbox("Labeled");
+    labeled.setFocusPainted(false);
+    labeled.setForeground(Color.WHITE);
+    ActionListener al=new ActionListener()
+    {
+      public void actionPerformed(ActionEvent e)
+      {
+        _canvas.useLabels(labeled.isSelected());
+        _canvas.repaint();
+      }
+    };
+    labeled.addActionListener(al);
+    return labeled;
   }
 
   /**
@@ -109,6 +140,9 @@ public class MapPanelController implements NavigationListener
     JPanel locationPanel=_locationDisplay.getPanel();
     locationPanel.setSize(100,40);
     locationPanel.setLocation(0,height-locationPanel.getHeight());
+    // Place 'labeled' checkbox
+    _labeled.setLocation(55,17);
+    _labeled.setSize(_labeled.getPreferredSize());
   }
 
   /**
@@ -137,5 +171,7 @@ public class MapPanelController implements NavigationListener
       _locationController=null;
     }
     _canvas=null;
+    _layers=null;
+    _labeled=null;
   }
 }

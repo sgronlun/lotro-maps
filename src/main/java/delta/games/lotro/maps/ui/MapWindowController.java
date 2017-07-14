@@ -40,7 +40,6 @@ public class MapWindowController extends DefaultWindowController
     _filter=new MapFilterPanelController(mapsManager,filter,_mapPanel);
     _mapChooser=new MapChooserController(mapsManager,_mapPanel);
     _mapPanel.getCanvas().setFilter(filter);
-    _mapPanel.getCanvas().useLabels(true);
   }
 
   @Override
