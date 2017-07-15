@@ -25,6 +25,11 @@ import delta.games.lotro.maps.ui.filter.MapMarkersFilter;
  */
 public class MapWindowController extends DefaultWindowController
 {
+  /**
+   * Identifier for this window.
+   */
+  public static final String IDENTIFIER="MAP";
+
   private MapPanelController _mapPanel;
   private MapFilterPanelController _filter;
   private MapChooserController _mapChooser;
@@ -40,6 +45,12 @@ public class MapWindowController extends DefaultWindowController
     _filter=new MapFilterPanelController(mapsManager,filter,_mapPanel);
     _mapChooser=new MapChooserController(mapsManager,_mapPanel);
     _mapPanel.getCanvas().setFilter(filter);
+  }
+
+  @Override
+  public String getWindowIdentifier()
+  {
+    return IDENTIFIER;
   }
 
   @Override
