@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 
 import delta.common.ui.ImageUtils;
 import delta.common.ui.swing.draw.HaloPainter;
+import delta.common.ui.swing.icons.IconsManager;
 import delta.common.utils.collections.filters.Filter;
 import delta.games.lotro.maps.data.GeoBox;
 import delta.games.lotro.maps.data.GeoPoint;
@@ -43,6 +44,7 @@ public class MapCanvas extends JPanel
   private boolean _useLabels;
   private Filter<Marker> _filter;
   private MarkerIconProvider _iconProvider;
+  private BufferedImage _gotoIcon;
 
   /**
    * Constructor.
@@ -57,6 +59,7 @@ public class MapCanvas extends JPanel
     _filter=null;
     _iconProvider=new DefaultMarkerIconsProvider(mapsManager);
     setToolTipText("");
+    _gotoIcon=IconsManager.getImage("/resources/icons/goto.png");
   }
 
   /**
@@ -165,10 +168,19 @@ public class MapCanvas extends JPanel
     GeoReference geoReference=map.getGeoReference();
     Dimension pixelPosition=geoReference.geo2pixel(link.getHotPoint());
 
-    g.setColor(Color.RED);
     int x=pixelPosition.width;
     int y=pixelPosition.height;
-    g.fillRect(x-10,y-10,20,20);
+    if (_gotoIcon!=null)
+    {
+      int width=_gotoIcon.getWidth();
+      int height=_gotoIcon.getHeight();
+      g.drawImage(_gotoIcon,x-width/2,y-height/2,null);
+    }
+    else
+    {
+      g.setColor(Color.RED);
+      g.fillRect(x-10,y-10,20,20);
+    }
   }
 
   private void paintMarkers(Graphics g)

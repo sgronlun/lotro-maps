@@ -17,6 +17,11 @@ import delta.games.lotro.maps.data.MapLink;
  */
 public class NavigationManager
 {
+  /**
+   * Sensibility of link hot points.
+   */
+  private static final int SENSIBILITY=24;
+
   private MapCanvas _canvas;
   private NavigationListener _navigationListener;
 
@@ -114,7 +119,7 @@ public class NavigationManager
     for(int i=0;i<nbHotPoints;i++)
     {
       Dimension hotPoint=_hotPoints.get(i);
-      if ((Math.abs(hotPoint.width-x) < 10) && (Math.abs(hotPoint.height-y) < 10))
+      if ((Math.abs(hotPoint.width-x) < SENSIBILITY) && (Math.abs(hotPoint.height-y) < SENSIBILITY))
       {
         // Found a hot point
         List<MapLink> links=_currentMap.getAllLinks();
