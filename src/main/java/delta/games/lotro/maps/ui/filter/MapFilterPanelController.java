@@ -83,40 +83,49 @@ public class MapFilterPanelController
   {
     JPanel panel=GuiFactory.buildPanel(new FlowLayout());
     // Categories
-    {
-      CategoryFilterUpdateListener listener=new CategoryFilterUpdateListener()
-      {
-        public void categoryFilterUpdated(CategoryChooserController controller)
-        {
-          Set<Integer> selectedCategories=controller.getSelectedCategories();
-          _filter.getCategoryFilter().setCategories(selectedCategories);
-          filterUpdated();
-        }
-      };
-      _categoryChooser.setListener(listener);
-      JButton button=_categoryChooser.getTriggerButton();
-      panel.add(button);
-    }
+    JButton button=buildCategoriesChooser();
+    panel.add(button);
     // Label filter
-    {
-      JPanel containsPanel=GuiFactory.buildPanel(new FlowLayout(FlowLayout.LEADING));
-      containsPanel.add(GuiFactory.buildLabel("Label:"));
-      _contains=GuiFactory.buildTextField("");
-      _contains.setColumns(20);
-      containsPanel.add(_contains);
-      TextListener listener=new TextListener()
-      {
-        public void textChanged(String newText)
-        {
-          if (newText.length()==0) newText=null;
-          _filter.getNameFilter().setPattern(newText);
-          filterUpdated();
-        }
-      };
-      _textController=new DynamicTextEditionController(_contains,listener);
-      panel.add(containsPanel);
-    }
+    JPanel containsPanel=buildLabelFilter();
+    panel.add(containsPanel);
+    // 
     return panel;
+  }
+
+  private JButton buildCategoriesChooser()
+  {
+    CategoryFilterUpdateListener listener=new CategoryFilterUpdateListener()
+    {
+      public void categoryFilterUpdated(CategoryChooserController controller)
+      {
+        Set<Integer> selectedCategories=controller.getSelectedCategories();
+        _filter.getCategoryFilter().setCategories(selectedCategories);
+        filterUpdated();
+      }
+    };
+    _categoryChooser.setListener(listener);
+    JButton button=_categoryChooser.getTriggerButton();
+    return button;
+  }
+
+  private JPanel buildLabelFilter()
+  {
+    JPanel containsPanel=GuiFactory.buildPanel(new FlowLayout(FlowLayout.LEADING));
+    containsPanel.add(GuiFactory.buildLabel("Label:"));
+    _contains=GuiFactory.buildTextField("");
+    _contains.setColumns(20);
+    containsPanel.add(_contains);
+    TextListener listener=new TextListener()
+    {
+      public void textChanged(String newText)
+      {
+        if (newText.length()==0) newText=null;
+        _filter.getNameFilter().setPattern(newText);
+        filterUpdated();
+      }
+    };
+    _textController=new DynamicTextEditionController(_contains,listener);
+    return containsPanel;
   }
 
   /**
