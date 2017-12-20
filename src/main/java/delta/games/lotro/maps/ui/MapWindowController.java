@@ -14,7 +14,9 @@ import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
 import delta.common.ui.swing.GuiFactory;
+import delta.common.ui.swing.combobox.ComboBoxItem;
 import delta.common.ui.swing.windows.DefaultWindowController;
+import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.ui.filter.MapFilterPanelController;
 import delta.games.lotro.maps.ui.filter.MapMarkersFilter;
@@ -83,7 +85,7 @@ public class MapWindowController extends DefaultWindowController
   {
     JPanel topPanel=GuiFactory.buildPanel(new GridBagLayout());
     // Map chooser
-    JComboBox mapChooserCombo=_mapChooser.getCombo();
+    JComboBox<ComboBoxItem<MapBundle>> mapChooserCombo=_mapChooser.getCombo();
     JPanel chooserPanel=GuiFactory.buildPanel(new BorderLayout());
     chooserPanel.add(mapChooserCombo,BorderLayout.CENTER);
     TitledBorder mapChooserBorder=GuiFactory.buildTitledBorder("Map chooser");

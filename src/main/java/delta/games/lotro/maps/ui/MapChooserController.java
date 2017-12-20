@@ -6,6 +6,7 @@ import java.util.List;
 import javax.swing.JComboBox;
 
 import delta.common.ui.swing.combobox.ComboBoxController;
+import delta.common.ui.swing.combobox.ComboBoxItem;
 import delta.common.ui.swing.combobox.ItemSelectionListener;
 import delta.common.utils.ListenersManager;
 import delta.games.lotro.maps.data.MapBundle;
@@ -76,7 +77,7 @@ public class MapChooserController
    * Get the managed combobox.
    * @return the managed combobox.
    */
-  public JComboBox getCombo()
+  public JComboBox<ComboBoxItem<MapBundle>> getCombo()
   {
     return _mapsCombo.getComboBox();
   }
