@@ -38,18 +38,41 @@ public class MapXMLParser
 
   /**
    * Parse the XML file.
-   * @param source Source file.
-   * @return Parsed categories or <code>null</code>.
+   * @param markersFile Markers file.
+   * @param linksFile Links file.
+   * @return Parsed data or <code>null</code>.
    */
-  public MapBundle parseXML(File source)
+  public MapBundle loadMapDataFromXmlFiles(File markersFile, File linksFile)
   {
-    MapBundle registry=null;
+    MapBundle mapBundle=null;
+    Element root=DOMParsingTools.parse(markersFile);
+    if (root!=null)
+    {
+      mapBundle=parseMap(root);
+      if (mapBundle!=null)
+      {
+        // Links
+        if (linksFile.exists())
+        {
+          loadLinks(mapBundle,linksFile);
+        }
+      }
+    }
+    return mapBundle;
+  }
+
+  /**
+   * Parse the XML file.
+   * @param bundle Storage.
+   * @param source Source file.
+   */
+  private void loadLinks(MapBundle bundle, File source)
+  {
     Element root=DOMParsingTools.parse(source);
     if (root!=null)
     {
-      registry=parseMap(root);
+      parseLinks(root,bundle.getMap());
     }
-    return registry;
   }
 
   private MapBundle parseMap(Element root)
@@ -78,15 +101,7 @@ public class MapXMLParser
       parseLabels(labelsTag,map.getLabels());
     }
     // Links
-    List<Element> linkTags=DOMParsingTools.getChildTagsByName(root,MapXMLConstants.LINK_TAG,true);
-    for(Element linkTag : linkTags)
-    {
-      MapLink link=parseLink(linkTag);
-      if (link!=null)
-      {
-        map.addLink(link);
-      }
-    }
+    parseLinks(root,map);
 
     // Markers
     MarkersManager markersManager=bundle.getData();
@@ -100,6 +115,20 @@ public class MapXMLParser
       }
     }
     return bundle;
+  }
+
+  private void parseLinks(Element root,Map map)
+  {
+    // Links
+    List<Element> linkTags=DOMParsingTools.getChildTagsByName(root,MapXMLConstants.LINK_TAG,true);
+    for(Element linkTag : linkTags)
+    {
+      MapLink link=parseLink(linkTag);
+      if (link!=null)
+      {
+        map.addLink(link);
+      }
+    }
   }
 
   /**

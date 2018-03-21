@@ -1,20 +1,14 @@
 package delta.games.lotro.maps.data.io.xml;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.List;
 
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.stream.StreamResult;
 
-import org.apache.log4j.Logger;
 import org.xml.sax.helpers.AttributesImpl;
 
-import delta.common.utils.io.StreamTools;
+import delta.common.utils.io.xml.XmlFileWriterHelper;
+import delta.common.utils.io.xml.XmlWriter;
 import delta.games.lotro.maps.data.CategoriesManager;
 import delta.games.lotro.maps.data.Category;
 import delta.games.lotro.maps.data.Labels;
@@ -25,10 +19,6 @@ import delta.games.lotro.maps.data.Labels;
  */
 public class CategoriesXMLWriter
 {
-  private static final Logger _logger=Logger.getLogger(CategoriesXMLWriter.class);
-
-  private static final String CDATA="CDATA";
-
   /**
    * Write a map bundle to an XML file.
    * @param outFile Output file.
@@ -36,40 +26,18 @@ public class CategoriesXMLWriter
    * @param encoding Encoding to use.
    * @return <code>true</code> if it succeeds, <code>false</code> otherwise.
    */
-  public boolean write(File outFile, CategoriesManager categoriesManager, String encoding)
+  public boolean write(File outFile, final CategoriesManager categoriesManager, String encoding)
   {
-    boolean ret;
-    FileOutputStream fos=null;
-    try
+    XmlFileWriterHelper helper=new XmlFileWriterHelper();
+    XmlWriter writer=new XmlWriter()
     {
-      File parentFile=outFile.getParentFile();
-      if (!parentFile.exists())
+      @Override
+      public void writeXml(TransformerHandler hd) throws Exception
       {
-        parentFile.mkdirs();
+        write(hd,categoriesManager);
       }
-      fos=new FileOutputStream(outFile);
-      SAXTransformerFactory tf=(SAXTransformerFactory)TransformerFactory.newInstance();
-      TransformerHandler hd=tf.newTransformerHandler();
-      Transformer serializer=hd.getTransformer();
-      serializer.setOutputProperty(OutputKeys.ENCODING,encoding);
-      serializer.setOutputProperty(OutputKeys.INDENT,"yes");
-
-      StreamResult streamResult=new StreamResult(fos);
-      hd.setResult(streamResult);
-      hd.startDocument();
-      write(hd,categoriesManager);
-      hd.endDocument();
-      ret=true;
-    }
-    catch (Exception exception)
-    {
-      _logger.error("",exception);
-      ret=false;
-    }
-    finally
-    {
-      StreamTools.close(fos);
-    }
+    };
+    boolean ret=helper.write(outFile,encoding,writer);
     return ret;
   }
 
@@ -90,10 +58,10 @@ public class CategoriesXMLWriter
       AttributesImpl categoryAttrs=new AttributesImpl();
       // Code
       int code=category.getCode();
-      categoryAttrs.addAttribute("","",CategoryXMLConstants.CATEGORY_CODE_ATTR,CDATA,String.valueOf(code));
+      categoryAttrs.addAttribute("","",CategoryXMLConstants.CATEGORY_CODE_ATTR,XmlWriter.CDATA,String.valueOf(code));
       // Icon
       String icon=category.getIcon();
-      categoryAttrs.addAttribute("","",CategoryXMLConstants.CATEGORY_ICON_ATTR,CDATA,icon);
+      categoryAttrs.addAttribute("","",CategoryXMLConstants.CATEGORY_ICON_ATTR,XmlWriter.CDATA,icon);
       hd.startElement("","",CategoryXMLConstants.CATEGORY_TAG,categoryAttrs);
       // Labels
       Labels labels=category.getLabels();

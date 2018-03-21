@@ -29,6 +29,10 @@ public class MapXMLConstants
   public static final String GEO_FACTOR_ATTR="factor";
 
   /**
+   * Tag 'links'.
+   */
+  public static final String LINKS_TAG="links";
+  /**
    * Tag 'link'.
    */
   public static final String LINK_TAG="link";

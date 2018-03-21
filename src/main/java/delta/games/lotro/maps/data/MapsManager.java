@@ -60,28 +60,47 @@ public class MapsManager
     List<File> mapDirs=finder.find(FilesFinder.ABSOLUTE_MODE,mapsDir,filter,false);
     for(File mapDir : mapDirs)
     {
-      File mapFile=new File(mapDir,"markers.xml");
+      File markersFile=new File(mapDir,"markers.xml");
+      File linksFile=new File(mapDir,"links.xml");
       MapXMLParser mapParser=new MapXMLParser(_categoriesManager);
-      if (mapFile.exists())
+      if (markersFile.exists())
       {
-        MapBundle bundle=mapParser.parseXML(mapFile);
+        MapBundle bundle=mapParser.loadMapDataFromXmlFiles(markersFile,linksFile);
         addMap(bundle);
       }
     }
   }
 
   /**
-   * Save a map to a file.
+   * Save all maps.
+   */
+  public void saveMaps()
+  {
+    for(String key : _maps.keySet())
+    {
+      saveMap(key);
+    }
+  }
+
+  /**
+   * Save a map to files.
    * @param key Key of the targeted map.
    */
   public void saveMap(String key)
   {
-    File mapsDir=new File(_rootDir,"maps");
-    File mapDir=new File(mapsDir,key);
-    File mapFile=new File(mapDir,"markers.xml");
-    MapXMLWriter writer=new MapXMLWriter();
     MapBundle bundle=_maps.get(key);
-    writer.write(mapFile,bundle,EncodingNames.UTF_8);
+    if (bundle!=null)
+    {
+      File mapsDir=new File(_rootDir,"maps");
+      File mapDir=new File(mapsDir,key);
+      MapXMLWriter writer=new MapXMLWriter();
+      // Markers
+      File mapFile=new File(mapDir,"markers.xml");
+      writer.writeMarkersFile(mapFile,bundle,EncodingNames.UTF_8);
+      // Links
+      File linksFile=new File(mapDir,"links.xml");
+      writer.writeLinksFile(linksFile,bundle,EncodingNames.UTF_8);
+    }
   }
 
   /**

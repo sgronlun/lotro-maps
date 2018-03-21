@@ -1,21 +1,15 @@
 package delta.games.lotro.maps.data.io.xml;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.List;
 
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.stream.StreamResult;
 
-import org.apache.log4j.Logger;
 import org.xml.sax.helpers.AttributesImpl;
 
-import delta.common.utils.io.StreamTools;
+import delta.common.utils.io.xml.XmlFileWriterHelper;
+import delta.common.utils.io.xml.XmlWriter;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.Labels;
@@ -31,73 +25,47 @@ import delta.games.lotro.maps.data.MarkersManager;
  */
 public class MapXMLWriter
 {
-  private static final Logger _logger=Logger.getLogger(MapXMLWriter.class);
-
-  private static final String CDATA="CDATA";
-
   /**
-   * Write a map bundle to an XML file.
+   * Write map markers to an XML file.
    * @param outFile Output file.
-   * @param mapBundle Map bundle to write.
+   * @param mapBundle Map bundle to use.
    * @param encoding Encoding to use.
    * @return <code>true</code> if it succeeds, <code>false</code> otherwise.
    */
-  public boolean write(File outFile, MapBundle mapBundle, String encoding)
+  public boolean writeMarkersFile(File outFile, final MapBundle mapBundle, String encoding)
   {
-    boolean ret;
-    FileOutputStream fos=null;
-    try
+    XmlFileWriterHelper helper=new XmlFileWriterHelper();
+    XmlWriter writer=new XmlWriter()
     {
-      File parentFile=outFile.getParentFile();
-      if (!parentFile.exists())
+      @Override
+      public void writeXml(TransformerHandler hd) throws Exception
       {
-        parentFile.mkdirs();
+        writeMarkers(hd,mapBundle);
       }
-      fos=new FileOutputStream(outFile);
-      SAXTransformerFactory tf=(SAXTransformerFactory)TransformerFactory.newInstance();
-      TransformerHandler hd=tf.newTransformerHandler();
-      Transformer serializer=hd.getTransformer();
-      serializer.setOutputProperty(OutputKeys.ENCODING,encoding);
-      serializer.setOutputProperty(OutputKeys.INDENT,"yes");
-
-      StreamResult streamResult=new StreamResult(fos);
-      hd.setResult(streamResult);
-      hd.startDocument();
-      write(hd,mapBundle);
-      hd.endDocument();
-      ret=true;
-    }
-    catch (Exception exception)
-    {
-      _logger.error("",exception);
-      ret=false;
-    }
-    finally
-    {
-      StreamTools.close(fos);
-    }
+    };
+    boolean ret=helper.write(outFile,encoding,writer);
     return ret;
   }
 
   /**
-   * Write a map bundle to the given XML stream.
+   * Write map markers from a map bundle to the given XML stream.
    * @param hd XML output stream.
-   * @param mapBundle Map bundle to write.
-   * @throws Exception
+   * @param mapBundle Map bundle to use.
+   * @throws Exception If an error occurs.
    */
-  public void write(TransformerHandler hd, MapBundle mapBundle) throws Exception
+  private void writeMarkers(TransformerHandler hd, MapBundle mapBundle) throws Exception
   {
     AttributesImpl attrs=new AttributesImpl();
     Map map=mapBundle.getMap();
     // Key
     String key=map.getKey();
-    attrs.addAttribute("","",MapXMLConstants.MAP_KEY_ATTR,CDATA,key);
+    attrs.addAttribute("","",MapXMLConstants.MAP_KEY_ATTR,XmlWriter.CDATA,key);
     // Last update
     Date lastUpdate=map.getLastUpdate();
     if (lastUpdate!=null)
     {
       String dateStr=Long.toString(lastUpdate.getTime());
-      attrs.addAttribute("","",MapXMLConstants.MAP_LAST_UPDATE_ATTR,CDATA,dateStr);
+      attrs.addAttribute("","",MapXMLConstants.MAP_LAST_UPDATE_ATTR,XmlWriter.CDATA,dateStr);
     }
     hd.startElement("","",MapXMLConstants.MAP_TAG,attrs);
 
@@ -107,35 +75,62 @@ public class MapXMLWriter
     {
       AttributesImpl geoAttrs=new AttributesImpl();
       float factor=geoRef.getGeo2PixelFactor();
-      geoAttrs.addAttribute("","",MapXMLConstants.GEO_FACTOR_ATTR,CDATA,String.valueOf(factor));
+      geoAttrs.addAttribute("","",MapXMLConstants.GEO_FACTOR_ATTR,XmlWriter.CDATA,String.valueOf(factor));
       hd.startElement("","",MapXMLConstants.GEO_TAG,geoAttrs);
       GeoPoint start=geoRef.getStart();
       if (start!=null)
       {
-        write(hd,start);
+        writeGeoPoint(hd,start);
       }
       hd.endElement("","",MapXMLConstants.GEO_TAG);
     }
     // Labels
     Labels labels=map.getLabels();
     MapXMLWriterUtils.write(hd,labels);
+    // Markers
+    MarkersManager markers=mapBundle.getData();
+    write(hd,markers);
+    hd.endElement("","",MapXMLConstants.MAP_TAG);
+  }
+
+  /**
+   * Write map markers to an XML file.
+   * @param outFile Output file.
+   * @param mapBundle Map bundle to use.
+   * @param encoding Encoding to use.
+   * @return <code>true</code> if it succeeds, <code>false</code> otherwise.
+   */
+  public boolean writeLinksFile(File outFile, final MapBundle mapBundle, String encoding)
+  {
+    XmlFileWriterHelper helper=new XmlFileWriterHelper();
+    XmlWriter writer=new XmlWriter()
+    {
+      @Override
+      public void writeXml(TransformerHandler hd) throws Exception
+      {
+        writeLinks(hd,mapBundle.getMap());
+      }
+    };
+    boolean ret=helper.write(outFile,encoding,writer);
+    return ret;
+  }
+
+  private void writeLinks(TransformerHandler hd, Map map) throws Exception
+  {
+    hd.startElement("","",MapXMLConstants.LINKS_TAG,new AttributesImpl());
     // Links
     List<MapLink> links=map.getAllLinks();
     for(MapLink link : links)
     {
       AttributesImpl linkAttrs=new AttributesImpl();
       String target=link.getTargetMapKey();
-      linkAttrs.addAttribute("","",MapXMLConstants.LINK_TARGET_ATTR,CDATA,target);
+      linkAttrs.addAttribute("","",MapXMLConstants.LINK_TARGET_ATTR,XmlWriter.CDATA,target);
       hd.startElement("","",MapXMLConstants.LINK_TAG,linkAttrs);
       GeoPoint hotPoint=link.getHotPoint();
-      write(hd,hotPoint);
+      writeGeoPoint(hd,hotPoint);
       hd.endElement("","",MapXMLConstants.LINK_TAG);
     }
-
-    // Data
-    MarkersManager markers=mapBundle.getData();
-    write(hd,markers);
-    hd.endElement("","",MapXMLConstants.MAP_TAG);
+    hd.endElement("","",MapXMLConstants.LINKS_TAG);
   }
 
   /**
@@ -144,16 +139,16 @@ public class MapXMLWriter
    * @param point Point to write.
    * @throws Exception
    */
-  private void write(TransformerHandler hd, GeoPoint point) throws Exception
+  private void writeGeoPoint(TransformerHandler hd, GeoPoint point) throws Exception
   {
     AttributesImpl attrs=new AttributesImpl();
 
     // Longitude
     float longitude=point.getLongitude();
-    attrs.addAttribute("","",MapXMLConstants.LONGITUDE_ATTR,CDATA,String.valueOf(longitude));
+    attrs.addAttribute("","",MapXMLConstants.LONGITUDE_ATTR,XmlWriter.CDATA,String.valueOf(longitude));
     // Latitude
     float latitude=point.getLatitude();
-    attrs.addAttribute("","",MapXMLConstants.LATITUDE_ATTR,CDATA,String.valueOf(latitude));
+    attrs.addAttribute("","",MapXMLConstants.LATITUDE_ATTR,XmlWriter.CDATA,String.valueOf(latitude));
     hd.startElement("","",MapXMLConstants.POINT_TAG,attrs);
     hd.endElement("","",MapXMLConstants.POINT_TAG);
   }
@@ -174,22 +169,22 @@ public class MapXMLWriter
       AttributesImpl markerAttrs=new AttributesImpl();
       // Identifier
       int id=marker.getId();
-      markerAttrs.addAttribute("","",MapXMLConstants.ID_ATTR,CDATA,String.valueOf(id));
+      markerAttrs.addAttribute("","",MapXMLConstants.ID_ATTR,XmlWriter.CDATA,String.valueOf(id));
       // Category
       int category=marker.getCategoryCode();
-      markerAttrs.addAttribute("","",MapXMLConstants.CATEGORY_ATTR,CDATA,String.valueOf(category));
+      markerAttrs.addAttribute("","",MapXMLConstants.CATEGORY_ATTR,XmlWriter.CDATA,String.valueOf(category));
       // Comments
       String comment=marker.getComment();
       if (comment!=null)
       {
-        markerAttrs.addAttribute("","",MapXMLConstants.COMMENT_ATTR,CDATA,comment);
+        markerAttrs.addAttribute("","",MapXMLConstants.COMMENT_ATTR,XmlWriter.CDATA,comment);
       }
       hd.startElement("","",MapXMLConstants.MARKER_TAG,markerAttrs);
       // Position
       GeoPoint position=marker.getPosition();
       if (position!=null)
       {
-        write(hd,position);
+        writeGeoPoint(hd,position);
       }
       // Labels
       Labels labels=marker.getLabels();
