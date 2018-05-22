@@ -45,6 +45,7 @@ public class MapCanvas extends JPanel
   private Filter<Marker> _filter;
   private MarkerIconProvider _iconProvider;
   private BufferedImage _gotoIcon;
+  private GeoReference _viewReference;
 
   /**
    * Constructor.
@@ -78,6 +79,15 @@ public class MapCanvas extends JPanel
   public Map getMap()
   {
     return (_currentMap!=null)?_currentMap.getMap():null;
+  }
+
+  /**
+   * Get the current view reference.
+   * @return the current view reference.
+   */
+  public GeoReference getViewReference()
+  {
+    return _viewReference;
   }
 
   /**
@@ -120,6 +130,39 @@ public class MapCanvas extends JPanel
     String mapFilename="map_"+LocaleNames.DEFAULT_LOCALE+".jpg";
     File mapImageFile=new File(mapDir,mapFilename);
     _background=ImageUtils.loadImage(mapImageFile);
+    // Set reference
+    GeoReference reference=_currentMap.getMap().getGeoReference();
+    _viewReference=new GeoReference(reference.getStart(),reference.getGeo2PixelFactor());
+    repaint();
+  }
+
+  /**
+   * Zoom.
+   * @param factor Zoom factor (>1 to zoom in, <1 to zoom out).
+   */
+  public void zoom(float factor)
+  {
+    //System.out.println("Zoom: "+factor);
+    Dimension centerPixels=new Dimension(_background.getWidth()/2,_background.getHeight()/2);
+    GeoPoint centerGeo=_viewReference.pixel2geo(centerPixels);
+    //System.out.println("Center geo: "+centerGeo);
+    Dimension endPixels=new Dimension(_background.getWidth(),_background.getHeight());
+    GeoPoint endGeo=_viewReference.pixel2geo(endPixels);
+    //System.out.println("End geo: "+endGeo);
+    float deltaLon=endGeo.getLongitude()-_viewReference.getStart().getLongitude();
+    //System.out.println("Delta lon="+deltaLon);
+    float newDeltaLon=deltaLon/factor;
+    //System.out.println("New delta lon="+newDeltaLon);
+    float deltaLat=_viewReference.getStart().getLatitude()-endGeo.getLatitude();
+    //System.out.println("Delta lat="+deltaLat);
+    float newDeltaLat=deltaLat/factor;
+    //System.out.println("New delta lat="+newDeltaLat);
+    float latCenter=centerGeo.getLatitude();
+    float lonCenter=centerGeo.getLongitude();
+    GeoPoint newStart=new GeoPoint(lonCenter-newDeltaLon/2,latCenter+newDeltaLat/2);
+    //System.out.println("New start geo: "+newStart);
+    _viewReference=new GeoReference(newStart,_viewReference.getGeo2PixelFactor()*factor);
+    //System.out.println("New view reference: "+_viewReference);
     repaint();
   }
 
@@ -141,7 +184,19 @@ public class MapCanvas extends JPanel
     super.paintComponent(g);
     if (_background!=null)
     {
-      g.drawImage(_background,0,0,null);
+      //System.out.println("Repaint!");
+      int dx1=0;int dy1=0;int dx2=_background.getWidth();int dy2=_background.getHeight();
+      GeoReference reference=_currentMap.getMap().getGeoReference();
+      Dimension startPixels=reference.geo2pixel(_viewReference.getStart());
+      //System.out.println("Start pixels: "+startPixels);
+      Dimension map=new Dimension(_background.getWidth(),_background.getHeight());
+      GeoPoint endGeo=_viewReference.pixel2geo(map);
+      //System.out.println("End geo: "+endGeo);
+      Dimension endPixels=reference.geo2pixel(endGeo);
+      //System.out.println("End pixels: "+endPixels);
+      int sx1=startPixels.width;int sy1=startPixels.height;
+      int sx2=endPixels.width;int sy2=endPixels.height;
+      g.drawImage(_background,dx1,dy1,dx2,dy2,sx1,sy1,sx2,sy2,null);
     }
     paintLinkPoints(g);
     paintMarkers(g);
@@ -164,9 +219,7 @@ public class MapCanvas extends JPanel
 
   private void paintLink(MapLink link, Graphics g)
   {
-    Map map=_currentMap.getMap();
-    GeoReference geoReference=map.getGeoReference();
-    Dimension pixelPosition=geoReference.geo2pixel(link.getHotPoint());
+    Dimension pixelPosition=_viewReference.geo2pixel(link.getHotPoint());
 
     int x=pixelPosition.width;
     int y=pixelPosition.height;
@@ -202,9 +255,7 @@ public class MapCanvas extends JPanel
 
   private void paintMarker(Marker marker, Graphics g)
   {
-    Map map=_currentMap.getMap();
-    GeoReference geoReference=map.getGeoReference();
-    Dimension pixelPosition=geoReference.geo2pixel(marker.getPosition());
+    Dimension pixelPosition=_viewReference.geo2pixel(marker.getPosition());
 
     // Grab icon
     BufferedImage image=null;
@@ -255,10 +306,8 @@ public class MapCanvas extends JPanel
 
   private List<Marker> findMarkersAtLocation(int x, int y)
   {
-    Map map=_currentMap.getMap();
-    GeoReference geoReference=map.getGeoReference();
-    GeoPoint topLeft=geoReference.pixel2geo(new Dimension(x-SENSIBILITY,y-SENSIBILITY));
-    GeoPoint bottomRight=geoReference.pixel2geo(new Dimension(x+SENSIBILITY,y+SENSIBILITY));
+    GeoPoint topLeft=_viewReference.pixel2geo(new Dimension(x-SENSIBILITY,y-SENSIBILITY));
+    GeoPoint bottomRight=_viewReference.pixel2geo(new Dimension(x+SENSIBILITY,y+SENSIBILITY));
     GeoBox box=new GeoBox(topLeft,bottomRight);
     MarkersManager markersManager=_currentMap.getData();
     List<Marker> markers=markersManager.getAllMarkers(_filter,box);

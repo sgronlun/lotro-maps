@@ -78,7 +78,7 @@ public class NavigationManager
       List<MapLink> links=_currentMap.getAllLinks();
       for(MapLink link : links)
       {
-        Dimension hotPoint=_currentMap.getGeoReference().geo2pixel(link.getHotPoint());
+        Dimension hotPoint=_canvas.getViewReference().geo2pixel(link.getHotPoint());
         _hotPoints.add(hotPoint);
       }
     }

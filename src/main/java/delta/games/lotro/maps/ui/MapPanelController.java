@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseWheelEvent;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLayeredPane;
@@ -47,8 +49,11 @@ public class MapPanelController implements NavigationListener
   public MapPanelController(MapsManager mapsManager)
   {
     _canvas=new MapCanvas(mapsManager);
+    // Init zoom controller
+    initZoomController();
     // Location
     _locationController=new MapLocationController(_canvas);
+    // Location display
     _locationDisplay=new MapLocationPanelController();
     _locationController.addListener(_locationDisplay);
     // Assembly components in a layered pane
@@ -66,6 +71,29 @@ public class MapPanelController implements NavigationListener
     _navigation=new NavigationManager(_canvas);
     _navigation.setNavigationListener(this);
     _listeners=new ListenersManager<NavigationListener>();
+  }
+
+  private void initZoomController()
+  {
+    // Zoom with mouse wheel
+    MouseAdapter adapter=new MouseAdapter()
+    {
+
+      @Override
+      public void mouseWheelMoved(MouseWheelEvent e)
+      {
+        int rotation=e.getWheelRotation();
+        if (rotation>0)
+        {
+          _canvas.zoom((float)Math.sqrt(2));
+        }
+        else
+        {
+          _canvas.zoom(1/(float)Math.sqrt(2));
+        }
+      }
+    };
+    _canvas.addMouseWheelListener(adapter);
   }
 
   private JCheckBox buildLabeledCheckbox()
