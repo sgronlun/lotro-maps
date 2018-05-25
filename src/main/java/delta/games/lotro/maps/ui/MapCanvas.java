@@ -166,6 +166,27 @@ public class MapCanvas extends JPanel
     repaint();
   }
 
+  /**
+   * Pan to place the given pixels at the center of the view.
+   * @param x Current horizontal position of desired center.
+   * @param y Current vertical position of desired center.
+   */
+  public void pan(int x, int y)
+  {
+    Dimension centerPixels=new Dimension(_background.getWidth()/2,_background.getHeight()/2);
+    GeoPoint centerGeo=_viewReference.pixel2geo(centerPixels);
+    GeoPoint newCenter=_viewReference.pixel2geo(new Dimension(x,y));
+    float deltaLat=newCenter.getLatitude()-centerGeo.getLatitude();
+    float deltaLon=newCenter.getLongitude()-centerGeo.getLongitude();
+    GeoPoint currentStart=_viewReference.getStart();
+    float newStartLat=currentStart.getLatitude()+deltaLat;
+    float newStartLon=currentStart.getLongitude()+deltaLon;
+    GeoPoint newStart=new GeoPoint(newStartLon,newStartLat);
+    _viewReference=new GeoReference(newStart,_viewReference.getGeo2PixelFactor());
+    //System.out.println("New view reference: "+_viewReference);
+    repaint();
+  }
+
   @Override
   public Dimension getPreferredSize()
   {

@@ -139,7 +139,6 @@ public class NavigationManager
     {
       _canvas.setMap(map.getKey());
       _currentMap=map;
-      updateHotPoints();
     }
   }
 
@@ -161,12 +160,6 @@ public class NavigationManager
       {
         handleLeftClick(x,y);
       }
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent event)
-    {
-      // TODO
     }
   }
 }

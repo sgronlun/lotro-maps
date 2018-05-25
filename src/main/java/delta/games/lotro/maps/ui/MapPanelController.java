@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
 import javax.swing.JCheckBox;
@@ -51,6 +52,8 @@ public class MapPanelController implements NavigationListener
     _canvas=new MapCanvas(mapsManager);
     // Init zoom controller
     initZoomController();
+    // Init pan controller
+    initPanController();
     // Location
     _locationController=new MapLocationController(_canvas);
     // Location display
@@ -78,7 +81,6 @@ public class MapPanelController implements NavigationListener
     // Zoom with mouse wheel
     MouseAdapter adapter=new MouseAdapter()
     {
-
       @Override
       public void mouseWheelMoved(MouseWheelEvent e)
       {
@@ -94,6 +96,28 @@ public class MapPanelController implements NavigationListener
       }
     };
     _canvas.addMouseWheelListener(adapter);
+  }
+
+  private void initPanController()
+  {
+    // Pan with left click
+    MouseAdapter adapter=new MouseAdapter()
+    {
+      @Override
+      public void mouseClicked(MouseEvent event)
+      {
+        int button=event.getButton();
+        int modifiers=event.getModifiers();
+        int x=event.getX();
+        int y=event.getY();
+
+        if ((button==MouseEvent.BUTTON1) && ((modifiers&MouseEvent.SHIFT_MASK)==0))
+        {
+          _canvas.pan(x,y);
+        }
+      }
+    };
+    _canvas.addMouseListener(adapter);
   }
 
   private JCheckBox buildLabeledCheckbox()
