@@ -55,8 +55,8 @@ public class MainTestMapCanvas
         String key=bundle.getKey();
         panel.setMap(key);
         MapCanvas canvas=panel.getCanvas();
-        canvas.setFilter(filter);
-        canvas.useLabels(true);
+        canvas.getMarkersLayer().setFilter(filter);
+        canvas.getMarkersLayer().useLabels(true);
 
         JFrame f=new JFrame();
         String title=bundle.getLabel();
