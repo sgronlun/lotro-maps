@@ -1,6 +1,5 @@
 package delta.games.lotro.maps.ui;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
@@ -12,16 +11,15 @@ import java.util.List;
 import javax.swing.JPanel;
 
 import delta.common.ui.ImageUtils;
-import delta.common.ui.swing.icons.IconsManager;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.LocaleNames;
 import delta.games.lotro.maps.data.Map;
 import delta.games.lotro.maps.data.MapBundle;
-import delta.games.lotro.maps.data.MapLink;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
 import delta.games.lotro.maps.data.comparators.MarkerNameComparator;
+import delta.games.lotro.maps.ui.layers.LinksLayer;
 import delta.games.lotro.maps.ui.layers.MarkersLayer;
 
 /**
@@ -38,10 +36,10 @@ public class MapCanvas extends JPanel implements MapView
   private MapsManager _mapsManager;
   private MapBundle _currentMap;
   private BufferedImage _background;
-  private BufferedImage _gotoIcon;
   private GeoReference _viewReference;
   // Layers
   private MarkersLayer _markersLayer;
+  private LinksLayer _linksLayer;
 
   /**
    * Constructor.
@@ -53,8 +51,8 @@ public class MapCanvas extends JPanel implements MapView
     _currentMap=null;
     _background=null;
     setToolTipText("");
-    _gotoIcon=IconsManager.getImage("/resources/icons/goto.png");
     _markersLayer=new MarkersLayer(mapsManager,this);
+    _linksLayer=new LinksLayer(this);
   }
 
   /**
@@ -195,42 +193,8 @@ public class MapCanvas extends JPanel implements MapView
       int sx2=endPixels.width;int sy2=endPixels.height;
       g.drawImage(_background,dx1,dy1,dx2,dy2,sx1,sy1,sx2,sy2,null);
     }
-    paintLinkPoints(g);
+    _linksLayer.paintLayer(g);
     _markersLayer.paintLayer(g);
-  }
-
-  private void paintLinkPoints(Graphics g)
-  {
-    if (_currentMap!=null)
-    {
-      List<MapLink> links=_currentMap.getMap().getAllLinks();
-      if (links.size()>0)
-      {
-        for(MapLink link : links)
-        {
-          paintLink(link,g);
-        }
-      }
-    }
-  }
-
-  private void paintLink(MapLink link, Graphics g)
-  {
-    Dimension pixelPosition=_viewReference.geo2pixel(link.getHotPoint());
-
-    int x=pixelPosition.width;
-    int y=pixelPosition.height;
-    if (_gotoIcon!=null)
-    {
-      int width=_gotoIcon.getWidth();
-      int height=_gotoIcon.getHeight();
-      g.drawImage(_gotoIcon,x-width/2,y-height/2,null);
-    }
-    else
-    {
-      g.setColor(Color.RED);
-      g.fillRect(x-10,y-10,20,20);
-    }
   }
 
   @Override
