@@ -129,7 +129,7 @@ public class MapPanelController implements NavigationListener
     {
       public void actionPerformed(ActionEvent e)
       {
-        _canvas.useLabels(labeled.isSelected());
+        _canvas.getMarkersLayer().useLabels(labeled.isSelected());
         _canvas.repaint();
       }
     };

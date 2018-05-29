@@ -12,10 +12,7 @@ import java.util.List;
 import javax.swing.JPanel;
 
 import delta.common.ui.ImageUtils;
-import delta.common.ui.swing.draw.HaloPainter;
 import delta.common.ui.swing.icons.IconsManager;
-import delta.common.utils.collections.filters.Filter;
-import delta.games.lotro.maps.data.GeoBox;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.LocaleNames;
@@ -24,14 +21,14 @@ import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapLink;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
-import delta.games.lotro.maps.data.MarkersManager;
 import delta.games.lotro.maps.data.comparators.MarkerNameComparator;
+import delta.games.lotro.maps.ui.layers.MarkersLayer;
 
 /**
  * Map display.
  * @author DAM
  */
-public class MapCanvas extends JPanel
+public class MapCanvas extends JPanel implements MapView
 {
   /**
    * Sensibility of tooltips (pixels).
@@ -41,11 +38,10 @@ public class MapCanvas extends JPanel
   private MapsManager _mapsManager;
   private MapBundle _currentMap;
   private BufferedImage _background;
-  private boolean _useLabels;
-  private Filter<Marker> _filter;
-  private MarkerIconProvider _iconProvider;
   private BufferedImage _gotoIcon;
   private GeoReference _viewReference;
+  // Layers
+  private MarkersLayer _markersLayer;
 
   /**
    * Constructor.
@@ -56,11 +52,9 @@ public class MapCanvas extends JPanel
     _mapsManager=mapsManager;
     _currentMap=null;
     _background=null;
-    _useLabels=false;
-    _filter=null;
-    _iconProvider=new DefaultMarkerIconsProvider(mapsManager);
     setToolTipText("");
     _gotoIcon=IconsManager.getImage("/resources/icons/goto.png");
+    _markersLayer=new MarkersLayer(mapsManager,this);
   }
 
   /**
@@ -91,30 +85,12 @@ public class MapCanvas extends JPanel
   }
 
   /**
-   * Set a filter.
-   * @param filter Filter to set or <code>null</code> to remove it.
+   * Get the markers layer.
+   * @return the markers layer.
    */
-  public void setFilter(Filter<Marker> filter)
+  public MarkersLayer getMarkersLayer()
   {
-    _filter=filter;
-  }
-
-  /**
-   * Set the flag to use labels or not.
-   * @param useLabels <code>true</code> to display labels, <code>false</code> to hide them.
-   */
-  public void useLabels(boolean useLabels)
-  {
-    _useLabels=useLabels;
-  }
-
-  /**
-   * Set a custom marker icon provider.
-   * @param provider Provider to set.
-   */
-  public void setMarkerIconProvider(MarkerIconProvider provider)
-  {
-    _iconProvider=provider;
+    return _markersLayer;
   }
 
   /**
@@ -220,7 +196,7 @@ public class MapCanvas extends JPanel
       g.drawImage(_background,dx1,dy1,dx2,dy2,sx1,sy1,sx2,sy2,null);
     }
     paintLinkPoints(g);
-    paintMarkers(g);
+    _markersLayer.paintLayer(g);
   }
 
   private void paintLinkPoints(Graphics g)
@@ -257,56 +233,10 @@ public class MapCanvas extends JPanel
     }
   }
 
-  private void paintMarkers(Graphics g)
-  {
-    if (_currentMap!=null)
-    {
-      MarkersManager markersManager=_currentMap.getData();
-      List<Marker> markers=markersManager.getAllMarkers();
-      for(Marker marker : markers)
-      {
-        boolean ok=((_filter==null)||(_filter.accept(marker)));
-        if (ok)
-        {
-          paintMarker(marker,g);
-        }
-      }
-    }
-  }
-
-  private void paintMarker(Marker marker, Graphics g)
-  {
-    Dimension pixelPosition=_viewReference.geo2pixel(marker.getPosition());
-
-    // Grab icon
-    BufferedImage image=null;
-    if (_iconProvider!=null)
-    {
-      image=_iconProvider.getImage(marker);
-    }
-    int x=pixelPosition.width;
-    int y=pixelPosition.height;
-    if (image!=null)
-    {
-      int width=image.getWidth();
-      int height=image.getHeight();
-      g.drawImage(image,x-width/2,y-height/2,null);
-    }
-    // Label
-    if (_useLabels)
-    {
-      String label=marker.getLabel();
-      if ((label!=null) && (label.length()>0))
-      {
-        HaloPainter.drawStringWithHalo(g,x+10,y,label,Color.WHITE,Color.BLACK);
-      }
-    }
-  }
-
   @Override
   public String getToolTipText(MouseEvent event)
   {
-    List<Marker> markers=findMarkersAtLocation(event.getX(),event.getY());
+    List<Marker> markers=_markersLayer.findMarkersAtLocation(event.getX(),event.getY(),SENSIBILITY);
     if (markers.size()>0)
     {
       Collections.sort(markers,new MarkerNameComparator());
@@ -323,15 +253,5 @@ public class MapCanvas extends JPanel
       return sb.toString();
     }
     return null;
-  }
-
-  private List<Marker> findMarkersAtLocation(int x, int y)
-  {
-    GeoPoint topLeft=_viewReference.pixel2geo(new Dimension(x-SENSIBILITY,y-SENSIBILITY));
-    GeoPoint bottomRight=_viewReference.pixel2geo(new Dimension(x+SENSIBILITY,y+SENSIBILITY));
-    GeoBox box=new GeoBox(topLeft,bottomRight);
-    MarkersManager markersManager=_currentMap.getData();
-    List<Marker> markers=markersManager.getAllMarkers(_filter,box);
-    return markers;
   }
 }
