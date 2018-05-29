@@ -3,22 +3,19 @@ package delta.games.lotro.maps.ui;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JPanel;
 
-import delta.common.ui.ImageUtils;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
-import delta.games.lotro.maps.data.LocaleNames;
 import delta.games.lotro.maps.data.Map;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
 import delta.games.lotro.maps.data.comparators.MarkerNameComparator;
+import delta.games.lotro.maps.ui.layers.BasemapLayer;
 import delta.games.lotro.maps.ui.layers.LinksLayer;
 import delta.games.lotro.maps.ui.layers.MarkersLayer;
 
@@ -35,9 +32,9 @@ public class MapCanvas extends JPanel implements MapView
 
   private MapsManager _mapsManager;
   private MapBundle _currentMap;
-  private BufferedImage _background;
   private GeoReference _viewReference;
   // Layers
+  private BasemapLayer _basemapLayer;
   private MarkersLayer _markersLayer;
   private LinksLayer _linksLayer;
 
@@ -49,16 +46,13 @@ public class MapCanvas extends JPanel implements MapView
   {
     _mapsManager=mapsManager;
     _currentMap=null;
-    _background=null;
     setToolTipText("");
+    _basemapLayer=new BasemapLayer(this);
     _markersLayer=new MarkersLayer(mapsManager,this);
     _linksLayer=new LinksLayer(this);
   }
 
-  /**
-   * Get the current map bundle.
-   * @return the current map.
-   */
+  @Override
   public MapBundle getCurrentMap()
   {
     return _currentMap;
@@ -73,13 +67,16 @@ public class MapCanvas extends JPanel implements MapView
     return (_currentMap!=null)?_currentMap.getMap():null;
   }
 
-  /**
-   * Get the current view reference.
-   * @return the current view reference.
-   */
+  @Override
   public GeoReference getViewReference()
   {
     return _viewReference;
+  }
+
+  @Override
+  public MapsManager getMapsManager()
+  {
+    return _mapsManager;
   }
 
   /**
@@ -99,11 +96,8 @@ public class MapCanvas extends JPanel implements MapView
   {
     // Load map data
     _currentMap=_mapsManager.getMapByKey(key);
-    // Load map image
-    File mapDir=_mapsManager.getMapDir(key);
-    String mapFilename="map_"+LocaleNames.DEFAULT_LOCALE+".jpg";
-    File mapImageFile=new File(mapDir,mapFilename);
-    _background=ImageUtils.loadImage(mapImageFile);
+    // Set base map
+    _basemapLayer.load(key);
     // Set reference
     GeoReference reference=_currentMap.getMap().getGeoReference();
     _viewReference=new GeoReference(reference.getStart(),reference.getGeo2PixelFactor());
@@ -116,11 +110,13 @@ public class MapCanvas extends JPanel implements MapView
    */
   public void zoom(float factor)
   {
+    int width=getWidth();
+    int height=getHeight();
     //System.out.println("Zoom: "+factor);
-    Dimension centerPixels=new Dimension(_background.getWidth()/2,_background.getHeight()/2);
+    Dimension centerPixels=new Dimension(width/2,height/2);
     GeoPoint centerGeo=_viewReference.pixel2geo(centerPixels);
     //System.out.println("Center geo: "+centerGeo);
-    Dimension endPixels=new Dimension(_background.getWidth(),_background.getHeight());
+    Dimension endPixels=new Dimension(width,height);
     GeoPoint endGeo=_viewReference.pixel2geo(endPixels);
     //System.out.println("End geo: "+endGeo);
     float deltaLon=endGeo.getLongitude()-_viewReference.getStart().getLongitude();
@@ -147,7 +143,9 @@ public class MapCanvas extends JPanel implements MapView
    */
   public void pan(int x, int y)
   {
-    Dimension centerPixels=new Dimension(_background.getWidth()/2,_background.getHeight()/2);
+    int width=getWidth();
+    int height=getHeight();
+    Dimension centerPixels=new Dimension(width/2,height/2);
     GeoPoint centerGeo=_viewReference.pixel2geo(centerPixels);
     GeoPoint newCenter=_viewReference.pixel2geo(new Dimension(x,y));
     float deltaLat=newCenter.getLatitude()-centerGeo.getLatitude();
@@ -164,11 +162,10 @@ public class MapCanvas extends JPanel implements MapView
   @Override
   public Dimension getPreferredSize()
   {
-    if (_background!=null)
+    Dimension baseMapPreferredSize=_basemapLayer.getPreferredSize();
+    if (baseMapPreferredSize!=null)
     {
-      int width=_background.getWidth();
-      int height=_background.getHeight();
-      return new Dimension(width,height);
+      return baseMapPreferredSize;
     }
     return super.getPreferredSize();
   }
@@ -177,22 +174,7 @@ public class MapCanvas extends JPanel implements MapView
   protected void paintComponent(Graphics g)
   {
     super.paintComponent(g);
-    if (_background!=null)
-    {
-      //System.out.println("Repaint!");
-      int dx1=0;int dy1=0;int dx2=_background.getWidth();int dy2=_background.getHeight();
-      GeoReference reference=_currentMap.getMap().getGeoReference();
-      Dimension startPixels=reference.geo2pixel(_viewReference.getStart());
-      //System.out.println("Start pixels: "+startPixels);
-      Dimension map=new Dimension(_background.getWidth(),_background.getHeight());
-      GeoPoint endGeo=_viewReference.pixel2geo(map);
-      //System.out.println("End geo: "+endGeo);
-      Dimension endPixels=reference.geo2pixel(endGeo);
-      //System.out.println("End pixels: "+endPixels);
-      int sx1=startPixels.width;int sy1=startPixels.height;
-      int sx2=endPixels.width;int sy2=endPixels.height;
-      g.drawImage(_background,dx1,dy1,dx2,dy2,sx1,sy1,sx2,sy2,null);
-    }
+    _basemapLayer.paintLayer(g);
     _linksLayer.paintLayer(g);
     _markersLayer.paintLayer(g);
   }
