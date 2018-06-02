@@ -30,7 +30,7 @@ public class GeoReference
   public GeoReference(GeoPoint start, float geo2pixel)
   {
     _start=start;
-    _geo2pixel=geo2pixel*10;
+    _geo2pixel=geo2pixel;
     _pixel2geo=1/_geo2pixel;
   }
 
@@ -49,7 +49,7 @@ public class GeoReference
    */
   public float getGeo2PixelFactor()
   {
-    return _geo2pixel/10;
+    return _geo2pixel;
   }
 
   /**
@@ -59,8 +59,8 @@ public class GeoReference
    */
   public GeoPoint pixel2geo(Dimension pixels)
   {
-    float longitude=_start.getLongitude() + (pixels.width * _pixel2geo);
-    float latitude=_start.getLatitude() - (pixels.height * _pixel2geo);
+    float longitude=_start.getLongitude() + (pixels.width * _pixel2geo / 10);
+    float latitude=_start.getLatitude() - (pixels.height * _pixel2geo / 10);
     return new GeoPoint(longitude, latitude);
   }
 
@@ -72,9 +72,9 @@ public class GeoReference
   public Dimension geo2pixel(GeoPoint point)
   {
     float deltaLongitude = point.getLongitude() - _start.getLongitude();
-    int x=Math.round(deltaLongitude * _geo2pixel);
+    int x=Math.round(deltaLongitude * _geo2pixel * 10);
     float deltaLatitude = _start.getLatitude() - point.getLatitude();
-    int y=Math.round(deltaLatitude*_geo2pixel);
+    int y=Math.round(deltaLatitude*_geo2pixel * 10);
     return new Dimension(x,y);
   }
 
