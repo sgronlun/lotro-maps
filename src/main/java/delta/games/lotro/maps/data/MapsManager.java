@@ -72,6 +72,19 @@ public class MapsManager
   }
 
   /**
+   * Get the links file for a map.
+   * @param mapKey Key of the targeted map.
+   * @return A file.
+   */
+  public File getLinksFile(String mapKey)
+  {
+    File mapsDir=new File(_rootDir,"maps");
+    File mapDir=new File(mapsDir,mapKey);
+    File linksFile=new File(mapDir,"links.xml");
+    return linksFile;
+  }
+
+  /**
    * Save all maps.
    */
   public void saveMaps()
