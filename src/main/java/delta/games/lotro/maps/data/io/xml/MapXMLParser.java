@@ -1,6 +1,6 @@
 package delta.games.lotro.maps.data.io.xml;
 
-import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -8,13 +8,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
 import delta.common.utils.xml.DOMParsingTools;
-import delta.games.lotro.maps.data.CategoriesManager;
-import delta.games.lotro.maps.data.Category;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.Labels;
 import delta.games.lotro.maps.data.Map;
-import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapLink;
 import delta.games.lotro.maps.data.Marker;
 import delta.games.lotro.maps.data.MarkersManager;
@@ -25,63 +22,17 @@ import delta.games.lotro.maps.data.MarkersManager;
  */
 public class MapXMLParser
 {
-  private CategoriesManager _categories;
-
   /**
-   * Constructor.
-   * @param categories Categories manager.
+   * Parse a map description.
+   * @param root Root element.
+   * @return A map.
    */
-  public MapXMLParser(CategoriesManager categories)
-  {
-    _categories=categories;
-  }
-
-  /**
-   * Parse the XML file.
-   * @param markersFile Markers file.
-   * @param linksFile Links file.
-   * @return Parsed data or <code>null</code>.
-   */
-  public MapBundle loadMapDataFromXmlFiles(File markersFile, File linksFile)
-  {
-    MapBundle mapBundle=null;
-    Element root=DOMParsingTools.parse(markersFile);
-    if (root!=null)
-    {
-      mapBundle=parseMap(root);
-      if (mapBundle!=null)
-      {
-        // Links
-        if (linksFile.exists())
-        {
-          loadLinks(mapBundle,linksFile);
-        }
-      }
-    }
-    return mapBundle;
-  }
-
-  /**
-   * Parse the XML file.
-   * @param bundle Storage.
-   * @param source Source file.
-   */
-  private void loadLinks(MapBundle bundle, File source)
-  {
-    Element root=DOMParsingTools.parse(source);
-    if (root!=null)
-    {
-      parseLinks(root,bundle.getMap());
-    }
-  }
-
-  private MapBundle parseMap(Element root)
+  public static Map parseMap(Element root)
   {
     NamedNodeMap attrs=root.getAttributes();
     String key=DOMParsingTools.getStringAttribute(attrs,MapXMLConstants.MAP_KEY_ATTR,null);
-    MapBundle bundle=new MapBundle(key);
+    Map map=new Map(key);
 
-    Map map=bundle.getMap();
     long lastUpdateTime=DOMParsingTools.getLongAttribute(attrs,MapXMLConstants.MAP_LAST_UPDATE_ATTR,0);
     if (lastUpdateTime!=0)
     {
@@ -100,11 +51,18 @@ public class MapXMLParser
     {
       parseLabels(labelsTag,map.getLabels());
     }
-    // Links
-    parseLinks(root,map);
+    return map;
+  }
 
+  /**
+   * Parse the markers of a map.
+   * @param root Root element.
+   * @return A markers manager.
+   */
+  public static MarkersManager parseMarkers(Element root)
+  {
     // Markers
-    MarkersManager markersManager=bundle.getData();
+    MarkersManager markersManager=new MarkersManager();
     List<Element> markerTags=DOMParsingTools.getChildTagsByName(root,MapXMLConstants.MARKER_TAG,true);
     for(Element markerTag : markerTags)
     {
@@ -114,21 +72,27 @@ public class MapXMLParser
         markersManager.addMarker(marker);
       }
     }
-    return bundle;
+    return markersManager;
   }
 
-  private void parseLinks(Element root,Map map)
+  /**
+   * Parse the links of a map.
+   * @param root Root element.
+   * @return A collection of links.
+   */
+  public static List<MapLink> parseLinks(Element root)
   {
-    // Links
+    List<MapLink> links=new ArrayList<MapLink>();
     List<Element> linkTags=DOMParsingTools.getChildTagsByName(root,MapXMLConstants.LINK_TAG,true);
     for(Element linkTag : linkTags)
     {
       MapLink link=parseLink(linkTag);
       if (link!=null)
       {
-        map.addLink(link);
+        links.add(link);
       }
     }
+    return links;
   }
 
   /**
@@ -136,7 +100,7 @@ public class MapXMLParser
    * @param geoTag Geographic reference tag.
    * @return A geographic reference.
    */
-  public GeoReference parseGeoReference(Element geoTag)
+  private static GeoReference parseGeoReference(Element geoTag)
   {
     GeoReference ret=null;
     NamedNodeMap attrs=geoTag.getAttributes();
@@ -158,7 +122,7 @@ public class MapXMLParser
    * @param linkTag Link tag.
    * @return A link.
    */
-  private MapLink parseLink(Element linkTag)
+  private static MapLink parseLink(Element linkTag)
   {
     NamedNodeMap attrs=linkTag.getAttributes();
     // Target
@@ -183,7 +147,7 @@ public class MapXMLParser
    * @param markerTag Marker tag.
    * @return A marker.
    */
-  private Marker parseMarker(Element markerTag)
+  private static Marker parseMarker(Element markerTag)
   {
     Marker marker=new Marker();
     NamedNodeMap attrs=markerTag.getAttributes();
@@ -192,8 +156,7 @@ public class MapXMLParser
     marker.setId(id);
     // Category code
     int categoryCode=DOMParsingTools.getIntAttribute(attrs,MapXMLConstants.CATEGORY_ATTR,0);
-    Category category=_categories.getByCode(categoryCode);
-    marker.setCategory(category);
+    marker.setCategoryCode(categoryCode);
     // Comment
     String comment=DOMParsingTools.getStringAttribute(attrs,MapXMLConstants.COMMENT_ATTR,null);
     marker.setComment(comment);
@@ -218,7 +181,7 @@ public class MapXMLParser
    * @param pointTag Point tag.
    * @return A point.
    */
-  public GeoPoint parsePoint(Element pointTag)
+  public static GeoPoint parsePoint(Element pointTag)
   {
     NamedNodeMap attrs=pointTag.getAttributes();
     // Latitude

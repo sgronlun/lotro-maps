@@ -124,4 +124,12 @@ public class MarkersManager
     }
     return ret;
   }
+
+  /**
+   * Remove all markers.
+   */
+  public void clear()
+  {
+    _markers.clear();
+  }
 }

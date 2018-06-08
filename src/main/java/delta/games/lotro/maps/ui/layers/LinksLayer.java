@@ -40,7 +40,7 @@ public class LinksLayer
     MapBundle currentMap=_view.getCurrentMap();
     if (currentMap!=null)
     {
-      List<MapLink> links=currentMap.getMap().getAllLinks();
+      List<MapLink> links=currentMap.getLinks();
       if (links.size()>0)
       {
         for(MapLink link : links)

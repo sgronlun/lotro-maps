@@ -31,8 +31,9 @@ public class DefaultMarkerIconsProvider implements MarkerIconProvider
   public BufferedImage getImage(Marker marker)
   {
     BufferedImage image=null;
-    Category category = marker.getCategory();
-    if (category != null) {
+    int categoryCode = marker.getCategoryCode();
+    if (categoryCode!=0) {
+      Category category=_mapsManager.getCategories().getByCode(categoryCode);
       String icon = category.getIcon();
       image=_markerIcons.get(icon);
       if (image==null) {

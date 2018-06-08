@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import delta.games.lotro.maps.data.Map;
+import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapLink;
 
 /**
@@ -25,7 +25,7 @@ public class NavigationManager
   private MapCanvas _canvas;
   private NavigationListener _navigationListener;
 
-  private Map _currentMap;
+  private MapBundle _currentMap;
   private Stack<String> _navigationHistory;
   private List<Dimension> _hotPoints;
   private MouseListener _listener;
@@ -75,7 +75,7 @@ public class NavigationManager
     _hotPoints.clear();
     if (_currentMap!=null)
     {
-      List<MapLink> links=_currentMap.getAllLinks();
+      List<MapLink> links=_currentMap.getLinks();
       for(MapLink link : links)
       {
         Dimension hotPoint=_canvas.getViewReference().geo2pixel(link.getHotPoint());
@@ -122,7 +122,7 @@ public class NavigationManager
       if ((Math.abs(hotPoint.width-x) < SENSIBILITY) && (Math.abs(hotPoint.height-y) < SENSIBILITY))
       {
         // Found a hot point
-        List<MapLink> links=_currentMap.getAllLinks();
+        List<MapLink> links=_currentMap.getLinks();
         return links.get(i);
       }
     }
@@ -133,7 +133,7 @@ public class NavigationManager
    * Set the current map.
    * @param map Map to set as current.
    */
-  public void setMap(Map map)
+  public void setMap(MapBundle map)
   {
     if (map!=null)
     {

@@ -12,7 +12,6 @@ import delta.common.utils.files.filter.FileTypePredicate;
 import delta.common.utils.text.EncodingNames;
 import delta.games.lotro.maps.data.io.xml.CategoriesXMLParser;
 import delta.games.lotro.maps.data.io.xml.CategoriesXMLWriter;
-import delta.games.lotro.maps.data.io.xml.MapXMLParser;
 import delta.games.lotro.maps.data.io.xml.MapXMLWriter;
 
 /**
@@ -60,14 +59,9 @@ public class MapsManager
     List<File> mapDirs=finder.find(FilesFinder.ABSOLUTE_MODE,mapsDir,filter,false);
     for(File mapDir : mapDirs)
     {
-      File markersFile=new File(mapDir,"markers.xml");
-      File linksFile=new File(mapDir,"links.xml");
-      MapXMLParser mapParser=new MapXMLParser(_categoriesManager);
-      if (markersFile.exists())
-      {
-        MapBundle bundle=mapParser.loadMapDataFromXmlFiles(markersFile,linksFile);
-        addMap(bundle);
-      }
+      String key=mapDir.getName();
+      MapBundle bundle=new MapBundle(key,mapDir);
+      addMap(bundle);
     }
   }
 
@@ -104,15 +98,8 @@ public class MapsManager
     MapBundle bundle=_maps.get(key);
     if (bundle!=null)
     {
-      File mapsDir=new File(_rootDir,"maps");
-      File mapDir=new File(mapsDir,key);
       MapXMLWriter writer=new MapXMLWriter();
-      // Markers
-      File mapFile=new File(mapDir,"markers.xml");
-      writer.writeMarkersFile(mapFile,bundle,EncodingNames.UTF_8);
-      // Links
-      File linksFile=new File(mapDir,"links.xml");
-      writer.writeLinksFile(linksFile,bundle,EncodingNames.UTF_8);
+      writer.writeMapFiles(bundle,EncodingNames.UTF_8);
     }
   }
 

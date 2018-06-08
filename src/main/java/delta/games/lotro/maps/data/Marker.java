@@ -9,7 +9,7 @@ public class Marker
   private int _id;
   private GeoPoint _position;
   private Labels _labels;
-  private Category _category;
+  private int _categoryCode;
   private String _comment;
 
   /**
@@ -75,30 +75,21 @@ public class Marker
   }
 
   /**
-   * Get the category of this marker.
-   * @return a category or <code>null</code> if not set.
-   */
-  public Category getCategory()
-  {
-    return _category;
-  }
-
-  /**
    * Get the category code for this marker.
    * @return a category code (<code>0</code> as default).
    */
   public int getCategoryCode()
   {
-    return _category!=null?_category.getCode():0;
+    return _categoryCode;
   }
 
   /**
    * Set the category for this marker.
-   * @param category the category to set (may be <code>null</code>).
+   * @param categoryCode Cateory code.
    */
-  public void setCategory(Category category)
+  public void setCategoryCode(int categoryCode)
   {
-    _category=category;
+    _categoryCode=categoryCode;
   }
 
   /**
@@ -123,7 +114,6 @@ public class Marker
   public String toString()
   {
     String label=_labels.getLabel();
-    String category=(_category!=null)?_category.getLabel():"?";
-    return _id+":"+label+" @"+_position+", category="+category+", comment="+_comment;
+    return _id+":"+label+" @"+_position+", category="+_categoryCode+", comment="+_comment;
   }
 }

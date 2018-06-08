@@ -26,13 +26,34 @@ import delta.games.lotro.maps.data.MarkersManager;
 public class MapXMLWriter
 {
   /**
+   * Write map files.
+   * @param bundle Map bundle.
+   * @param encoding Encoding.
+   * @return <code>true</code> if it succeeds, <code>false</code> otherwise.
+   */
+  public boolean writeMapFiles(MapBundle bundle, String encoding)
+  {
+    File rootDir=bundle.getRootDir();
+    // Map description
+    File mapFile=new File(rootDir,"map.xml");
+    boolean mapOk=writeMapFile(mapFile,bundle.getMap(),encoding);
+    // Markers
+    File markersFile=new File(rootDir,"markers.xml");
+    boolean markersOk=writeMarkersFile(markersFile,bundle.getData(),encoding);
+    // Links
+    File linksFile=new File(rootDir,"links.xml");
+    boolean linksOk=writeLinksFile(linksFile,bundle.getLinks(),encoding);
+    return mapOk & markersOk & linksOk;
+  }
+
+  /**
    * Write map markers to an XML file.
    * @param outFile Output file.
-   * @param mapBundle Map bundle to use.
+   * @param map Map to use.
    * @param encoding Encoding to use.
    * @return <code>true</code> if it succeeds, <code>false</code> otherwise.
    */
-  public boolean writeMarkersFile(File outFile, final MapBundle mapBundle, String encoding)
+  public boolean writeMapFile(File outFile, final Map map, String encoding)
   {
     XmlFileWriterHelper helper=new XmlFileWriterHelper();
     XmlWriter writer=new XmlWriter()
@@ -40,7 +61,7 @@ public class MapXMLWriter
       @Override
       public void writeXml(TransformerHandler hd) throws Exception
       {
-        writeMarkers(hd,mapBundle);
+        writeMap(hd,map);
       }
     };
     boolean ret=helper.write(outFile,encoding,writer);
@@ -50,13 +71,12 @@ public class MapXMLWriter
   /**
    * Write map markers from a map bundle to the given XML stream.
    * @param hd XML output stream.
-   * @param mapBundle Map bundle to use.
+   * @param map Map to use.
    * @throws Exception If an error occurs.
    */
-  private void writeMarkers(TransformerHandler hd, MapBundle mapBundle) throws Exception
+  private void writeMap(TransformerHandler hd, Map map) throws Exception
   {
     AttributesImpl attrs=new AttributesImpl();
-    Map map=mapBundle.getMap();
     // Key
     String key=map.getKey();
     attrs.addAttribute("","",MapXMLConstants.MAP_KEY_ATTR,XmlWriter.CDATA,key);
@@ -87,20 +107,17 @@ public class MapXMLWriter
     // Labels
     Labels labels=map.getLabels();
     MapXMLWriterUtils.write(hd,labels);
-    // Markers
-    MarkersManager markers=mapBundle.getData();
-    write(hd,markers);
     hd.endElement("","",MapXMLConstants.MAP_TAG);
   }
 
   /**
    * Write map markers to an XML file.
    * @param outFile Output file.
-   * @param mapBundle Map bundle to use.
+   * @param links Links to use.
    * @param encoding Encoding to use.
    * @return <code>true</code> if it succeeds, <code>false</code> otherwise.
    */
-  public boolean writeLinksFile(File outFile, final MapBundle mapBundle, String encoding)
+  public boolean writeLinksFile(File outFile, final List<MapLink> links, String encoding)
   {
     XmlFileWriterHelper helper=new XmlFileWriterHelper();
     XmlWriter writer=new XmlWriter()
@@ -108,18 +125,17 @@ public class MapXMLWriter
       @Override
       public void writeXml(TransformerHandler hd) throws Exception
       {
-        writeLinks(hd,mapBundle.getMap());
+        writeLinks(hd,links);
       }
     };
     boolean ret=helper.write(outFile,encoding,writer);
     return ret;
   }
 
-  private void writeLinks(TransformerHandler hd, Map map) throws Exception
+  private void writeLinks(TransformerHandler hd, List<MapLink> links) throws Exception
   {
     hd.startElement("","",MapXMLConstants.LINKS_TAG,new AttributesImpl());
     // Links
-    List<MapLink> links=map.getAllLinks();
     for(MapLink link : links)
     {
       AttributesImpl linkAttrs=new AttributesImpl();
@@ -154,12 +170,34 @@ public class MapXMLWriter
   }
 
   /**
+   * Write map markers to an XML file.
+   * @param outFile Output file.
+   * @param markers Markers to use.
+   * @param encoding Encoding to use.
+   * @return <code>true</code> if it succeeds, <code>false</code> otherwise.
+   */
+  public boolean writeMarkersFile(File outFile, final MarkersManager markers, String encoding)
+  {
+    XmlFileWriterHelper helper=new XmlFileWriterHelper();
+    XmlWriter writer=new XmlWriter()
+    {
+      @Override
+      public void writeXml(TransformerHandler hd) throws Exception
+      {
+        writeMarkers(hd,markers);
+      }
+    };
+    boolean ret=helper.write(outFile,encoding,writer);
+    return ret;
+  }
+
+  /**
    * Write a markers structure to the given XML stream.
    * @param hd XML output stream.
    * @param markersManager Markers to write.
    * @throws Exception
    */
-  private void write(TransformerHandler hd, MarkersManager markersManager) throws Exception
+  private void writeMarkers(TransformerHandler hd, MarkersManager markersManager) throws Exception
   {
     AttributesImpl attrs=new AttributesImpl();
     hd.startElement("","",MapXMLConstants.MARKERS_TAG,attrs);

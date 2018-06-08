@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 
 import delta.common.ui.swing.GuiFactory;
 import delta.common.utils.ListenersManager;
-import delta.games.lotro.maps.data.Map;
+import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.ui.location.MapLocationController;
 import delta.games.lotro.maps.ui.location.MapLocationPanelController;
@@ -180,8 +180,8 @@ public class MapPanelController implements NavigationListener
   public void setMap(String key)
   {
     _canvas.setMap(key);
-    Map map=_canvas.getMap();
-    _locationController.setMap(map);
+    MapBundle map=_canvas.getCurrentMap();
+    _locationController.setMap(map.getMap());
     _navigation.setMap(map);
     // Set map size
     Dimension size=_canvas.getPreferredSize();
