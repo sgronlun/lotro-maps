@@ -126,6 +126,25 @@ public class MarkersManager
   }
 
   /**
+   * Get a marker using its unique identifier.
+   * @param pointID Identifier to search.
+   * @return A marker or <code>null</code> if not found.
+   */
+  public Marker getPoint(int pointID)
+  {
+    Marker ret=null;
+    for(Marker marker : _markers)
+    {
+      if (marker.getId()==pointID)
+      {
+        ret=marker;
+        break;
+      }
+    }
+    return ret;
+  }
+
+  /**
    * Remove all markers.
    */
   public void clear()
