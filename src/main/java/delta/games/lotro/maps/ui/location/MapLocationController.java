@@ -61,9 +61,9 @@ public class MapLocationController
       {
         if (_listeners.size()>0)
         {
-          GeoReference geoReference=_currentMap.getGeoReference();
+          GeoReference reference=_canvas.getViewReference();
           Dimension pixels=new Dimension(event.getX(),event.getY());
-          GeoPoint location=geoReference.pixel2geo(pixels);
+          GeoPoint location=reference.pixel2geo(pixels);
           for(MapLocationListener listener : _listeners)
           {
             listener.mapLocationUpdated(location);
