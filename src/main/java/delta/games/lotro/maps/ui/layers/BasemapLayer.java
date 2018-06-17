@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.List;
 
 import delta.common.ui.ImageUtils;
 import delta.games.lotro.maps.data.GeoPoint;
@@ -11,13 +12,14 @@ import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.LocaleNames;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
+import delta.games.lotro.maps.data.Marker;
 import delta.games.lotro.maps.ui.MapView;
 
 /**
  * Base map layer.
  * @author DAM
  */
-public class BasemapLayer
+public class BasemapLayer implements Layer
 {
   private MapView _view;
   private BufferedImage _background;
@@ -30,6 +32,18 @@ public class BasemapLayer
   {
     _view=view;
     _background=null;
+  }
+
+  @Override
+  public int getPriority()
+  {
+    return 0;
+  }
+
+  @Override
+  public List<Marker> getVisibleMarkers()
+  {
+    return null;
   }
 
   /**
@@ -62,9 +76,10 @@ public class BasemapLayer
   }
 
   /**
-   * Paint the links.
+   * Paint the basemap.
    * @param g Graphics.
    */
+  @Override
   public void paintLayer(Graphics g)
   {
     if (_background!=null)

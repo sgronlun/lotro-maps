@@ -4,41 +4,39 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
 
 import delta.common.ui.swing.draw.HaloPainter;
-import delta.common.utils.collections.filters.Filter;
+import delta.games.lotro.maps.data.GeoBox;
+import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
-import delta.games.lotro.maps.data.MapBundle;
-import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
-import delta.games.lotro.maps.data.MarkersManager;
-import delta.games.lotro.maps.ui.DefaultMarkerIconsProvider;
 import delta.games.lotro.maps.ui.MapView;
 import delta.games.lotro.maps.ui.MarkerIconProvider;
 
 /**
- * Layer for markers.
+ * Layer for custom markers.
  * @author DAM
  */
-public class MarkersLayer implements Layer
+public class CustomMarkersLayers implements Layer
 {
   private MapView _view;
-  private Filter<Marker> _filter;
+  private List<Marker> _markers;
   private boolean _useLabels;
   private MarkerIconProvider _iconProvider;
 
   /**
    * Constructor.
-   * @param mapsManager Maps manager.
+   * @param iconProvider Icons provider.
    * @param view Map view.
    */
-  public MarkersLayer(MapsManager mapsManager, MapView view)
+  public CustomMarkersLayers(MarkerIconProvider iconProvider, MapView view)
   {
+    _iconProvider=iconProvider;
     _view=view;
-    _filter=null;
     _useLabels=false;
-    _iconProvider=new DefaultMarkerIconsProvider(mapsManager);
+    _markers=new ArrayList<Marker>();
   }
 
   @Override
@@ -50,22 +48,17 @@ public class MarkersLayer implements Layer
   @Override
   public List<Marker> getVisibleMarkers()
   {
-    MapBundle map=_view.getCurrentMap();
-    if (map!=null)
-    {
-      MarkersManager markersManager=map.getData();
-      return markersManager.getMarkers(_filter);
-    }
-    return null;
+    return _markers;
   }
 
   /**
-   * Set a filter.
-   * @param filter Filter to set or <code>null</code> to remove it.
+   * Set the markers to show.
+   * @param markers Markers to show.
    */
-  public void setFilter(Filter<Marker> filter)
+  public void setMarkers(List<Marker> markers)
   {
-    _filter=filter;
+    _markers.clear();
+    _markers.addAll(markers);
   }
 
   /**
@@ -84,19 +77,9 @@ public class MarkersLayer implements Layer
   @Override
   public void paintLayer(Graphics g)
   {
-    MapBundle map=_view.getCurrentMap();
-    if (map!=null)
+    for(Marker marker : _markers)
     {
-      MarkersManager markersManager=map.getData();
-      List<Marker> markers=markersManager.getAllMarkers();
-      for(Marker marker : markers)
-      {
-        boolean ok=((_filter==null)||(_filter.accept(marker)));
-        if (ok)
-        {
-          paintMarker(marker,g);
-        }
-      }
+      paintMarker(marker,g);
     }
   }
 
@@ -128,5 +111,29 @@ public class MarkersLayer implements Layer
         HaloPainter.drawStringWithHalo(g,x+10,y,label,Color.WHITE,Color.BLACK);
       }
     }
+  }
+
+  /**
+   * Find the markers at a given pixel location.
+   * @param x Horizontal position.
+   * @param y Vertical position.
+   * @param sensibility Pixel sensibility.
+   * @return A possibly empty, but not <code>null</code> list of markers.
+   */
+  public List<Marker> findMarkersAtLocation(int x, int y, int sensibility)
+  {
+    GeoReference viewReference=_view.getViewReference();
+    GeoPoint topLeft=viewReference.pixel2geo(new Dimension(x-sensibility,y-sensibility));
+    GeoPoint bottomRight=viewReference.pixel2geo(new Dimension(x+sensibility,y+sensibility));
+    GeoBox box=new GeoBox(topLeft,bottomRight);
+    List<Marker> markers=new ArrayList<Marker>();
+    for(Marker marker : _markers)
+    {
+      if (box.isInBox(marker.getPosition()))
+      {
+        markers.add(marker);
+      }
+    }
+    return markers;
   }
 }

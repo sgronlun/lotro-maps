@@ -5,7 +5,8 @@ import java.io.File;
 import delta.games.lotro.maps.data.MapsManager;
 
 /**
- * @author dm
+ * Simple test to show the maps explorer window.
+ * @author DAM
  */
 public class MainTestMapWindowController
 {

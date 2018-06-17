@@ -10,13 +10,14 @@ import delta.common.ui.swing.icons.IconsManager;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapLink;
+import delta.games.lotro.maps.data.Marker;
 import delta.games.lotro.maps.ui.MapView;
 
 /**
  * Layer for map links.
  * @author DAM
  */
-public class LinksLayer
+public class LinksLayer implements Layer
 {
   private MapView _view;
   private BufferedImage _gotoIcon;
@@ -31,10 +32,23 @@ public class LinksLayer
     _gotoIcon=IconsManager.getImage("/resources/icons/goto.png");
   }
 
+  @Override
+  public int getPriority()
+  {
+    return 10;
+  }
+
+  @Override
+  public List<Marker> getVisibleMarkers()
+  {
+    return null;
+  }
+
   /**
    * Paint the links.
    * @param g Graphics.
    */
+  @Override
   public void paintLayer(Graphics g)
   {
     MapBundle currentMap=_view.getCurrentMap();

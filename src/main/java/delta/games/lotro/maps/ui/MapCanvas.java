@@ -3,11 +3,13 @@ package delta.games.lotro.maps.ui;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JPanel;
 
+import delta.games.lotro.maps.data.GeoBox;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.Map;
@@ -16,8 +18,9 @@ import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
 import delta.games.lotro.maps.data.comparators.MarkerNameComparator;
 import delta.games.lotro.maps.ui.layers.BasemapLayer;
+import delta.games.lotro.maps.ui.layers.Layer;
+import delta.games.lotro.maps.ui.layers.LayerPriorityComparator;
 import delta.games.lotro.maps.ui.layers.LinksLayer;
-import delta.games.lotro.maps.ui.layers.MarkersLayer;
 
 /**
  * Map display.
@@ -35,8 +38,7 @@ public class MapCanvas extends JPanel implements MapView
   private GeoReference _viewReference;
   // Layers
   private BasemapLayer _basemapLayer;
-  private MarkersLayer _markersLayer;
-  private LinksLayer _linksLayer;
+  private List<Layer> _layers;
 
   /**
    * Constructor.
@@ -47,9 +49,46 @@ public class MapCanvas extends JPanel implements MapView
     _mapsManager=mapsManager;
     _currentMap=null;
     setToolTipText("");
+    _layers=new ArrayList<Layer>();
     _basemapLayer=new BasemapLayer(this);
-    _markersLayer=new MarkersLayer(mapsManager,this);
-    _linksLayer=new LinksLayer(this);
+    addLayer(_basemapLayer);
+    LinksLayer linksLayer=new LinksLayer(this);
+    addLayer(linksLayer);
+  }
+
+  /**
+   * Add a layer.
+   * @param layer Layer to add.
+   */
+  public void addLayer(Layer layer)
+  {
+    if (!_layers.contains(layer))
+    {
+      _layers.add(layer);
+      Collections.sort(_layers,new LayerPriorityComparator());
+      boolean isVisible=isVisible();
+      if (isVisible)
+      {
+        repaint();
+      }
+    }
+  }
+
+  /**
+   * Remove a layer.
+   * @param layer Layer to remove.
+   */
+  public void removeLayer(Layer layer)
+  {
+    boolean removed=_layers.remove(layer);
+    if (removed)
+    {
+      boolean isVisible=isVisible();
+      if (isVisible)
+      {
+        repaint();
+      }
+    }
   }
 
   @Override
@@ -77,15 +116,6 @@ public class MapCanvas extends JPanel implements MapView
   public MapsManager getMapsManager()
   {
     return _mapsManager;
-  }
-
-  /**
-   * Get the markers layer.
-   * @return the markers layer.
-   */
-  public MarkersLayer getMarkersLayer()
-  {
-    return _markersLayer;
   }
 
   /**
@@ -174,15 +204,42 @@ public class MapCanvas extends JPanel implements MapView
   protected void paintComponent(Graphics g)
   {
     super.paintComponent(g);
-    _basemapLayer.paintLayer(g);
-    _linksLayer.paintLayer(g);
-    _markersLayer.paintLayer(g);
+    for(Layer layer : _layers)
+    {
+      layer.paintLayer(g);
+    }
+  }
+
+  private List<Marker> findMarkersAtLocation(int x, int y, int sensibility)
+  {
+    List<Marker> ret=new ArrayList<Marker>();
+    GeoReference viewReference=getViewReference();
+    GeoPoint topLeft=viewReference.pixel2geo(new Dimension(x-sensibility,y-sensibility));
+    GeoPoint bottomRight=viewReference.pixel2geo(new Dimension(x+sensibility,y+sensibility));
+    GeoBox box=new GeoBox(topLeft,bottomRight);
+    
+    for(Layer layer : _layers)
+    {
+      List<Marker> visibleMarkers=layer.getVisibleMarkers();
+      if (visibleMarkers!=null)
+      {
+        for(Marker visibleMarker : visibleMarkers)
+        {
+          boolean ok=box.isInBox(visibleMarker.getPosition());
+          if (ok)
+          {
+            ret.add(visibleMarker);
+          }
+        }
+      }
+    }
+    return ret;
   }
 
   @Override
   public String getToolTipText(MouseEvent event)
   {
-    List<Marker> markers=_markersLayer.findMarkersAtLocation(event.getX(),event.getY(),SENSIBILITY);
+    List<Marker> markers=findMarkersAtLocation(event.getX(),event.getY(),SENSIBILITY);
     if (markers.size()>0)
     {
       Collections.sort(markers,new MarkerNameComparator());

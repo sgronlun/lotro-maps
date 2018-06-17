@@ -16,6 +16,7 @@ import delta.common.ui.swing.GuiFactory;
 import delta.common.utils.ListenersManager;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
+import delta.games.lotro.maps.ui.layers.MarkersLayer;
 import delta.games.lotro.maps.ui.location.MapLocationController;
 import delta.games.lotro.maps.ui.location.MapLocationPanelController;
 
@@ -33,6 +34,8 @@ public class MapPanelController implements NavigationListener
 {
   // Data
   private MapCanvas _canvas;
+  // Layers
+  private MarkersLayer _markersLayer;
   // Controllers
   private MapLocationController _locationController;
   private MapLocationPanelController _locationDisplay;
@@ -50,6 +53,9 @@ public class MapPanelController implements NavigationListener
   public MapPanelController(MapsManager mapsManager)
   {
     _canvas=new MapCanvas(mapsManager);
+    // Layers
+    _markersLayer=new MarkersLayer(mapsManager,_canvas);
+    _canvas.addLayer(_markersLayer);
     // Init zoom controller
     initZoomController();
     // Init pan controller
@@ -74,6 +80,15 @@ public class MapPanelController implements NavigationListener
     _navigation=new NavigationManager(_canvas);
     _navigation.setNavigationListener(this);
     _listeners=new ListenersManager<NavigationListener>();
+  }
+
+  /**
+   * Get the managed layer for markers.
+   * @return a markers layer.
+   */
+  public MarkersLayer getMarkersLayer()
+  {
+    return _markersLayer;
   }
 
   private void initZoomController()
@@ -129,7 +144,7 @@ public class MapPanelController implements NavigationListener
     {
       public void actionPerformed(ActionEvent e)
       {
-        _canvas.getMarkersLayer().useLabels(labeled.isSelected());
+        _markersLayer.useLabels(labeled.isSelected());
         _canvas.repaint();
       }
     };
@@ -222,6 +237,7 @@ public class MapPanelController implements NavigationListener
       _locationController.dispose();
       _locationController=null;
     }
+    _markersLayer=null;
     _canvas=null;
     _layers=null;
     _labeled=null;
