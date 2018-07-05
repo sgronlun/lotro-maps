@@ -117,9 +117,32 @@ public class MapPanelController implements NavigationListener
 
   private void initPanController()
   {
-    // Pan with left click
+    // Pan on mouse drag or shift/mouse click
     MouseAdapter adapter=new MouseAdapter()
     {
+      private int _xCenter;
+      private int _yCenter;
+      private int _lastX;
+      private int _lastY;
+
+      public void mouseDragged(MouseEvent e)
+      {
+        int deltaX=e.getX()-_lastX;
+        int deltaY=e.getY()-_lastY;
+        _canvas.pan(_xCenter-deltaX,_yCenter-deltaY);
+        _lastX=e.getX();
+        _lastY=e.getY();
+      }
+
+      @Override
+      public void mousePressed(MouseEvent e)
+      {
+        _xCenter=_canvas.getWidth()/2;
+        _yCenter=_canvas.getHeight()/2;
+        _lastX=e.getX();
+        _lastY=e.getY();
+      }
+
       @Override
       public void mouseClicked(MouseEvent event)
       {
@@ -128,13 +151,14 @@ public class MapPanelController implements NavigationListener
         int x=event.getX();
         int y=event.getY();
 
-        if ((button==MouseEvent.BUTTON1) && ((modifiers&MouseEvent.SHIFT_MASK)==0))
+        if ((button==MouseEvent.BUTTON1) && ((modifiers&MouseEvent.SHIFT_MASK)!=0))
         {
           _canvas.pan(x,y);
         }
       }
     };
     _canvas.addMouseListener(adapter);
+    _canvas.addMouseMotionListener(adapter);
   }
 
   private JPanel buildLabeledCheckboxPanel()
@@ -204,7 +228,7 @@ public class MapPanelController implements NavigationListener
     _canvas.setMap(key);
     MapBundle map=_canvas.getCurrentMap();
     _locationController.setMap(map.getMap());
-    _navigation.setMap(map);
+      _navigation.setMap(map);
     // Set map size
     Dimension size=_canvas.getPreferredSize();
     _canvas.setSize(size);
