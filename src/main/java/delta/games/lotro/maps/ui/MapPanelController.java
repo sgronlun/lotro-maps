@@ -2,6 +2,7 @@ package delta.games.lotro.maps.ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -13,6 +14,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
 import delta.common.ui.swing.GuiFactory;
+import delta.common.ui.swing.labels.LabelWithHalo;
 import delta.common.utils.ListenersManager;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
@@ -44,7 +46,7 @@ public class MapPanelController implements NavigationListener
   private ListenersManager<NavigationListener> _listeners;
   // UI
   private JLayeredPane _layers;
-  private JCheckBox _labeled;
+  private JPanel _labeled;
 
   /**
    * Constructor.
@@ -74,7 +76,7 @@ public class MapPanelController implements NavigationListener
     JPanel locationPanel=_locationDisplay.getPanel();
     _layers.add(locationPanel,Integer.valueOf(1),0);
     // - labeled checkbox
-    _labeled=buildLabeledCheckbox();
+    _labeled=buildLabeledCheckboxPanel();
     _layers.add(_labeled,Integer.valueOf(1),0);
     // Navigation support
     _navigation=new NavigationManager(_canvas);
@@ -135,11 +137,16 @@ public class MapPanelController implements NavigationListener
     _canvas.addMouseListener(adapter);
   }
 
-  private JCheckBox buildLabeledCheckbox()
+  private JPanel buildLabeledCheckboxPanel()
   {
-    final JCheckBox labeled=GuiFactory.buildCheckbox("Labeled");
+    JPanel panel=GuiFactory.buildPanel(new FlowLayout(FlowLayout.LEADING));
+    final JCheckBox labeled=GuiFactory.buildCheckbox("");
+    panel.add(labeled);
     labeled.setFocusPainted(false);
-    labeled.setForeground(Color.WHITE);
+    LabelWithHalo haloLabel=new LabelWithHalo();
+    haloLabel.setForeground(Color.WHITE);
+    haloLabel.setText("Labeled");
+    panel.add(haloLabel);
     ActionListener al=new ActionListener()
     {
       public void actionPerformed(ActionEvent e)
@@ -149,7 +156,7 @@ public class MapPanelController implements NavigationListener
       }
     };
     labeled.addActionListener(al);
-    return labeled;
+    return panel;
   }
 
   /**
