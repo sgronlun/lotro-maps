@@ -10,6 +10,7 @@ import java.util.Stack;
 
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapLink;
+import delta.games.lotro.maps.ui.layers.LinksLayer;
 
 /**
  * Manages navigation on a map canvas.
@@ -42,6 +43,8 @@ public class NavigationManager
     _hotPoints=new ArrayList<Dimension>();
     _listener=new NavigationMouseListener();
     _canvas.addMouseListener(_listener);
+    LinksLayer linksLayer=new LinksLayer(_canvas);
+    _canvas.addLayer(linksLayer);
   }
 
   /**

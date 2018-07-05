@@ -20,7 +20,6 @@ import delta.games.lotro.maps.data.comparators.MarkerNameComparator;
 import delta.games.lotro.maps.ui.layers.BasemapLayer;
 import delta.games.lotro.maps.ui.layers.Layer;
 import delta.games.lotro.maps.ui.layers.LayerPriorityComparator;
-import delta.games.lotro.maps.ui.layers.LinksLayer;
 
 /**
  * Map display.
@@ -52,8 +51,6 @@ public class MapCanvas extends JPanel implements MapView
     _layers=new ArrayList<Layer>();
     _basemapLayer=new BasemapLayer(this);
     addLayer(_basemapLayer);
-    LinksLayer linksLayer=new LinksLayer(this);
-    addLayer(linksLayer);
   }
 
   /**
