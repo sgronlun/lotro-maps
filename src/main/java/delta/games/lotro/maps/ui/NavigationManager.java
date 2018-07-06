@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import delta.common.utils.ListenersManager;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapLink;
 import delta.games.lotro.maps.ui.layers.LinksLayer;
@@ -24,7 +25,8 @@ public class NavigationManager
   private static final int SENSIBILITY=24;
 
   private MapCanvas _canvas;
-  private NavigationListener _navigationListener;
+  // Listeners
+  private ListenersManager<NavigationListener> _navigationListeners;
 
   private MapBundle _currentMap;
   private Stack<String> _navigationHistory;
@@ -38,7 +40,7 @@ public class NavigationManager
   public NavigationManager(MapCanvas canvas)
   {
     _canvas=canvas;
-    _navigationListener=null;
+    _navigationListeners=new ListenersManager<NavigationListener>();
     _navigationHistory=new Stack<String>();
     _hotPoints=new ArrayList<Dimension>();
     _listener=new NavigationMouseListener();
@@ -48,12 +50,12 @@ public class NavigationManager
   }
 
   /**
-   * Set the navigation listener.
-   * @param navigationListener Listener to call on navigation events.
+   * Get the navigation listeners.
+   * @return the navigation listeners.
    */
-  public void setNavigationListener(NavigationListener navigationListener)
+  public ListenersManager<NavigationListener> getNavigationListeners()
   {
-    _navigationListener=navigationListener;
+    return _navigationListeners;
   }
 
   /**
@@ -68,7 +70,7 @@ public class NavigationManager
       _canvas.removeMouseListener(_listener);
       _listener=null;
     }
-    _navigationListener=null;
+    _navigationListeners=null;
     _currentMap=null;
     _canvas=null;
   }
@@ -109,9 +111,9 @@ public class NavigationManager
 
   private void requestMap(String key)
   {
-    if (_navigationListener!=null)
+    for(NavigationListener navigationListener : _navigationListeners)
     {
-      _navigationListener.mapChangeRequest(key);
+      navigationListener.mapChangeRequest(key);
     }
   }
 

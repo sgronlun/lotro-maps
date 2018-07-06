@@ -8,7 +8,6 @@ import javax.swing.JComboBox;
 import delta.common.ui.swing.combobox.ComboBoxController;
 import delta.common.ui.swing.combobox.ComboBoxItem;
 import delta.common.ui.swing.combobox.ItemSelectionListener;
-import delta.common.utils.ListenersManager;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapBundleNameComparator;
 import delta.games.lotro.maps.data.MapsManager;
@@ -22,35 +21,30 @@ public class MapChooserController
   // Data
   private MapsManager _mapsManager;
   // Controllers
-  private MapPanelController _mapPanel;
+  private MapWindowController _parent;
   // UI
   private ComboBoxController<MapBundle> _mapsCombo;
 
   /**
    * Constructor.
+   * @param parent Parent window.
    * @param mapsManager Maps manager.
-   * @param mapPanel Map panel controller.
    */
-  public MapChooserController(MapsManager mapsManager, MapPanelController mapPanel)
+  public MapChooserController(MapWindowController parent, MapsManager mapsManager)
   {
+    _parent=parent;
     _mapsManager=mapsManager;
-    _mapPanel=mapPanel;
     _mapsCombo=buildCombo();
-    initMapPanel();
   }
 
-  private void initMapPanel()
+  /**
+   * Select the given map.
+   * @param key Key of the map to set.
+   */
+  public void selectMap(String key)
   {
-    ListenersManager<NavigationListener> listeners=_mapPanel.getListenersManager();
-    NavigationListener listener=new NavigationListener()
-    {
-      public void mapChangeRequest(String key)
-      {
-        MapBundle bundle=_mapsManager.getMapByKey(key);
-        _mapsCombo.selectItem(bundle);
-      }
-    };
-    listeners.addListener(listener);
+    MapBundle bundle=_mapsManager.getMapByKey(key);
+    _mapsCombo.selectItem(bundle);
   }
 
   private ComboBoxController<MapBundle> buildCombo()
@@ -66,7 +60,7 @@ public class MapChooserController
     {
       public void itemSelected(MapBundle item)
       {
-        _mapPanel.mapChangeRequest(item.getKey());
+        _parent.mapChangeRequest(item.getKey());
       }
     };
     combo.addListener(listener);
@@ -87,10 +81,15 @@ public class MapChooserController
    */
   public void dispose()
   {
+    // Data
+    _mapsManager=null;
+    // Controllers
+    _parent=null;
+    // UI
     if (_mapsCombo!=null)
     {
       _mapsCombo.dispose();
+      _mapsCombo=null;
     }
-    _mapsManager=null;
   }
 }

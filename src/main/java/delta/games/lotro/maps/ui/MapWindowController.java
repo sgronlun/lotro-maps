@@ -25,16 +25,18 @@ import delta.games.lotro.maps.ui.filter.MapMarkersFilter;
  * Controller for a map window.
  * @author DAM
  */
-public class MapWindowController extends DefaultWindowController
+public class MapWindowController extends DefaultWindowController implements NavigationListener
 {
   /**
    * Identifier for this window.
    */
   public static final String IDENTIFIER="MAP";
 
+  // Controllers
   private MapPanelController _mapPanel;
   private MapFilterPanelController _filter;
   private MapChooserController _mapChooser;
+  private NavigationManager _navigation;
 
   /**
    * Constructor.
@@ -43,10 +45,28 @@ public class MapWindowController extends DefaultWindowController
   public MapWindowController(MapsManager mapsManager)
   {
     _mapPanel=new MapPanelController(mapsManager);
+    // Navigation support
+    _navigation=new NavigationManager(_mapPanel.getCanvas());
+    _navigation.getNavigationListeners().addListener(this);
+    // Markers filter
     MapMarkersFilter filter=new MapMarkersFilter();
     _filter=new MapFilterPanelController(mapsManager,filter,_mapPanel);
-    _mapChooser=new MapChooserController(mapsManager,_mapPanel);
     _mapPanel.getMarkersLayer().setFilter(filter);
+    // Map chooser
+    _mapChooser=new MapChooserController(this,mapsManager);
+  }
+
+  @Override
+  public void mapChangeRequest(String key)
+  {
+    MapsManager mapsManager=_mapPanel.getCanvas().getMapsManager();
+    MapBundle map=mapsManager.getMapByKey(key);
+    if (map!=null)
+    {
+      _navigation.setMap(map);
+      _mapPanel.setMap(key);
+      _mapChooser.selectMap(key);
+    }
   }
 
   @Override
@@ -59,7 +79,7 @@ public class MapWindowController extends DefaultWindowController
   protected JFrame build()
   {
     JFrame frame=super.build();
-    _mapPanel.mapChangeRequest("angmar");
+    mapChangeRequest("angmar");
     frame.setTitle("Middle Earth maps");
     frame.setLocation(100,100);
     frame.pack();
@@ -126,6 +146,11 @@ public class MapWindowController extends DefaultWindowController
     {
       _mapPanel.dispose();
       _mapPanel=null;
+    }
+    if (_navigation!=null)
+    {
+      _navigation.dispose();
+      _navigation=null;
     }
     super.dispose();
   }

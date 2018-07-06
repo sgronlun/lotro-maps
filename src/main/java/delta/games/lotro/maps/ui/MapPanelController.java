@@ -15,7 +15,6 @@ import javax.swing.JPanel;
 
 import delta.common.ui.swing.GuiFactory;
 import delta.common.ui.swing.labels.LabelWithHalo;
-import delta.common.utils.ListenersManager;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.ui.layers.MarkersLayer;
@@ -27,12 +26,11 @@ import delta.games.lotro.maps.ui.location.MapLocationPanelController;
  * <p>This includes:
  * <ul>
  * <li>a map canvas,
- * <li>a location display,
- * <li>navigation between maps.
+ * <li>a location display.
  * </ul>
  * @author DAM
  */
-public class MapPanelController implements NavigationListener
+public class MapPanelController
 {
   // Data
   private MapCanvas _canvas;
@@ -41,9 +39,6 @@ public class MapPanelController implements NavigationListener
   // Controllers
   private MapLocationController _locationController;
   private MapLocationPanelController _locationDisplay;
-  private NavigationManager _navigation;
-  // Listeners
-  private ListenersManager<NavigationListener> _listeners;
   // UI
   private JLayeredPane _layers;
   private JPanel _labeled;
@@ -78,10 +73,6 @@ public class MapPanelController implements NavigationListener
     // - labeled checkbox
     _labeled=buildLabeledCheckboxPanel();
     _layers.add(_labeled,Integer.valueOf(1),0);
-    // Navigation support
-    _navigation=new NavigationManager(_canvas);
-    _navigation.setNavigationListener(this);
-    _listeners=new ListenersManager<NavigationListener>();
   }
 
   /**
@@ -202,24 +193,6 @@ public class MapPanelController implements NavigationListener
   }
 
   /**
-   * Get the 'navigation' listeners manager.
-   * @return A listeners manager.
-   */
-  public ListenersManager<NavigationListener> getListenersManager()
-  {
-    return _listeners;
-  }
-
-  public void mapChangeRequest(String key)
-  {
-    setMap(key);
-    for(NavigationListener listener : _listeners)
-    {
-      listener.mapChangeRequest(key);
-    }
-  }
-
-  /**
    * Set the map to display.
    * @param key
    */
@@ -228,7 +201,6 @@ public class MapPanelController implements NavigationListener
     _canvas.setMap(key);
     MapBundle map=_canvas.getCurrentMap();
     _locationController.setMap(map.getMap());
-      _navigation.setMap(map);
     // Set map size
     Dimension size=_canvas.getPreferredSize();
     _canvas.setSize(size);
@@ -248,12 +220,6 @@ public class MapPanelController implements NavigationListener
    */
   public void dispose()
   {
-    _listeners=null;
-    if (_navigation!=null)
-    {
-      _navigation.dispose();
-      _navigation=null;
-    }
     if (_locationDisplay!=null)
     {
       if (_locationController!=null)
