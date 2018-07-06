@@ -93,7 +93,7 @@ public class MapPanelController
       public void mouseWheelMoved(MouseWheelEvent e)
       {
         int rotation=e.getWheelRotation();
-        if (rotation>0)
+        if (rotation<0)
         {
           _canvas.zoom((float)Math.sqrt(2));
         }
