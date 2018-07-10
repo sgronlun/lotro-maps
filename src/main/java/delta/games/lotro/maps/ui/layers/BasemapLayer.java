@@ -7,9 +7,11 @@ import java.io.File;
 import java.util.List;
 
 import delta.common.ui.ImageUtils;
+import delta.games.lotro.maps.data.GeoBox;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.LocaleNames;
+import delta.games.lotro.maps.data.Map;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
@@ -73,6 +75,23 @@ public class BasemapLayer implements Layer
       return new Dimension(width,height);
     }
     return null;
+  }
+
+  /**
+   * Get the geographic bounds of this basemap.
+   * @return a geographic box.
+   */
+  public GeoBox getMapBounds()
+  {
+    MapBundle currentMap=_view.getCurrentMap();
+    Map map=currentMap.getMap();
+    GeoReference geoReference=map.getGeoReference();
+    GeoPoint start=geoReference.getStart();
+    int width=_background.getWidth();
+    int height=_background.getHeight();
+    GeoPoint end=geoReference.pixel2geo(new Dimension(width,height));
+    GeoBox box=new GeoBox(start,end);
+    return box;
   }
 
   /**

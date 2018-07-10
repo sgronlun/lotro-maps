@@ -25,6 +25,24 @@ public class GeoBox
   }
 
   /**
+   * Get the minimum point of this box (most south-western point).
+   * @return a point.
+   */
+  public GeoPoint getMin()
+  {
+    return _min;
+  }
+
+  /**
+   * Get the maximum point of this box (most north-eastern point).
+   * @return a point.
+   */
+  public GeoPoint getMax()
+  {
+    return _max;
+  }
+
+  /**
    * Indicates if the given point is in this box or not.
    * @param point A point.
    * @return <code>true</code> if it is, <code>false</code> otherwise.

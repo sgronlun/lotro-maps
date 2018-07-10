@@ -35,7 +35,7 @@ public class GeoReference
   }
 
   /**
-   * Get the start point of the map.
+   * Get the start point of the map (most north/western point).
    * @return a geographic point.
    */
   public GeoPoint getStart()
