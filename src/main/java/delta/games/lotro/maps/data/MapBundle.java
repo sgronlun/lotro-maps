@@ -51,12 +51,12 @@ public class MapBundle
   }
 
   /**
-   * Get the name of this map in the default locale.
+   * Get the name of this map.
    * @return a map name.
    */
-  public String getLabel()
+  public String getName()
   {
-    return getMap().getLabel();
+    return getMap().getName();
   }
 
   /**

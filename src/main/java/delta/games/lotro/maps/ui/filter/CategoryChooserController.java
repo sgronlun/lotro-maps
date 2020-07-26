@@ -279,7 +279,7 @@ public class CategoryChooserController
       File iconFile=_mapsManager.getIconFile(iconName);
       BufferedImage image=ImageUtils.loadImage(iconFile);
       JLabel icon=GuiFactory.buildIconLabel(new ImageIcon(image));
-      JLabel label=GuiFactory.buildLabel(category.getLabel());
+      JLabel label=GuiFactory.buildLabel(category.getName());
       JCheckBox checkbox=GuiFactory.buildCheckbox("");
       checkbox.setActionCommand(String.valueOf(category.getCode()));
       checkbox.addActionListener(al);

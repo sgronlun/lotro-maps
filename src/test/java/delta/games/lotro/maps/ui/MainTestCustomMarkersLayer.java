@@ -62,7 +62,7 @@ public class MainTestCustomMarkersLayer
     custom.setMarkers(markers);
     canvas.addLayer(custom);
     canvas.removeLayer(panel.getMarkersLayer());
-    String mapTitle=panel.getCanvas().getMap().getLabel();
+    String mapTitle=panel.getCanvas().getMap().getName();
 
     JFrame f=new JFrame();
     f.setTitle(mapTitle);

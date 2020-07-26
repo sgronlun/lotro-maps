@@ -8,16 +8,15 @@ public class Marker
 {
   private int _id;
   private GeoPoint _position;
-  private Labels _labels;
+  private String _label;
   private int _categoryCode;
-  private String _comment;
 
   /**
    * Constructor.
    */
   public Marker()
   {
-    _labels=new Labels();
+    _label="";
   }
 
   /**
@@ -57,21 +56,21 @@ public class Marker
   }
 
   /**
-   * Get the labels for this marker.
-   * @return a labels manager.
-   */
-  public Labels getLabels()
-  {
-    return _labels;
-  }
-
-  /**
-   * Get the default label for this marker.
+   * Get the label for this marker.
    * @return a label.
    */
   public String getLabel()
   {
-    return _labels.getLabel();
+    return _label;
+  }
+
+  /**
+   * Set the label for this marker.
+   * @param label Label to set.
+   */
+  public void setLabel(String label)
+  {
+    _label=label;
   }
 
   /**
@@ -92,28 +91,9 @@ public class Marker
     _categoryCode=categoryCode;
   }
 
-  /**
-   * Get the comment for this marker.
-   * @return a comment or <code>null</code> if not set.
-   */
-  public String getComment()
-  {
-    return _comment;
-  }
-
-  /**
-   * Set the comment for this marker.
-   * @param comment the comment to set (may be <code>null</code>).
-   */
-  public void setComment(String comment)
-  {
-    _comment=comment;
-  }
-
   @Override
   public String toString()
   {
-    String label=_labels.getLabel();
-    return _id+":"+label+" @"+_position+", category="+_categoryCode+", comment="+_comment;
+    return _id+":"+_label+" @"+_position+", category="+_categoryCode;
   }
 }

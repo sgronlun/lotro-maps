@@ -10,7 +10,6 @@ import delta.common.ui.ImageUtils;
 import delta.games.lotro.maps.data.GeoBox;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
-import delta.games.lotro.maps.data.LocaleNames;
 import delta.games.lotro.maps.data.Map;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
@@ -57,7 +56,7 @@ public class BasemapLayer implements Layer
     // Load map image
     MapsManager mapsManager=_view.getMapsManager();
     File mapDir=mapsManager.getMapDir(key);
-    String mapFilename="map_"+LocaleNames.DEFAULT_LOCALE+".jpg";
+    String mapFilename="map_en.png";
     File mapImageFile=new File(mapDir,mapFilename);
     _background=ImageUtils.loadImage(mapImageFile);
   }

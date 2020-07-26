@@ -11,7 +11,6 @@ import delta.common.utils.io.xml.XmlFileWriterHelper;
 import delta.common.utils.io.xml.XmlWriter;
 import delta.games.lotro.maps.data.CategoriesManager;
 import delta.games.lotro.maps.data.Category;
-import delta.games.lotro.maps.data.Labels;
 
 /**
  * Writes a categories registry to an XML file.
@@ -59,13 +58,13 @@ public class CategoriesXMLWriter
       // Code
       int code=category.getCode();
       categoryAttrs.addAttribute("","",CategoryXMLConstants.CATEGORY_CODE_ATTR,XmlWriter.CDATA,String.valueOf(code));
+      // Name
+      String name=category.getName();
+      categoryAttrs.addAttribute("","",CategoryXMLConstants.CATEGORY_NAME_ATTR,XmlWriter.CDATA,name);
       // Icon
       String icon=category.getIcon();
       categoryAttrs.addAttribute("","",CategoryXMLConstants.CATEGORY_ICON_ATTR,XmlWriter.CDATA,icon);
       hd.startElement("","",CategoryXMLConstants.CATEGORY_TAG,categoryAttrs);
-      // Labels
-      Labels labels=category.getLabels();
-      MapXMLWriterUtils.write(hd,labels);
       hd.endElement("","",CategoryXMLConstants.CATEGORY_TAG);
     }
     hd.endElement("","",CategoryXMLConstants.CATEGORIES_TAG);

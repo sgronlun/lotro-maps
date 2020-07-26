@@ -10,7 +10,7 @@ public class Map
 {
   private String _key;
   private GeoReference _geoRef;
-  private Labels _labels;
+  private String _name;
   private Date _lastUpdate;
 
   /**
@@ -20,7 +20,7 @@ public class Map
   public Map(String key)
   {
     _key=key;
-    _labels=new Labels();
+    _name="";
   }
 
   /**
@@ -33,12 +33,21 @@ public class Map
   }
 
   /**
-   * Get the name of this map in the default locale.
+   * Get the name of this map.
    * @return a map name.
    */
-  public String getLabel()
+  public String getName()
   {
-    return _labels.getLabel();
+    return _name;
+  }
+
+  /**
+   * Set the name for this map.
+   * @param name Name to set.
+   */
+  public void setName(String name)
+  {
+    _name=name;
   }
 
   /**
@@ -57,15 +66,6 @@ public class Map
   public void setGeoReference(GeoReference geoReference)
   {
     _geoRef=geoReference;
-  }
-
-  /**
-   * Get the labels for this map.
-   * @return a labels manager.
-   */
-  public Labels getLabels()
-  {
-    return _labels;
   }
 
   /**
@@ -89,6 +89,6 @@ public class Map
   @Override
   public String toString()
   {
-    return "Map: key="+_key+", labels="+_labels+", reference=" + _geoRef + ", last updated="+_lastUpdate;
+    return "Map: key="+_key+", name="+_name+", reference=" + _geoRef + ", last updated="+_lastUpdate;
   }
 }

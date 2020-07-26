@@ -12,8 +12,8 @@ public class CategoryNameComparator implements Comparator<Category>
 {
   public int compare(Category o1, Category o2)
   {
-    String label1=o1.getLabel();
-    String label2=o2.getLabel();
+    String label1=o1.getName();
+    String label2=o2.getName();
     return label1.compareTo(label2);
   }
 }

@@ -19,6 +19,10 @@ public class CategoryXMLConstants
    */
   public static final String CATEGORY_CODE_ATTR="code";
   /**
+   * Tag 'category', attribute 'name'.
+   */
+  public static final String CATEGORY_NAME_ATTR="name";
+  /**
    * Tag 'category', attribute 'icon'.
    */
   public static final String CATEGORY_ICON_ATTR="icon";

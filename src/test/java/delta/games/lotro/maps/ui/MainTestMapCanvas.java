@@ -62,7 +62,7 @@ public class MainTestMapCanvas
         markersLayer.useLabels(true);
 
         JFrame f=new JFrame();
-        String title=bundle.getLabel();
+        String title=bundle.getName();
         f.setTitle(title);
         f.getContentPane().add(panel.getLayers());
         f.pack();

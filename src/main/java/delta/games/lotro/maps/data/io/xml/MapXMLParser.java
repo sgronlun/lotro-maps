@@ -10,7 +10,6 @@ import org.w3c.dom.NamedNodeMap;
 import delta.common.utils.xml.DOMParsingTools;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
-import delta.games.lotro.maps.data.Labels;
 import delta.games.lotro.maps.data.Map;
 import delta.games.lotro.maps.data.MapLink;
 import delta.games.lotro.maps.data.Marker;
@@ -33,6 +32,10 @@ public class MapXMLParser
     String key=DOMParsingTools.getStringAttribute(attrs,MapXMLConstants.MAP_KEY_ATTR,null);
     Map map=new Map(key);
 
+    // Name
+    String name=DOMParsingTools.getStringAttribute(attrs,MapXMLConstants.LABEL_ATTR,"");
+    map.setName(name);
+    // Last update time
     long lastUpdateTime=DOMParsingTools.getLongAttribute(attrs,MapXMLConstants.MAP_LAST_UPDATE_ATTR,0);
     if (lastUpdateTime!=0)
     {
@@ -44,12 +47,6 @@ public class MapXMLParser
     {
       GeoReference geoReference=parseGeoReference(geoTag);
       map.setGeoReference(geoReference);
-    }
-    // Labels
-    Element labelsTag=DOMParsingTools.getChildTagByName(root,MapXMLConstants.LABELS_TAG);
-    if (labelsTag!=null)
-    {
-      parseLabels(labelsTag,map.getLabels());
     }
     return map;
   }
@@ -154,24 +151,18 @@ public class MapXMLParser
     // Identifier
     int id=DOMParsingTools.getIntAttribute(attrs,MapXMLConstants.ID_ATTR,0);
     marker.setId(id);
+    // Label
+    String label=DOMParsingTools.getStringAttribute(attrs,MapXMLConstants.LABEL_ATTR,"");
+    marker.setLabel(label);
     // Category code
     int categoryCode=DOMParsingTools.getIntAttribute(attrs,MapXMLConstants.CATEGORY_ATTR,0);
     marker.setCategoryCode(categoryCode);
-    // Comment
-    String comment=DOMParsingTools.getStringAttribute(attrs,MapXMLConstants.COMMENT_ATTR,null);
-    marker.setComment(comment);
     // Position
     Element positionTag=DOMParsingTools.getChildTagByName(markerTag,MapXMLConstants.POINT_TAG);
     if (positionTag!=null)
     {
       GeoPoint position=parsePoint(positionTag);
       marker.setPosition(position);
-    }
-    // Labels
-    Element labelsTag=DOMParsingTools.getChildTagByName(markerTag,MapXMLConstants.LABELS_TAG);
-    if (labelsTag!=null)
-    {
-      parseLabels(labelsTag,marker.getLabels());
     }
     return marker;
   }
@@ -189,22 +180,5 @@ public class MapXMLParser
     // Longitude
     float longitude=DOMParsingTools.getFloatAttribute(attrs,MapXMLConstants.LONGITUDE_ATTR,0);
     return new GeoPoint(longitude,latitude);
-  }
-
-  /**
-   * Parse labels.
-   * @param labelsTag Labels tag.
-   * @param labels Labels storage.
-   */
-  public static void parseLabels(Element labelsTag, Labels labels)
-  {
-    List<Element> labelTags=DOMParsingTools.getChildTagsByName(labelsTag,MapXMLConstants.LABEL_TAG,false);
-    for(Element labelTag : labelTags)
-    {
-      NamedNodeMap attrs=labelTag.getAttributes();
-      String locale=DOMParsingTools.getStringAttribute(attrs,MapXMLConstants.LABEL_LOCALE_ATTR,null);
-      String value=DOMParsingTools.getStringAttribute(attrs,MapXMLConstants.LABEL_VALUE_ATTR,null);
-      labels.putLabel(locale,value);
-    }
   }
 }

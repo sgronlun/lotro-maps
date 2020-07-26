@@ -10,8 +10,8 @@ public class MapBundleNameComparator implements Comparator<MapBundle>
 {
   public int compare(MapBundle o1, MapBundle o2)
   {
-    String label1=o1.getLabel();
-    String label2=o2.getLabel();
-    return label1.compareTo(label2);
+    String name1=o1.getName();
+    String name2=o2.getName();
+    return name1.compareTo(name2);
   }
 }

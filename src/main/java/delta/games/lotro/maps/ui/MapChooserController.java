@@ -54,7 +54,7 @@ public class MapChooserController
     Collections.sort(maps,new MapBundleNameComparator());
     for(MapBundle map : maps)
     {
-      combo.addItem(map,map.getLabel());
+      combo.addItem(map,map.getName());
     }
     ItemSelectionListener<MapBundle> listener=new ItemSelectionListener<MapBundle>()
     {

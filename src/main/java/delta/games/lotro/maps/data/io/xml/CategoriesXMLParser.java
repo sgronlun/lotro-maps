@@ -51,23 +51,21 @@ public class CategoriesXMLParser
    */
   public Category parseCategory(Element categoryTag)
   {
-    Category ret=null;
     NamedNodeMap attrs=categoryTag.getAttributes();
 
     // Code
     int code=DOMParsingTools.getIntAttribute(attrs,CategoryXMLConstants.CATEGORY_CODE_ATTR,0);
-    if (code!=0)
+    if (code==0)
     {
-      ret=new Category(code);
-      // Icon
-      String icon=DOMParsingTools.getStringAttribute(attrs,CategoryXMLConstants.CATEGORY_ICON_ATTR,null);
-      ret.setIcon(icon);
+      return null;
     }
-    Element labelsTag=DOMParsingTools.getChildTagByName(categoryTag,MapXMLConstants.LABELS_TAG);
-    if (labelsTag!=null)
-    {
-      MapXMLParser.parseLabels(labelsTag,ret.getLabels());
-    }
+    Category ret=new Category(code);
+    // Name 
+    String name=DOMParsingTools.getStringAttribute(attrs,CategoryXMLConstants.CATEGORY_NAME_ATTR,"");
+    ret.setName(name);
+    // Icon
+    String icon=DOMParsingTools.getStringAttribute(attrs,CategoryXMLConstants.CATEGORY_ICON_ATTR,null);
+    ret.setIcon(icon);
     return ret;
   }
 }

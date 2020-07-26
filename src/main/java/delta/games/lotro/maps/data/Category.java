@@ -8,7 +8,7 @@ public class Category
 {
   private int _code;
   private String _icon;
-  private Labels _labels;
+  private String _name;
 
   /**
    * Constructor.
@@ -17,25 +17,25 @@ public class Category
   public Category(int code)
   {
     _code=code;
-    _labels=new Labels();
+    _name="";
   }
 
   /**
-   * Get the label for this category.
-   * @return a displayable label.
+   * Get the name for this category.
+   * @return a displayable name.
    */
-  public String getLabel()
+  public String getName()
   {
-    return _labels.getLabel();
+    return _name;
   }
 
   /**
-   * Get the labels manager for this category.
-   * @return a labels manager.
+   * Set the name for this category.
+   * @param name Name to set.
    */
-  public Labels getLabels()
+  public void setName(String name)
   {
-    return _labels;
+    _name=name;
   }
 
   /**
@@ -68,6 +68,6 @@ public class Category
   @Override
   public String toString()
   {
-    return _code+": icon="+_icon+", labels="+_labels;
+    return _code+": icon="+_icon+", name="+_name;
   }
 }

@@ -12,7 +12,6 @@ import delta.common.utils.io.xml.XmlFileWriterHelper;
 import delta.common.utils.io.xml.XmlWriter;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
-import delta.games.lotro.maps.data.Labels;
 import delta.games.lotro.maps.data.Map;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapLink;
@@ -80,6 +79,9 @@ public class MapXMLWriter
     // Key
     String key=map.getKey();
     attrs.addAttribute("","",MapXMLConstants.MAP_KEY_ATTR,XmlWriter.CDATA,key);
+    // Name
+    String name=map.getName();
+    attrs.addAttribute("","",MapXMLConstants.LABEL_ATTR,XmlWriter.CDATA,name);
     // Last update
     Date lastUpdate=map.getLastUpdate();
     if (lastUpdate!=null)
@@ -104,9 +106,6 @@ public class MapXMLWriter
       }
       hd.endElement("","",MapXMLConstants.GEO_TAG);
     }
-    // Labels
-    Labels labels=map.getLabels();
-    MapXMLWriterUtils.write(hd,labels);
     hd.endElement("","",MapXMLConstants.MAP_TAG);
   }
 
@@ -208,15 +207,12 @@ public class MapXMLWriter
       // Identifier
       int id=marker.getId();
       markerAttrs.addAttribute("","",MapXMLConstants.ID_ATTR,XmlWriter.CDATA,String.valueOf(id));
+      // Label
+      String label=marker.getLabel();
+      markerAttrs.addAttribute("","",MapXMLConstants.LABEL_ATTR,XmlWriter.CDATA,label);
       // Category
       int category=marker.getCategoryCode();
       markerAttrs.addAttribute("","",MapXMLConstants.CATEGORY_ATTR,XmlWriter.CDATA,String.valueOf(category));
-      // Comments
-      String comment=marker.getComment();
-      if (comment!=null)
-      {
-        markerAttrs.addAttribute("","",MapXMLConstants.COMMENT_ATTR,XmlWriter.CDATA,comment);
-      }
       hd.startElement("","",MapXMLConstants.MARKER_TAG,markerAttrs);
       // Position
       GeoPoint position=marker.getPosition();
@@ -224,9 +220,6 @@ public class MapXMLWriter
       {
         writeGeoPoint(hd,position);
       }
-      // Labels
-      Labels labels=marker.getLabels();
-      MapXMLWriterUtils.write(hd,labels);
       hd.endElement("","",MapXMLConstants.MARKER_TAG);
     }
     hd.endElement("","",MapXMLConstants.MARKERS_TAG);
