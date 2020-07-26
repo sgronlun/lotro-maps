@@ -79,7 +79,10 @@ public class MapWindowController extends DefaultWindowController implements Navi
   protected JFrame build()
   {
     JFrame frame=super.build();
-    mapChangeRequest("angmar");
+    MapsManager mapsManager=_mapPanel.getCanvas().getMapsManager();
+    MapBundle mapBundle=mapsManager.getMaps().get(0);
+    String key=mapBundle.getKey();
+    mapChangeRequest(key);
     frame.setTitle("Middle Earth maps");
     frame.setLocation(100,100);
     frame.pack();
