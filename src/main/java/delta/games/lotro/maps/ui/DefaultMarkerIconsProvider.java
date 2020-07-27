@@ -38,8 +38,11 @@ public class DefaultMarkerIconsProvider implements MarkerIconProvider
       image=_markerIcons.get(icon);
       if (image==null) {
         File iconFile=_mapsManager.getIconFile(icon);
-        image=ImageUtils.loadImage(iconFile);
-        _markerIcons.put(icon,image);
+        if (iconFile.exists())
+        {
+          image=ImageUtils.loadImage(iconFile);
+          _markerIcons.put(icon,image);
+        }
       }
     }
     return image;

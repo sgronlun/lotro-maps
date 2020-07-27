@@ -277,7 +277,15 @@ public class CategoryChooserController
     {
       String iconName=category.getIcon();
       File iconFile=_mapsManager.getIconFile(iconName);
-      BufferedImage image=ImageUtils.loadImage(iconFile);
+      BufferedImage image=null;
+      if (iconFile.exists())
+      {
+        image=ImageUtils.loadImage(iconFile);
+      }
+      if (image==null)
+      {
+        continue;
+      }
       JLabel icon=GuiFactory.buildIconLabel(new ImageIcon(image));
       JLabel label=GuiFactory.buildLabel(category.getName());
       JCheckBox checkbox=GuiFactory.buildCheckbox("");
