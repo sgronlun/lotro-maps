@@ -2,6 +2,8 @@ package delta.games.lotro.maps.ui.layers;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.List;
@@ -116,6 +118,9 @@ public class BasemapLayer implements Layer
       //System.out.println("End pixels: "+endPixels);
       int sx1=startPixels.width;int sy1=startPixels.height;
       int sx2=endPixels.width;int sy2=endPixels.height;
+      Graphics2D g2d = (Graphics2D) g;
+      //g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
       g.drawImage(_background,dx1,dy1,dx2,dy2,sx1,sy1,sx2,sy2,null);
     }
   }
