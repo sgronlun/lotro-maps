@@ -12,6 +12,7 @@ import java.awt.event.MouseWheelEvent;
 import javax.swing.JCheckBox;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import delta.common.ui.swing.GuiFactory;
 import delta.common.ui.swing.labels.LabelWithHalo;
@@ -199,13 +200,15 @@ public class MapPanelController
   public void setMap(String key)
   {
     _canvas.setMap(key);
+    //System.out.println("Key: "+key);
     MapBundle map=_canvas.getCurrentMap();
     _locationController.setMap(map.getMap());
     // Set map size
-    Dimension size=_canvas.getPreferredSize();
-    _canvas.setSize(size);
-    _layers.setPreferredSize(size);
-    int height=size.height;
+    Dimension size=new Dimension(1024,768);
+    Dimension sizeToSet=fitInSize(size);
+    _canvas.setSize(sizeToSet);
+    _layers.setPreferredSize(sizeToSet);
+    int height=sizeToSet.height;
     // Place location display (lower left)
     JPanel locationPanel=_locationDisplay.getPanel();
     locationPanel.setSize(100,40);
@@ -213,6 +216,33 @@ public class MapPanelController
     // Place 'labeled' checkbox
     _labeled.setLocation(55,17);
     _labeled.setSize(_labeled.getPreferredSize());
+  }
+
+  private Dimension fitInSize(Dimension maxSize)
+  {
+    // Compute adequate zoom factor
+    final Dimension mapSize=_canvas.getPreferredSize();
+    //System.out.println("Map size: "+mapSize);
+    //System.out.println("Size: "+maxSize);
+    if ((mapSize.width<=maxSize.width) && (mapSize.height<=maxSize.height))
+    {
+      return mapSize;
+    }
+    float xFactor=(float)mapSize.width/maxSize.width;
+    float yFactor=(float)mapSize.height/maxSize.height;
+    final float factor=Math.max(xFactor,yFactor);
+    //System.out.println("Factor: "+factor);
+    Runnable r=new Runnable()
+    {
+      public void run()
+      {
+        _canvas.pan(mapSize.width/2,mapSize.height/2);
+        _canvas.zoom(1/factor);
+      }
+    };
+    SwingUtilities.invokeLater(r);
+    Dimension size=new Dimension((int)(mapSize.width/factor),(int)(mapSize.height/factor));
+    return size;
   }
 
   /**

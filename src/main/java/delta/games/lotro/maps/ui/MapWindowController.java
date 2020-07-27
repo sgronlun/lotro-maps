@@ -66,6 +66,7 @@ public class MapWindowController extends DefaultWindowController implements Navi
       _navigation.setMap(map);
       _mapPanel.setMap(key);
       _mapChooser.selectMap(key);
+      pack();
     }
   }
 
