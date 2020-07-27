@@ -32,6 +32,16 @@ public class MapsManager
   {
     _rootDir=rootDir;
     _maps=new HashMap<String,MapBundle>();
+    _categoriesManager=new CategoriesManager();
+  }
+
+  /**
+   * Get the root directory for this map.
+   * @return a directory.
+   */
+  public File getRootDir()
+  {
+    return _rootDir;
   }
 
   /**
@@ -143,11 +153,15 @@ public class MapsManager
   public File getIconFile(String iconName)
   {
     File iconsDir=new File(_rootDir,"images");
-    String pathName=iconName+".gif";
+    String pathName=iconName+".png";
     return new File(iconsDir,pathName);
   }
 
-  private void addMap(MapBundle bundle)
+  /**
+   * Add a map.
+   * @param bundle Map to add.
+   */
+  public void addMap(MapBundle bundle)
   {
     String key=bundle.getKey();
     _maps.put(key,bundle);
