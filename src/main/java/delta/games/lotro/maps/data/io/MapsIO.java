@@ -6,7 +6,7 @@ import java.util.List;
 import org.w3c.dom.Element;
 
 import delta.common.utils.xml.DOMParsingTools;
-import delta.games.lotro.maps.data.Map;
+import delta.games.lotro.maps.data.GeoreferencedBasemap;
 import delta.games.lotro.maps.data.MapLink;
 import delta.games.lotro.maps.data.MarkersManager;
 import delta.games.lotro.maps.data.io.xml.MapXMLParser;
@@ -22,9 +22,9 @@ public class MapsIO
    * @param rootDirectory Directory of map.
    * @return A map or <code>null</code> if map description not found.
    */
-  public static Map loadMap(File rootDirectory)
+  public static GeoreferencedBasemap loadMap(File rootDirectory)
   {
-    Map map=null;
+    GeoreferencedBasemap map=null;
     File mapFile=new File(rootDirectory,"map.xml");
     if (mapFile.exists())
     {
@@ -41,9 +41,9 @@ public class MapsIO
     return map;
   }
 
-  private static Map parseMapFile(File mapFile)
+  private static GeoreferencedBasemap parseMapFile(File mapFile)
   {
-    Map map=null;
+    GeoreferencedBasemap map=null;
     Element root=DOMParsingTools.parse(mapFile);
     if (root!=null)
     {

@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import delta.games.lotro.maps.data.GeoBox;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
-import delta.games.lotro.maps.data.Map;
+import delta.games.lotro.maps.data.GeoreferencedBasemap;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
@@ -98,7 +98,7 @@ public class MapCanvas extends JPanel implements MapView
    * Get the current map.
    * @return the current map.
    */
-  public Map getMap()
+  public GeoreferencedBasemap getMap()
   {
     return (_currentMap!=null)?_currentMap.getMap():null;
   }
@@ -124,7 +124,7 @@ public class MapCanvas extends JPanel implements MapView
     // Load map data
     _currentMap=_mapsManager.getMapByKey(key);
     // Set base map
-    _basemapLayer.setMap(_currentMap);
+    _basemapLayer.setMap(_currentMap.getMap());
     // Set reference
     GeoReference reference=_currentMap.getMap().getGeoReference();
     _viewReference=new GeoReference(reference.getStart(),reference.getGeo2PixelFactor());

@@ -15,7 +15,7 @@ public class MapBundle
   private String _key;
   private File _rootDir;
   // Map description
-  private Map _map;
+  private GeoreferencedBasemap _map;
   // Map points
   private MarkersManager _markers;
   // Map links
@@ -63,7 +63,7 @@ public class MapBundle
    * Get the managed map.
    * @return the managed map.
    */
-  public Map getMap()
+  public GeoreferencedBasemap getMap()
   {
     if (_map==null)
     {
@@ -71,8 +71,10 @@ public class MapBundle
     }
     if (_map==null)
     {
-      _map=new Map(_key);
+      _map=new GeoreferencedBasemap(_key);
     }
+    File imageFile=new File(_rootDir,"map_en.png");
+    _map.setImageFile(imageFile);
     return _map;
   }
 

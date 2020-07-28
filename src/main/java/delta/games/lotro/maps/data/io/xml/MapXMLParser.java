@@ -1,7 +1,6 @@
 package delta.games.lotro.maps.data.io.xml;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.w3c.dom.Element;
@@ -10,7 +9,7 @@ import org.w3c.dom.NamedNodeMap;
 import delta.common.utils.xml.DOMParsingTools;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
-import delta.games.lotro.maps.data.Map;
+import delta.games.lotro.maps.data.GeoreferencedBasemap;
 import delta.games.lotro.maps.data.MapLink;
 import delta.games.lotro.maps.data.Marker;
 import delta.games.lotro.maps.data.MarkersManager;
@@ -26,21 +25,15 @@ public class MapXMLParser
    * @param root Root element.
    * @return A map.
    */
-  public static Map parseMap(Element root)
+  public static GeoreferencedBasemap parseMap(Element root)
   {
     NamedNodeMap attrs=root.getAttributes();
     String key=DOMParsingTools.getStringAttribute(attrs,MapXMLConstants.MAP_KEY_ATTR,null);
-    Map map=new Map(key);
+    GeoreferencedBasemap map=new GeoreferencedBasemap(key);
 
     // Name
     String name=DOMParsingTools.getStringAttribute(attrs,MapXMLConstants.LABEL_ATTR,"");
     map.setName(name);
-    // Last update time
-    long lastUpdateTime=DOMParsingTools.getLongAttribute(attrs,MapXMLConstants.MAP_LAST_UPDATE_ATTR,0);
-    if (lastUpdateTime!=0)
-    {
-      map.setLastUpdate(new Date(lastUpdateTime));
-    }
     // Geographic reference
     Element geoTag=DOMParsingTools.getChildTagByName(root,MapXMLConstants.GEO_TAG);
     if (geoTag!=null)

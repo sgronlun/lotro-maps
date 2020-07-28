@@ -12,8 +12,7 @@ import delta.common.ui.ImageUtils;
 import delta.games.lotro.maps.data.GeoBox;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
-import delta.games.lotro.maps.data.Map;
-import delta.games.lotro.maps.data.MapBundle;
+import delta.games.lotro.maps.data.GeoreferencedBasemap;
 import delta.games.lotro.maps.data.Marker;
 import delta.games.lotro.maps.ui.MapView;
 
@@ -24,7 +23,7 @@ import delta.games.lotro.maps.ui.MapView;
 public class BasemapLayer implements Layer
 {
   private MapView _view;
-  private Map _currentMap;
+  private GeoreferencedBasemap _currentMap;
   private BufferedImage _background;
 
   /**
@@ -51,14 +50,12 @@ public class BasemapLayer implements Layer
 
   /**
    * Set the base map.
-   * @param mapBundle Map to use.
+   * @param basemap Map to use.
    */
-  public void setMap(MapBundle mapBundle)
+  public void setMap(GeoreferencedBasemap basemap)
   {
-    _currentMap=mapBundle.getMap();
-    File mapDir=mapBundle.getRootDir();
-    String mapFilename="map_en.png";
-    File mapImageFile=new File(mapDir,mapFilename);
+    _currentMap=basemap;
+    File mapImageFile=_currentMap.getImageFile();
     _background=ImageUtils.loadImage(mapImageFile);
   }
 

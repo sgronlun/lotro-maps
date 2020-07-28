@@ -8,7 +8,6 @@ import java.util.List;
 
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
-import delta.games.lotro.maps.data.Map;
 import delta.games.lotro.maps.ui.MapCanvas;
 
 /**
@@ -19,7 +18,6 @@ public class MapLocationController
 {
   private MapCanvas _canvas;
   private MapMouseListener _listener;
-  private Map _currentMap;
   private List<MapLocationListener> _listeners;
 
   /**
@@ -57,29 +55,17 @@ public class MapLocationController
     @Override
     public void mouseMoved(MouseEvent event)
     {
-      if (_currentMap!=null)
+      if (_listeners.size()>0)
       {
-        if (_listeners.size()>0)
+        GeoReference reference=_canvas.getViewReference();
+        Dimension pixels=new Dimension(event.getX(),event.getY());
+        GeoPoint location=reference.pixel2geo(pixels);
+        for(MapLocationListener listener : _listeners)
         {
-          GeoReference reference=_canvas.getViewReference();
-          Dimension pixels=new Dimension(event.getX(),event.getY());
-          GeoPoint location=reference.pixel2geo(pixels);
-          for(MapLocationListener listener : _listeners)
-          {
-            listener.mapLocationUpdated(location);
-          }
+          listener.mapLocationUpdated(location);
         }
       }
     }
-  }
-
-  /**
-   * Set the current map.
-   * @param map Map to set.
-   */
-  public void setMap(Map map)
-  {
-    _currentMap=map;
   }
 
   /**
@@ -93,6 +79,5 @@ public class MapLocationController
       _listener=null;
     }
     _canvas=null;
-    _currentMap=null;
   }
 }

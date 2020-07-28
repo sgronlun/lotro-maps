@@ -1,7 +1,6 @@
 package delta.games.lotro.maps.data.io.xml;
 
 import java.io.File;
-import java.util.Date;
 import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
@@ -12,7 +11,7 @@ import delta.common.utils.io.xml.XmlFileWriterHelper;
 import delta.common.utils.io.xml.XmlWriter;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
-import delta.games.lotro.maps.data.Map;
+import delta.games.lotro.maps.data.GeoreferencedBasemap;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapLink;
 import delta.games.lotro.maps.data.Marker;
@@ -52,7 +51,7 @@ public class MapXMLWriter
    * @param encoding Encoding to use.
    * @return <code>true</code> if it succeeds, <code>false</code> otherwise.
    */
-  public boolean writeMapFile(File outFile, final Map map, String encoding)
+  public boolean writeMapFile(File outFile, final GeoreferencedBasemap map, String encoding)
   {
     XmlFileWriterHelper helper=new XmlFileWriterHelper();
     XmlWriter writer=new XmlWriter()
@@ -73,7 +72,7 @@ public class MapXMLWriter
    * @param map Map to use.
    * @throws Exception If an error occurs.
    */
-  private void writeMap(TransformerHandler hd, Map map) throws Exception
+  private void writeMap(TransformerHandler hd, GeoreferencedBasemap map) throws Exception
   {
     AttributesImpl attrs=new AttributesImpl();
     // Key
@@ -82,13 +81,6 @@ public class MapXMLWriter
     // Name
     String name=map.getName();
     attrs.addAttribute("","",MapXMLConstants.LABEL_ATTR,XmlWriter.CDATA,name);
-    // Last update
-    Date lastUpdate=map.getLastUpdate();
-    if (lastUpdate!=null)
-    {
-      String dateStr=Long.toString(lastUpdate.getTime());
-      attrs.addAttribute("","",MapXMLConstants.MAP_LAST_UPDATE_ATTR,XmlWriter.CDATA,dateStr);
-    }
     hd.startElement("","",MapXMLConstants.MAP_TAG,attrs);
 
     // Geo reference

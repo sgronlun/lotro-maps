@@ -16,7 +16,6 @@ import javax.swing.SwingUtilities;
 
 import delta.common.ui.swing.GuiFactory;
 import delta.common.ui.swing.labels.LabelWithHalo;
-import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.ui.layers.MarkersLayer;
 import delta.games.lotro.maps.ui.location.MapLocationController;
@@ -201,8 +200,6 @@ public class MapPanelController
   {
     _canvas.setMap(key);
     //System.out.println("Key: "+key);
-    MapBundle map=_canvas.getCurrentMap();
-    _locationController.setMap(map.getMap());
     // Set map size
     Dimension size=new Dimension(1024,768);
     Dimension sizeToSet=fitInSize(size);

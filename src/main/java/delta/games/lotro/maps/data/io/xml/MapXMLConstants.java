@@ -14,10 +14,6 @@ public class MapXMLConstants
    * Tag 'map', attribute 'key'.
    */
   public static final String MAP_KEY_ATTR="key";
-  /**
-   * Tag 'map', attribute 'lastUpdate'.
-   */
-  public static final String MAP_LAST_UPDATE_ATTR="lastUpdate";
 
   /**
    * Tag 'geo'.

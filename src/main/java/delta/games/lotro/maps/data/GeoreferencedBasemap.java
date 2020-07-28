@@ -1,30 +1,30 @@
 package delta.games.lotro.maps.data;
 
-import java.util.Date;
+import java.io.File;
 
 /**
- * Map description.
+ * Georeferenced base map.
  * @author DAM
  */
-public class Map
+public class GeoreferencedBasemap
 {
   private String _key;
-  private GeoReference _geoRef;
   private String _name;
-  private Date _lastUpdate;
+  private GeoReference _geoRef;
+  private File _imageFile;
 
   /**
    * Constructor.
-   * @param key Identifying key for this map.
+   * @param key Identifying key for this basemap.
    */
-  public Map(String key)
+  public GeoreferencedBasemap(String key)
   {
     _key=key;
     _name="";
   }
 
   /**
-   * Get the identifying key for this map.
+   * Get the identifying key for this basemap.
    * @return an identifying key.
    */
   public String getKey()
@@ -33,7 +33,7 @@ public class Map
   }
 
   /**
-   * Get the name of this map.
+   * Get the name of this basemap.
    * @return a map name.
    */
   public String getName()
@@ -42,7 +42,7 @@ public class Map
   }
 
   /**
-   * Set the name for this map.
+   * Set the name for this basemap.
    * @param name Name to set.
    */
   public void setName(String name)
@@ -69,26 +69,26 @@ public class Map
   }
 
   /**
-   * Get the last update date for this map.
-   * @return a date.
+   * Get the image file.
+   * @return the image file.
    */
-  public Date getLastUpdate()
+  public File getImageFile()
   {
-    return _lastUpdate;
+    return _imageFile;
   }
 
   /**
-   * Set the last update date for this map.
-   * @param lastUpdate Date to set.
+   * Set the image file.
+   * @param imageFile Image file.
    */
-  public void setLastUpdate(Date lastUpdate)
+  public void setImageFile(File imageFile)
   {
-    _lastUpdate=lastUpdate;
+    _imageFile=imageFile;
   }
 
   @Override
   public String toString()
   {
-    return "Map: key="+_key+", name="+_name+", reference=" + _geoRef + ", last updated="+_lastUpdate;
+    return "Basemap: key="+_key+", name="+_name+", reference=" + _geoRef + ", file="+_imageFile;
   }
 }
