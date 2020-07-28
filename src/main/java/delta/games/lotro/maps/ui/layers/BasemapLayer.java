@@ -14,7 +14,6 @@ import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.Map;
 import delta.games.lotro.maps.data.MapBundle;
-import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
 import delta.games.lotro.maps.ui.MapView;
 
@@ -25,6 +24,7 @@ import delta.games.lotro.maps.ui.MapView;
 public class BasemapLayer implements Layer
 {
   private MapView _view;
+  private Map _currentMap;
   private BufferedImage _background;
 
   /**
@@ -50,14 +50,13 @@ public class BasemapLayer implements Layer
   }
 
   /**
-   * Load a base map.
-   * @param key Map key.
+   * Set the base map.
+   * @param mapBundle Map to use.
    */
-  public void load(String key)
+  public void setMap(MapBundle mapBundle)
   {
-    // Load map image
-    MapsManager mapsManager=_view.getMapsManager();
-    File mapDir=mapsManager.getMapDir(key);
+    _currentMap=mapBundle.getMap();
+    File mapDir=mapBundle.getRootDir();
     String mapFilename="map_en.png";
     File mapImageFile=new File(mapDir,mapFilename);
     _background=ImageUtils.loadImage(mapImageFile);
@@ -84,9 +83,7 @@ public class BasemapLayer implements Layer
    */
   public GeoBox getMapBounds()
   {
-    MapBundle currentMap=_view.getCurrentMap();
-    Map map=currentMap.getMap();
-    GeoReference geoReference=map.getGeoReference();
+    GeoReference geoReference=_currentMap.getGeoReference();
     GeoPoint start=geoReference.getStart();
     int width=_background.getWidth();
     int height=_background.getHeight();
@@ -104,11 +101,10 @@ public class BasemapLayer implements Layer
   {
     if (_background!=null)
     {
-      MapBundle currentMap=_view.getCurrentMap();
       GeoReference viewReference=_view.getViewReference();
       //System.out.println("Repaint!");
       int dx1=0;int dy1=0;int dx2=_background.getWidth();int dy2=_background.getHeight();
-      GeoReference reference=currentMap.getMap().getGeoReference();
+      GeoReference reference=_currentMap.getGeoReference();
       Dimension startPixels=reference.geo2pixel(viewReference.getStart());
       //System.out.println("Start pixels: "+startPixels);
       Dimension map=new Dimension(_background.getWidth(),_background.getHeight());

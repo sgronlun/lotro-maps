@@ -124,7 +124,7 @@ public class MapCanvas extends JPanel implements MapView
     // Load map data
     _currentMap=_mapsManager.getMapByKey(key);
     // Set base map
-    _basemapLayer.load(key);
+    _basemapLayer.setMap(_currentMap);
     // Set reference
     GeoReference reference=_currentMap.getMap().getGeoReference();
     _viewReference=new GeoReference(reference.getStart(),reference.getGeo2PixelFactor());
@@ -214,7 +214,7 @@ public class MapCanvas extends JPanel implements MapView
     GeoPoint topLeft=viewReference.pixel2geo(new Dimension(x-sensibility,y-sensibility));
     GeoPoint bottomRight=viewReference.pixel2geo(new Dimension(x+sensibility,y+sensibility));
     GeoBox box=new GeoBox(topLeft,bottomRight);
-    
+
     for(Layer layer : _layers)
     {
       List<Marker> visibleMarkers=layer.getVisibleMarkers();
