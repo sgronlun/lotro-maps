@@ -29,7 +29,7 @@ public class MapXMLWriter
    * @param encoding Encoding.
    * @return <code>true</code> if it succeeds, <code>false</code> otherwise.
    */
-  public boolean writeMapFiles(MapBundle bundle, String encoding)
+  public static boolean writeMapFiles(MapBundle bundle, String encoding)
   {
     File rootDir=bundle.getRootDir();
     // Map description
@@ -51,7 +51,7 @@ public class MapXMLWriter
    * @param encoding Encoding to use.
    * @return <code>true</code> if it succeeds, <code>false</code> otherwise.
    */
-  public boolean writeMapFile(File outFile, final GeoreferencedBasemap map, String encoding)
+  public static boolean writeMapFile(File outFile, final GeoreferencedBasemap map, String encoding)
   {
     XmlFileWriterHelper helper=new XmlFileWriterHelper();
     XmlWriter writer=new XmlWriter()
@@ -72,7 +72,7 @@ public class MapXMLWriter
    * @param map Map to use.
    * @throws Exception If an error occurs.
    */
-  private void writeMap(TransformerHandler hd, GeoreferencedBasemap map) throws Exception
+  private static void writeMap(TransformerHandler hd, GeoreferencedBasemap map) throws Exception
   {
     AttributesImpl attrs=new AttributesImpl();
     // Key
@@ -108,7 +108,7 @@ public class MapXMLWriter
    * @param encoding Encoding to use.
    * @return <code>true</code> if it succeeds, <code>false</code> otherwise.
    */
-  public boolean writeLinksFile(File outFile, final List<MapLink> links, String encoding)
+  public static boolean writeLinksFile(File outFile, final List<MapLink> links, String encoding)
   {
     XmlFileWriterHelper helper=new XmlFileWriterHelper();
     XmlWriter writer=new XmlWriter()
@@ -123,7 +123,7 @@ public class MapXMLWriter
     return ret;
   }
 
-  private void writeLinks(TransformerHandler hd, List<MapLink> links) throws Exception
+  private static void writeLinks(TransformerHandler hd, List<MapLink> links) throws Exception
   {
     hd.startElement("","",MapXMLConstants.LINKS_TAG,new AttributesImpl());
     // Links
@@ -146,7 +146,7 @@ public class MapXMLWriter
    * @param point Point to write.
    * @throws Exception
    */
-  private void writeGeoPoint(TransformerHandler hd, GeoPoint point) throws Exception
+  private static void writeGeoPoint(TransformerHandler hd, GeoPoint point) throws Exception
   {
     AttributesImpl attrs=new AttributesImpl();
 
@@ -167,7 +167,7 @@ public class MapXMLWriter
    * @param encoding Encoding to use.
    * @return <code>true</code> if it succeeds, <code>false</code> otherwise.
    */
-  public boolean writeMarkersFile(File outFile, final MarkersManager markers, String encoding)
+  public static boolean writeMarkersFile(File outFile, final MarkersManager markers, String encoding)
   {
     XmlFileWriterHelper helper=new XmlFileWriterHelper();
     XmlWriter writer=new XmlWriter()
@@ -188,7 +188,7 @@ public class MapXMLWriter
    * @param markersManager Markers to write.
    * @throws Exception
    */
-  private void writeMarkers(TransformerHandler hd, MarkersManager markersManager) throws Exception
+  private static void writeMarkers(TransformerHandler hd, MarkersManager markersManager) throws Exception
   {
     AttributesImpl attrs=new AttributesImpl();
     hd.startElement("","",MapXMLConstants.MARKERS_TAG,attrs);

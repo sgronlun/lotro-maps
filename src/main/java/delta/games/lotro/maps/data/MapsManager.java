@@ -108,8 +108,7 @@ public class MapsManager
     MapBundle bundle=_maps.get(key);
     if (bundle!=null)
     {
-      MapXMLWriter writer=new MapXMLWriter();
-      writer.writeMapFiles(bundle,EncodingNames.UTF_8);
+      MapXMLWriter.writeMapFiles(bundle,EncodingNames.UTF_8);
     }
   }
 

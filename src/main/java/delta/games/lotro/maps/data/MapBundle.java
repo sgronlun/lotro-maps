@@ -73,7 +73,7 @@ public class MapBundle
     {
       _map=new GeoreferencedBasemap(_key);
     }
-    File imageFile=new File(_rootDir,"map_en.png");
+    File imageFile=new File(_rootDir,"map.png");
     _map.setImageFile(imageFile);
     return _map;
   }

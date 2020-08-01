@@ -12,7 +12,7 @@ import junit.framework.TestCase;
 public class GeoReferenceTest extends TestCase
 {
   private static GeoPoint _startPoint=new GeoPoint(-114.01f, -3.826f);
-  private static GeoReference _geoReference=new GeoReference(_startPoint, 7.704f);
+  private static GeoReference _geoReference=new GeoReference(_startPoint, 7.704f*10);
 
   /**
    * Test conversion from geo to pixels.
