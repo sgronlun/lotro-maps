@@ -9,6 +9,7 @@ public class Marker
   private int _id;
   private GeoPoint _position;
   private String _label;
+  private int _did;
   private int _categoryCode;
 
   /**
@@ -71,6 +72,24 @@ public class Marker
   public void setLabel(String label)
   {
     _label=label;
+  }
+
+  /**
+   * Get the associated DID.
+   * @return a DID or 0.
+   */
+  public int getDid()
+  {
+    return _did;
+  }
+
+  /**
+   * Set the associated DID.
+   * @param did DID to set.
+   */
+  public void setDid(int did)
+  {
+    _did=did;
   }
 
   /**
