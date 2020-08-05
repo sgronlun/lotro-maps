@@ -30,14 +30,6 @@ public class MapsIO
     {
       map=parseMapFile(mapFile);
     }
-    else
-    {
-      File markersFile=new File(rootDirectory,"markers.xml");
-      if (markersFile.exists())
-      {
-        map=parseMapFile(markersFile);
-      }
-    }
     return map;
   }
 
