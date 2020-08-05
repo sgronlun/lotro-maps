@@ -150,6 +150,9 @@ public class MapXMLParser
     // Category code
     int categoryCode=DOMParsingTools.getIntAttribute(attrs,MapXMLConstants.CATEGORY_ATTR,0);
     marker.setCategoryCode(categoryCode);
+    // DID
+    int did=DOMParsingTools.getIntAttribute(attrs,MapXMLConstants.DID_ATTR,0);
+    marker.setDid(did);
     // Position
     GeoPoint position=parsePoint(markerTag);
     marker.setPosition(position);

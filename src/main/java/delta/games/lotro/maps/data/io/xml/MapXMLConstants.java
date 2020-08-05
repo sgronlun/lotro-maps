@@ -58,6 +58,10 @@ public class MapXMLConstants
    * Tag 'marker', attribute 'category'.
    */
   public static final String CATEGORY_ATTR="category";
+  /**
+   * Tag 'marker', attribute 'did'.
+   */
+  public static final String DID_ATTR="did";
 
   /**
    * Tag 'point'.

@@ -216,6 +216,12 @@ public class MapXMLWriter
       // Category
       int category=marker.getCategoryCode();
       markerAttrs.addAttribute("","",MapXMLConstants.CATEGORY_ATTR,XmlWriter.CDATA,String.valueOf(category));
+      // DID
+      int did=marker.getDid();
+      if (did!=0)
+      {
+        markerAttrs.addAttribute("","",MapXMLConstants.DID_ATTR,XmlWriter.CDATA,String.valueOf(did));
+      }
       // Position
       GeoPoint position=marker.getPosition();
       if (position!=null)
