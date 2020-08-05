@@ -149,15 +149,26 @@ public class MapXMLWriter
   private static void writeGeoPoint(TransformerHandler hd, GeoPoint point) throws Exception
   {
     AttributesImpl attrs=new AttributesImpl();
+    writeGeoPointAttrs(hd,point,attrs);
+    hd.startElement("","",MapXMLConstants.POINT_TAG,attrs);
+    hd.endElement("","",MapXMLConstants.POINT_TAG);
+  }
 
+  /**
+   * Write the attributes of a point to the given XML stream.
+   * @param hd XML output stream.
+   * @param point Point to write.
+   * @param attrs Attributes to use.
+   * @throws Exception
+   */
+  private static void writeGeoPointAttrs(TransformerHandler hd, GeoPoint point, AttributesImpl attrs) throws Exception
+  {
     // Longitude
     float longitude=point.getLongitude();
     attrs.addAttribute("","",MapXMLConstants.LONGITUDE_ATTR,XmlWriter.CDATA,String.valueOf(longitude));
     // Latitude
     float latitude=point.getLatitude();
     attrs.addAttribute("","",MapXMLConstants.LATITUDE_ATTR,XmlWriter.CDATA,String.valueOf(latitude));
-    hd.startElement("","",MapXMLConstants.POINT_TAG,attrs);
-    hd.endElement("","",MapXMLConstants.POINT_TAG);
   }
 
   /**
@@ -205,13 +216,13 @@ public class MapXMLWriter
       // Category
       int category=marker.getCategoryCode();
       markerAttrs.addAttribute("","",MapXMLConstants.CATEGORY_ATTR,XmlWriter.CDATA,String.valueOf(category));
-      hd.startElement("","",MapXMLConstants.MARKER_TAG,markerAttrs);
       // Position
       GeoPoint position=marker.getPosition();
       if (position!=null)
       {
-        writeGeoPoint(hd,position);
+        writeGeoPointAttrs(hd,position,markerAttrs);
       }
+      hd.startElement("","",MapXMLConstants.MARKER_TAG,markerAttrs);
       hd.endElement("","",MapXMLConstants.MARKER_TAG);
     }
     hd.endElement("","",MapXMLConstants.MARKERS_TAG);
