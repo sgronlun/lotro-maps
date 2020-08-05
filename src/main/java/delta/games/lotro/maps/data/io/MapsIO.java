@@ -45,17 +45,20 @@ public class MapsIO
   }
 
   /**
-   * Load map markers from the given directory.
-   * @param rootDirectory Directory of map.
-   * @return A markers manager or <code>null</code> if map description not found.
+   * Load map markers from the given file.
+   * @param markersFile Markers file.
+   * @return A markers manager.
    */
-  public static MarkersManager loadMarkers(File rootDirectory)
+  public static MarkersManager loadMarkers(File markersFile)
   {
     MarkersManager markers=null;
-    File markersFile=new File(rootDirectory,"markers.xml");
     if (markersFile.exists())
     {
       markers=parseMarkers(markersFile);
+    }
+    if (markers==null)
+    {
+      markers=new MarkersManager();
     }
     return markers;
   }

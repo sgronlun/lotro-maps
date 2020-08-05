@@ -86,11 +86,8 @@ public class MapBundle
   {
     if (_markers==null)
     {
-      _markers=MapsIO.loadMarkers(_rootDir);
-    }
-    if (_markers==null)
-    {
-      _markers=new MarkersManager();
+      File markersFile=new File(_rootDir,"markers.xml");
+      _markers=MapsIO.loadMarkers(markersFile);
     }
     return _markers;
   }
