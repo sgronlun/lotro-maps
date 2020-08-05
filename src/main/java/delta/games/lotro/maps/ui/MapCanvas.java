@@ -54,6 +54,16 @@ public class MapCanvas extends JPanel implements MapView
   }
 
   /**
+   * Get the geographic bounds for the current map.
+   * @return a geographic box.
+   */
+  public GeoBox getMapBounds()
+  {
+    // TODO Move that elsewhere!
+    return _basemapLayer.getMapBounds();
+  }
+
+  /**
    * Add a layer.
    * @param layer Layer to add.
    */

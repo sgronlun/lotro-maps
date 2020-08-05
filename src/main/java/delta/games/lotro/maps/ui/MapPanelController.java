@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.util.List;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLayeredPane;
@@ -16,8 +17,12 @@ import javax.swing.SwingUtilities;
 
 import delta.common.ui.swing.GuiFactory;
 import delta.common.ui.swing.labels.LabelWithHalo;
+import delta.games.lotro.maps.data.GeoBox;
 import delta.games.lotro.maps.data.MapsManager;
-import delta.games.lotro.maps.ui.layers.MarkersLayer;
+import delta.games.lotro.maps.data.Marker;
+import delta.games.lotro.maps.data.markers.GlobalMarkersManager;
+import delta.games.lotro.maps.ui.layers.AbstractMarkersLayer;
+import delta.games.lotro.maps.ui.layers.AreaMarkersLayer;
 import delta.games.lotro.maps.ui.location.MapLocationController;
 import delta.games.lotro.maps.ui.location.MapLocationPanelController;
 
@@ -33,9 +38,10 @@ import delta.games.lotro.maps.ui.location.MapLocationPanelController;
 public class MapPanelController
 {
   // Data
+  private MapsManager _mapsManager;
   private MapCanvas _canvas;
   // Layers
-  private MarkersLayer _markersLayer;
+  private AreaMarkersLayer _markersLayer;
   // Controllers
   private MapLocationController _locationController;
   private MapLocationPanelController _locationDisplay;
@@ -49,9 +55,10 @@ public class MapPanelController
    */
   public MapPanelController(MapsManager mapsManager)
   {
+    _mapsManager=mapsManager;
     _canvas=new MapCanvas(mapsManager);
     // Layers
-    _markersLayer=new MarkersLayer(mapsManager,_canvas);
+    _markersLayer=new AreaMarkersLayer(mapsManager,_canvas);
     _canvas.addLayer(_markersLayer);
     // Init zoom controller
     initZoomController();
@@ -79,7 +86,7 @@ public class MapPanelController
    * Get the managed layer for markers.
    * @return a markers layer.
    */
-  public MarkersLayer getMarkersLayer()
+  public AbstractMarkersLayer getMarkersLayer()
   {
     return _markersLayer;
   }
@@ -213,6 +220,16 @@ public class MapPanelController
     // Place 'labeled' checkbox
     _labeled.setLocation(55,17);
     _labeled.setSize(_labeled.getPreferredSize());
+    loadMarkers();
+    _canvas.repaint();
+  }
+
+  private void loadMarkers()
+  {
+    GeoBox box=_canvas.getMapBounds();
+    GlobalMarkersManager markersMgr=_mapsManager.getMarkersManager();
+    List<Marker> markers=markersMgr.getMarkers(box);
+    _markersLayer.setMarkers(markers);
   }
 
   private Dimension fitInSize(Dimension maxSize)
@@ -247,6 +264,12 @@ public class MapPanelController
    */
   public void dispose()
   {
+    // Data
+    _mapsManager=null;
+    _canvas=null;
+    // Layers
+    _markersLayer=null;
+    // Controllers
     if (_locationDisplay!=null)
     {
       if (_locationController!=null)
@@ -261,8 +284,7 @@ public class MapPanelController
       _locationController.dispose();
       _locationController=null;
     }
-    _markersLayer=null;
-    _canvas=null;
+    // UI
     _layers=null;
     _labeled=null;
   }
