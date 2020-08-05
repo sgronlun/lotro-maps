@@ -71,15 +71,26 @@ public class MarkersManager
    */
   public List<Marker> getMarkers(Filter<Marker> filter)
   {
-    List<Marker> markers=new ArrayList<Marker>();
-    for(Marker marker : _markers)
+    return getFilteredMarkers(filter,_markers);
+  }
+
+  /**
+   * Get a list of all markers that pass the given filter.
+   * @param filter A filter or <code>null</code> to accept all.
+   * @param markers Markers to use.
+   * @return A possibly empty but never <code>null</code> list of markers.
+   */
+  public static List<Marker> getFilteredMarkers(Filter<Marker> filter, List<Marker> markers)
+  {
+    List<Marker> ret=new ArrayList<Marker>();
+    for(Marker marker : markers)
     {
       if ((filter==null) || (filter.accept(marker)))
       {
-        markers.add(marker);
+        ret.add(marker);
       }
     }
-    return markers;
+    return ret;
   }
 
   /**
