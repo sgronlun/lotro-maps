@@ -54,8 +54,8 @@ public class CategoriesXMLParser
     NamedNodeMap attrs=categoryTag.getAttributes();
 
     // Code
-    int code=DOMParsingTools.getIntAttribute(attrs,CategoryXMLConstants.CATEGORY_CODE_ATTR,0);
-    if (code==0)
+    int code=DOMParsingTools.getIntAttribute(attrs,CategoryXMLConstants.CATEGORY_CODE_ATTR,-1);
+    if (code<0)
     {
       return null;
     }

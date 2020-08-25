@@ -17,10 +17,10 @@ import javax.swing.SwingUtilities;
 
 import delta.common.ui.swing.GuiFactory;
 import delta.common.ui.swing.labels.LabelWithHalo;
-import delta.games.lotro.maps.data.GeoBox;
+import delta.common.utils.NumericTools;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
-import delta.games.lotro.maps.data.markers.GlobalMarkersManager;
+import delta.games.lotro.maps.data.markers.MarkersFinder;
 import delta.games.lotro.maps.ui.layers.AbstractMarkersLayer;
 import delta.games.lotro.maps.ui.layers.AreaMarkersLayer;
 import delta.games.lotro.maps.ui.location.MapLocationController;
@@ -220,15 +220,15 @@ public class MapPanelController
     // Place 'labeled' checkbox
     _labeled.setLocation(55,17);
     _labeled.setSize(_labeled.getPreferredSize());
-    loadMarkers();
+    loadMarkers(key);
     _canvas.repaint();
   }
 
-  private void loadMarkers()
+  private void loadMarkers(String key)
   {
-    GeoBox box=_canvas.getMapBounds();
-    GlobalMarkersManager markersMgr=_mapsManager.getMarkersManager();
-    List<Marker> markers=markersMgr.getMarkers(box);
+    Integer zoneId=NumericTools.parseInteger(key);
+    MarkersFinder finder=_mapsManager.getMarkersFinder();
+    List<Marker> markers=finder.findMarkers(zoneId.intValue(),0);
     _markersLayer.setMarkers(markers);
   }
 

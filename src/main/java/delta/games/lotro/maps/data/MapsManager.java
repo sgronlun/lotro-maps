@@ -14,6 +14,7 @@ import delta.games.lotro.maps.data.io.xml.CategoriesXMLParser;
 import delta.games.lotro.maps.data.io.xml.CategoriesXMLWriter;
 import delta.games.lotro.maps.data.io.xml.MapXMLWriter;
 import delta.games.lotro.maps.data.markers.GlobalMarkersManager;
+import delta.games.lotro.maps.data.markers.MarkersFinder;
 
 /**
  * Maps manager.
@@ -25,6 +26,7 @@ public class MapsManager
   private HashMap<String,MapBundle> _maps;
   private CategoriesManager _categoriesManager;
   private GlobalMarkersManager _markersManager;
+  private MarkersFinder _markersFinder;
 
   /**
    * Constructor.
@@ -37,6 +39,7 @@ public class MapsManager
     _categoriesManager=new CategoriesManager();
     File markersDir=new File(_rootDir,"markers");
     _markersManager=new GlobalMarkersManager(markersDir);
+    _markersFinder=new MarkersFinder(_rootDir,_markersManager);
   }
 
   /**
@@ -64,6 +67,15 @@ public class MapsManager
   public GlobalMarkersManager getMarkersManager()
   {
     return _markersManager;
+  }
+
+  /**
+   * Get the markers finder.
+   * @return the markers finder.
+   */
+  public MarkersFinder getMarkersFinder()
+  {
+    return _markersFinder;
   }
 
   /**

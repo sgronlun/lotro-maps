@@ -16,28 +16,17 @@ import delta.games.lotro.maps.data.markers.index.MarkersIndexesManager;
  */
 public class MarkersFinder
 {
-  private static MarkersFinder _instance=new MarkersFinder();
-
   private GlobalMarkersManager _markersMgr;
   private MarkersIndexesManager _indexsMgr;
 
   /**
-   * Get the sole instance of this class.
-   * @return the sole instance of this class.
-   */
-  public static MarkersFinder getInstance()
-  {
-    return _instance;
-  }
-
-  /**
    * Constructor.
+   * @param rootDir Root maps directory.
+   * @param markersMgr Markers manager.
    */
-  public MarkersFinder()
+  public MarkersFinder(File rootDir, GlobalMarkersManager markersMgr)
   {
-    File rootDir=new File("../lotro-maps-db");
-    File markersDir=new File(rootDir,"markers");
-    _markersMgr=new GlobalMarkersManager(markersDir);
+    _markersMgr=markersMgr;
     _indexsMgr=new MarkersIndexesManager(rootDir);
   }
 

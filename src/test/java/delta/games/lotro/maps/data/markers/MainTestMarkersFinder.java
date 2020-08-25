@@ -1,7 +1,9 @@
 package delta.games.lotro.maps.data.markers;
 
+import java.io.File;
 import java.util.List;
 
+import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
 
 /**
@@ -16,7 +18,9 @@ public class MainTestMarkersFinder
    */
   public static void main(String[] args)
   {
-    MarkersFinder finder=MarkersFinder.getInstance();
+    File rootDir=new File("../lotro-maps-db");
+    MapsManager mapsManager=new MapsManager(rootDir);
+    MarkersFinder finder=mapsManager.getMarkersFinder();
     //int zoneId=1879232928; // Stangard
     //int contentLayer=0;
     int zoneId=1879198510; // The Twenty-first Hall
