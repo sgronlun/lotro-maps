@@ -15,7 +15,6 @@ import delta.games.lotro.maps.data.GeoreferencedBasemap;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapLink;
 import delta.games.lotro.maps.data.Marker;
-import delta.games.lotro.maps.data.MarkersManager;
 
 /**
  * Writes a map bundle to an XML file.
@@ -37,7 +36,7 @@ public class MapXMLWriter
     boolean mapOk=writeMapFile(mapFile,bundle.getMap(),encoding);
     // Markers
     File markersFile=new File(rootDir,"markers.xml");
-    boolean markersOk=writeMarkersFile(markersFile,bundle.getData(),encoding);
+    boolean markersOk=writeMarkersFile(markersFile,bundle.getData().getAllMarkers(),encoding);
     // Links
     File linksFile=new File(rootDir,"links.xml");
     boolean linksOk=writeLinksFile(linksFile,bundle.getLinks(),encoding);
@@ -178,7 +177,7 @@ public class MapXMLWriter
    * @param encoding Encoding to use.
    * @return <code>true</code> if it succeeds, <code>false</code> otherwise.
    */
-  public static boolean writeMarkersFile(File outFile, final MarkersManager markers, String encoding)
+  public static boolean writeMarkersFile(File outFile, final List<Marker> markers, String encoding)
   {
     XmlFileWriterHelper helper=new XmlFileWriterHelper();
     XmlWriter writer=new XmlWriter()
@@ -196,14 +195,13 @@ public class MapXMLWriter
   /**
    * Write a markers structure to the given XML stream.
    * @param hd XML output stream.
-   * @param markersManager Markers to write.
+   * @param markers Markers to write.
    * @throws Exception
    */
-  private static void writeMarkers(TransformerHandler hd, MarkersManager markersManager) throws Exception
+  private static void writeMarkers(TransformerHandler hd, List<Marker> markers) throws Exception
   {
     AttributesImpl attrs=new AttributesImpl();
     hd.startElement("","",MapXMLConstants.MARKERS_TAG,attrs);
-    List<Marker> markers=markersManager.getAllMarkers();
     for(Marker marker : markers)
     {
       AttributesImpl markerAttrs=new AttributesImpl();

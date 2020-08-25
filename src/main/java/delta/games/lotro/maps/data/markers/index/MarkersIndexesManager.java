@@ -1,10 +1,11 @@
 package delta.games.lotro.maps.data.markers.index;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import delta.common.utils.text.EncodingNames;
+import delta.games.lotro.maps.data.markers.index.io.xml.MarkersIndexXMLWriter;
 
 /**
  * Manager for all marker indexes.
@@ -12,14 +13,19 @@ import java.util.Map;
  */
 public class MarkersIndexesManager
 {
-  private Map<Integer,DIDMarkersIndex> _didIndexes;
+  private File _rootDir;
+  private Map<Integer,MarkersIndex> _didIndexes;
+  private Map<Integer,MarkersIndex> _contentLayerIndexes;
 
   /**
    * Constructor.
+   * @param rootDir Root directory.
    */
-  public MarkersIndexesManager()
+  public MarkersIndexesManager(File rootDir)
   {
-    _didIndexes=new HashMap<Integer,DIDMarkersIndex>();
+    _rootDir=rootDir;
+    _didIndexes=new HashMap<Integer,MarkersIndex>();
+    _contentLayerIndexes=new HashMap<Integer,MarkersIndex>();
   }
 
   /**
@@ -29,26 +35,72 @@ public class MarkersIndexesManager
    * it does not exist.
    * @return An index or <code>null</code>.
    */
-  public DIDMarkersIndex getDidIndex(int did, boolean createIfNecessary)
+  public MarkersIndex getDidIndex(int did, boolean createIfNecessary)
   {
     Integer key=Integer.valueOf(did);
-    DIDMarkersIndex index=_didIndexes.get(key);
+    MarkersIndex index=_didIndexes.get(key);
     if ((index==null) && (createIfNecessary))
     {
-      index=new DIDMarkersIndex(did);
+      index=new MarkersIndex(did);
       _didIndexes.put(key,index);
     }
     return index;
   }
 
   /**
-   * Get the managed DIDs.
-   * @return An ordered list of DIDs.
+   * Get an index for a content layer.
+   * @param contentLayerId Content layer to use.
+   * @param createIfNecessary Indicates if the index shall be created if
+   * it does not exist.
+   * @return An index or <code>null</code>.
    */
-  public List<Integer> getDids()
+  public MarkersIndex getContentLayerIndex(int contentLayerId, boolean createIfNecessary)
   {
-    List<Integer> dids=new ArrayList<Integer>(_didIndexes.keySet());
-    Collections.sort(dids);
-    return dids;
+    Integer key=Integer.valueOf(contentLayerId);
+    MarkersIndex index=_contentLayerIndexes.get(key);
+    if ((index==null) && (createIfNecessary))
+    {
+      index=new MarkersIndex(contentLayerId);
+      _contentLayerIndexes.put(key,index);
+    }
+    return index;
   }
+
+  /**
+   * Write the managed indexes.
+   */
+  public void writeIndexes()
+  {
+    MarkersIndexXMLWriter writer=new MarkersIndexXMLWriter();
+    // DID indexes
+    for(Map.Entry<Integer,MarkersIndex> entry : _didIndexes.entrySet())
+    {
+      int did=entry.getKey().intValue();
+      MarkersIndex index=entry.getValue();
+      File to=getFileForDidIndex(did);
+      writer.write(to,index,EncodingNames.UTF_8);
+    }
+    // Content layers indexes
+    for(Map.Entry<Integer,MarkersIndex> entry : _contentLayerIndexes.entrySet())
+    {
+      int contentLayerId=entry.getKey().intValue();
+      MarkersIndex index=entry.getValue();
+      File to=getFileForContentLayerIndex(contentLayerId);
+      writer.write(to,index,EncodingNames.UTF_8);
+    }
+  }
+
+ private File getFileForDidIndex(int did)
+  {
+    File indexsDir=new File(_rootDir,"indexes");
+    File didIndexsDir=new File(indexsDir,"did");
+    return new File(didIndexsDir,did+".xml");
+  }
+
+ private File getFileForContentLayerIndex(int contentLayerId)
+ {
+   File indexsDir=new File(_rootDir,"indexes");
+   File layerIndexsDir=new File(indexsDir,"layers");
+   return new File(layerIndexsDir,contentLayerId+".xml");
+ }
 }

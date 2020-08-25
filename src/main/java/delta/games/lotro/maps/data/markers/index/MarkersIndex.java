@@ -6,30 +6,31 @@ import java.util.List;
 import delta.games.lotro.maps.data.Marker;
 
 /**
- * Index for markers associated to a single DID.
+ * Index for markers associated to a single integer value (parent zone ID, content layer, ...).
  * @author DAM
  */
-public class DIDMarkersIndex
+public class MarkersIndex
 {
-  private int _did;
+  private int _key;
   private List<Marker> _markers;
 
   /**
    * Constructor.
-   * @param did Managed DID.
+   * @param key Managed key.
    */
-  public DIDMarkersIndex(int did)
+  public MarkersIndex(int key)
   {
+    _key=key;
     _markers=new ArrayList<Marker>();
   }
 
   /**
-   * Get the managed DID.
-   * @return a DID.
+   * Get the managed key.
+   * @return a key.
    */
-  public int getDid()
+  public int getKey()
   {
-    return _did;
+    return _key;
   }
 
   /**
