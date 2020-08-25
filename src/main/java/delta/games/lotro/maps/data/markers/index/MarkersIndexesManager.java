@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import delta.common.utils.text.EncodingNames;
+import delta.games.lotro.maps.data.markers.index.io.xml.MarkersIndexXMLParser;
 import delta.games.lotro.maps.data.markers.index.io.xml.MarkersIndexXMLWriter;
 
 /**
@@ -41,7 +42,15 @@ public class MarkersIndexesManager
     MarkersIndex index=_didIndexes.get(key);
     if ((index==null) && (createIfNecessary))
     {
-      index=new MarkersIndex(did);
+      File from=getFileForDidIndex(did);
+      if (from.exists())
+      {
+        index=loadIndex(from);
+      }
+      else
+      {
+        index=new MarkersIndex(did);
+      }
       _didIndexes.put(key,index);
     }
     return index;
@@ -60,7 +69,15 @@ public class MarkersIndexesManager
     MarkersIndex index=_contentLayerIndexes.get(key);
     if ((index==null) && (createIfNecessary))
     {
-      index=new MarkersIndex(contentLayerId);
+      File from=getFileForContentLayerIndex(contentLayerId);
+      if (from.exists())
+      {
+        index=loadIndex(from);
+      }
+      else
+      {
+        index=new MarkersIndex(contentLayerId);
+      }
       _contentLayerIndexes.put(key,index);
     }
     return index;
@@ -90,7 +107,14 @@ public class MarkersIndexesManager
     }
   }
 
- private File getFileForDidIndex(int did)
+  private MarkersIndex loadIndex(File from)
+  {
+    MarkersIndexXMLParser parser=new MarkersIndexXMLParser();
+    MarkersIndex index=parser.parseXML(from);
+    return index;
+  }
+
+  private File getFileForDidIndex(int did)
   {
     File indexsDir=new File(_rootDir,"indexes");
     File didIndexsDir=new File(indexsDir,"did");

@@ -1,6 +1,7 @@
 package delta.games.lotro.maps.data.markers.index.io.xml;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -10,8 +11,6 @@ import org.xml.sax.helpers.AttributesImpl;
 
 import delta.common.utils.io.xml.XmlFileWriterHelper;
 import delta.common.utils.io.xml.XmlWriter;
-import delta.games.lotro.maps.data.Marker;
-import delta.games.lotro.maps.data.markers.comparators.MarkerIdentifierComparator;
 import delta.games.lotro.maps.data.markers.index.MarkersIndex;
 
 /**
@@ -55,14 +54,13 @@ public class MarkersIndexXMLWriter
     attrs.addAttribute("","",MarkersIndexXMLConstants.INDEX_KEY_ATTR,XmlWriter.CDATA,String.valueOf(key));
     hd.startElement("","",MarkersIndexXMLConstants.INDEX_TAG,attrs);
 
-    List<Marker> markers=index.getMarkers();
-    Collections.sort(markers,new MarkerIdentifierComparator());
-    for(Marker marker : markers)
+    List<Integer> markerIds=new ArrayList<Integer>(index.getMarkers());
+    Collections.sort(markerIds);
+    for(Integer markerId : markerIds)
     {
       AttributesImpl markerAttrs=new AttributesImpl();
       // Identifier
-      int identifer=marker.getId();
-      markerAttrs.addAttribute("","",MarkersIndexXMLConstants.MARKER_ID_ATTR,XmlWriter.CDATA,String.valueOf(identifer));
+      markerAttrs.addAttribute("","",MarkersIndexXMLConstants.MARKER_ID_ATTR,XmlWriter.CDATA,markerId.toString());
       hd.startElement("","",MarkersIndexXMLConstants.MARKER_TAG,markerAttrs);
       hd.endElement("","",MarkersIndexXMLConstants.MARKER_TAG);
     }

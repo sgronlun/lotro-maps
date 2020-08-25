@@ -1,9 +1,7 @@
 package delta.games.lotro.maps.data.markers.index;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import delta.games.lotro.maps.data.Marker;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Index for markers associated to a single integer value (parent zone ID, content layer, ...).
@@ -12,7 +10,7 @@ import delta.games.lotro.maps.data.Marker;
 public class MarkersIndex
 {
   private int _key;
-  private List<Marker> _markers;
+  private Set<Integer> _markers;
 
   /**
    * Constructor.
@@ -21,7 +19,7 @@ public class MarkersIndex
   public MarkersIndex(int key)
   {
     _key=key;
-    _markers=new ArrayList<Marker>();
+    _markers=new TreeSet<Integer>();
   }
 
   /**
@@ -35,20 +33,20 @@ public class MarkersIndex
 
   /**
    * Get the markers.
-   * @return a list of markers.
+   * @return a set of markers.
    */
-  public List<Marker> getMarkers()
+  public Set<Integer> getMarkers()
   {
     return _markers;
   }
 
   /**
    * Add a marker.
-   * @param marker Marker to add.
+   * @param markerId Marker to add.
    */
-  public void addMarker(Marker marker)
+  public void addMarker(int markerId)
   {
-    _markers.add(marker);
+    _markers.add(Integer.valueOf(markerId));
   }
 
   /**
