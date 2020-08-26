@@ -98,6 +98,15 @@ public class MapCanvas extends JPanel implements MapView
     }
   }
 
+  /**
+   * Get a list of all managed layers.
+   * @return A list of layers.
+   */
+  public List<Layer> getLayers()
+  {
+    return _layers;
+  }
+
   @Override
   public MapBundle getCurrentMap()
   {
@@ -131,8 +140,13 @@ public class MapCanvas extends JPanel implements MapView
    */
   public void setMap(String key)
   {
-    // Load map data
-    _currentMap=_mapsManager.getMapByKey(key);
+    // Get map
+    MapBundle map=_mapsManager.getMapByKey(key);
+    if (map==null)
+    {
+      return;
+    }
+    _currentMap=map;
     // Set base map
     _basemapLayer.setMap(_currentMap.getMap());
     // Set reference

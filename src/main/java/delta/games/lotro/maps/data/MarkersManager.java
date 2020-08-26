@@ -83,11 +83,14 @@ public class MarkersManager
   public static List<Marker> getFilteredMarkers(Filter<Marker> filter, List<Marker> markers)
   {
     List<Marker> ret=new ArrayList<Marker>();
-    for(Marker marker : markers)
+    if (markers!=null)
     {
-      if ((filter==null) || (filter.accept(marker)))
+      for(Marker marker : markers)
       {
-        ret.add(marker);
+        if ((filter==null) || (filter.accept(marker)))
+        {
+          ret.add(marker);
+        }
       }
     }
     return ret;

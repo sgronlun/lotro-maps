@@ -60,7 +60,7 @@ public class MapChooserController
     {
       public void itemSelected(MapBundle item)
       {
-        _parent.mapChangeRequest(item.getKey());
+        _parent.requestMap(item.getKey());
       }
     };
     combo.addListener(listener);

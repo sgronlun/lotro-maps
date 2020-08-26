@@ -109,7 +109,11 @@ public class NavigationManager
     }
   }
 
-  private void requestMap(String key)
+  /**
+   * Request a map change.
+   * @param key Key of the map to show.
+   */
+  public void requestMap(String key)
   {
     for(NavigationListener navigationListener : _navigationListeners)
     {

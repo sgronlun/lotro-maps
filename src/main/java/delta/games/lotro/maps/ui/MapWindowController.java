@@ -5,6 +5,7 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.List;
 
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -18,8 +19,11 @@ import delta.common.ui.swing.combobox.ComboBoxItem;
 import delta.common.ui.swing.windows.DefaultWindowController;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
+import delta.games.lotro.maps.data.Marker;
 import delta.games.lotro.maps.ui.filter.MapFilterPanelController;
 import delta.games.lotro.maps.ui.filter.MapMarkersFilter;
+import delta.games.lotro.maps.ui.layers.MarkersLayer;
+import delta.games.lotro.maps.ui.layers.SimpleMarkersProvider;
 
 /**
  * Controller for a map window.
@@ -32,6 +36,8 @@ public class MapWindowController extends DefaultWindowController implements Navi
    */
   public static final String IDENTIFIER="MAP";
 
+  // Data
+  private SimpleMarkersProvider _markersProvider;
   // Controllers
   private MapPanelController _mapPanel;
   private MapFilterPanelController _filter;
@@ -46,14 +52,38 @@ public class MapWindowController extends DefaultWindowController implements Navi
   {
     _mapPanel=new MapPanelController(mapsManager);
     // Navigation support
-    _navigation=new NavigationManager(_mapPanel.getCanvas());
-    _navigation.getNavigationListeners().addListener(this);
+    MapCanvas canvas=_mapPanel.getCanvas();
+    _navigation=new NavigationManager(canvas);
+    addNavigationListener(this);
     // Markers filter
     MapMarkersFilter filter=new MapMarkersFilter();
     _filter=new MapFilterPanelController(mapsManager,filter,_mapPanel);
-    _mapPanel.getMarkersLayer().setFilter(filter);
+    // Markers layer
+    MarkerIconProvider iconsProvider=new DefaultMarkerIconsProvider(mapsManager);
+    _markersProvider=new SimpleMarkersProvider();
+    MarkersLayer markersLayer=new MarkersLayer(canvas,iconsProvider,_markersProvider);
+    markersLayer.setFilter(filter);
+    canvas.addLayer(markersLayer);
     // Map chooser
     _mapChooser=new MapChooserController(this,mapsManager);
+  }
+
+  /**
+   * Add a navigation listener.
+   * @param listener Listener to add.
+   */
+  public void addNavigationListener(NavigationListener listener)
+  {
+    _navigation.getNavigationListeners().addListener(listener);
+  }
+
+  /**
+   * Request a map change.
+   * @param key Key of the map to show.
+   */
+  public void requestMap(String key)
+  {
+    _navigation.requestMap(key);
   }
 
   @Override
@@ -68,6 +98,15 @@ public class MapWindowController extends DefaultWindowController implements Navi
       _mapChooser.selectMap(key);
       pack();
     }
+  }
+
+  /**
+   * Set the markers for the current map.
+   * @param markers Markers to show.
+   */
+  public void setMarkers(List<Marker> markers)
+  {
+    _markersProvider.setMarkers(markers);
   }
 
   @Override

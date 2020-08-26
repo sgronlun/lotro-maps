@@ -8,7 +8,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.util.List;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLayeredPane;
@@ -17,12 +16,9 @@ import javax.swing.SwingUtilities;
 
 import delta.common.ui.swing.GuiFactory;
 import delta.common.ui.swing.labels.LabelWithHalo;
-import delta.common.utils.NumericTools;
 import delta.games.lotro.maps.data.MapsManager;
-import delta.games.lotro.maps.data.Marker;
-import delta.games.lotro.maps.data.markers.MarkersFinder;
-import delta.games.lotro.maps.ui.layers.AbstractMarkersLayer;
-import delta.games.lotro.maps.ui.layers.AreaMarkersLayer;
+import delta.games.lotro.maps.ui.layers.Layer;
+import delta.games.lotro.maps.ui.layers.MarkersLayer;
 import delta.games.lotro.maps.ui.location.MapLocationController;
 import delta.games.lotro.maps.ui.location.MapLocationPanelController;
 
@@ -38,10 +34,7 @@ import delta.games.lotro.maps.ui.location.MapLocationPanelController;
 public class MapPanelController
 {
   // Data
-  private MapsManager _mapsManager;
   private MapCanvas _canvas;
-  // Layers
-  private AreaMarkersLayer _markersLayer;
   // Controllers
   private MapLocationController _locationController;
   private MapLocationPanelController _locationDisplay;
@@ -55,11 +48,7 @@ public class MapPanelController
    */
   public MapPanelController(MapsManager mapsManager)
   {
-    _mapsManager=mapsManager;
     _canvas=new MapCanvas(mapsManager);
-    // Layers
-    _markersLayer=new AreaMarkersLayer(mapsManager,_canvas);
-    _canvas.addLayer(_markersLayer);
     // Init zoom controller
     initZoomController();
     // Init pan controller
@@ -80,15 +69,6 @@ public class MapPanelController
     // - labeled checkbox
     _labeled=buildLabeledCheckboxPanel();
     _layers.add(_labeled,Integer.valueOf(1),0);
-  }
-
-  /**
-   * Get the managed layer for markers.
-   * @return a markers layer.
-   */
-  public AbstractMarkersLayer getMarkersLayer()
-  {
-    return _markersLayer;
   }
 
   private void initZoomController()
@@ -173,12 +153,24 @@ public class MapPanelController
     {
       public void actionPerformed(ActionEvent e)
       {
-        _markersLayer.useLabels(labeled.isSelected());
+        useLabels(labeled.isSelected());
         _canvas.repaint();
       }
     };
     labeled.addActionListener(al);
     return panel;
+  }
+
+  private void useLabels(boolean useLabels)
+  {
+    for(Layer layer : _canvas.getLayers())
+    {
+      if (layer instanceof MarkersLayer)
+      {
+        MarkersLayer markersLayer=(MarkersLayer)layer;
+        markersLayer.useLabels(useLabels);
+      }
+    }
   }
 
   /**
@@ -220,16 +212,7 @@ public class MapPanelController
     // Place 'labeled' checkbox
     _labeled.setLocation(55,17);
     _labeled.setSize(_labeled.getPreferredSize());
-    loadMarkers(key);
     _canvas.repaint();
-  }
-
-  private void loadMarkers(String key)
-  {
-    Integer zoneId=NumericTools.parseInteger(key);
-    MarkersFinder finder=_mapsManager.getMarkersFinder();
-    List<Marker> markers=finder.findMarkers(zoneId.intValue(),0);
-    _markersLayer.setMarkers(markers);
   }
 
   private Dimension fitInSize(Dimension maxSize)
@@ -265,10 +248,7 @@ public class MapPanelController
   public void dispose()
   {
     // Data
-    _mapsManager=null;
     _canvas=null;
-    // Layers
-    _markersLayer=null;
     // Controllers
     if (_locationDisplay!=null)
     {

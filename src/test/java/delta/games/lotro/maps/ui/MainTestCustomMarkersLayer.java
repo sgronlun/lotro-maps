@@ -1,16 +1,19 @@
 package delta.games.lotro.maps.ui;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
 
 import delta.common.utils.collections.filters.Filter;
+import delta.games.lotro.maps.data.GeoreferencedBasemap;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
 import delta.games.lotro.maps.data.MarkersManager;
-import delta.games.lotro.maps.ui.layers.CustomMarkersLayers;
+import delta.games.lotro.maps.ui.layers.MarkersLayer;
+import delta.games.lotro.maps.ui.layers.SimpleMarkersProvider;
 
 /**
  * Test class for the custom markers layer.
@@ -20,11 +23,16 @@ public class MainTestCustomMarkersLayer
 {
   private static List<Marker> getMarkers(String mapKey, final String name)
   {
-   File rootDir=new File("../lotro-maps-db");
+    List<Marker> ret=new ArrayList<Marker>();
+    File rootDir=new File("../lotro-maps-db");
     MapsManager mapsManager=new MapsManager(rootDir);
     mapsManager.load();
 
     MapBundle map=mapsManager.getMapByKey(mapKey);
+    if (map==null)
+    {
+      return ret;
+    }
     MarkersManager markers=map.getData();
     Filter<Marker> filter=new Filter<Marker>() {
 
@@ -38,7 +46,7 @@ public class MainTestCustomMarkersLayer
         return false;
       }
     };
-    List<Marker> ret=markers.getMarkers(filter);
+    ret.addAll(markers.getMarkers(filter));
     return ret;
   }
 
@@ -57,12 +65,13 @@ public class MainTestCustomMarkersLayer
     panel.setMap(key);
     MapCanvas canvas=panel.getCanvas();
     MarkerIconProvider customIconProvider=new CompletedOrNotMarkerIconProvider();
-    CustomMarkersLayers custom=new CustomMarkersLayers(customIconProvider,canvas);
-    List<Marker> markers=getMarkers("northern_mirkwood","Dwarf marker");
-    custom.setMarkers(markers);
+    SimpleMarkersProvider markersProvider=new SimpleMarkersProvider();
+    List<Marker> markers=getMarkers(key,"Dwarf marker");
+    markersProvider.setMarkers(markers);
+    MarkersLayer custom=new MarkersLayer(canvas,customIconProvider,markersProvider);
     canvas.addLayer(custom);
-    canvas.removeLayer(panel.getMarkersLayer());
-    String mapTitle=panel.getCanvas().getMap().getName();
+    GeoreferencedBasemap map=panel.getCanvas().getMap();
+    String mapTitle=(map!=null)?map.getName():"?";
 
     JFrame f=new JFrame();
     f.setTitle(mapTitle);
