@@ -1,19 +1,10 @@
 package delta.games.lotro.maps.data.markers;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import delta.common.utils.text.EncodingNames;
-import delta.games.lotro.maps.data.GeoBox;
 import delta.games.lotro.maps.data.Marker;
-import delta.games.lotro.maps.data.MarkersManager;
-import delta.games.lotro.maps.data.io.MapsIO;
-import delta.games.lotro.maps.data.io.xml.MapXMLWriter;
-import delta.games.lotro.maps.data.markers.comparators.MarkerIdentifierComparator;
 
 /**
  * Facade to access to all markers.
@@ -21,10 +12,9 @@ import delta.games.lotro.maps.data.markers.comparators.MarkerIdentifierComparato
  */
 public class GlobalMarkersManager
 {
-  private Map<Integer,Marker> _markers;
-  private boolean _loaded;
-
+  private Map<String,BlockMarkersManager> _cache;
   private File _rootDir;
+  private static final int BLOCK_SIZE=16;
 
   /**
    * Constructor.
@@ -33,8 +23,29 @@ public class GlobalMarkersManager
   public GlobalMarkersManager(File rootDir)
   {
     _rootDir=rootDir;
-    _markers=new HashMap<Integer,Marker>();
-    _loaded=false;
+    _cache=new HashMap<String,BlockMarkersManager>();
+  }
+
+  /**
+   * Get the block manager for a given zone.
+   * @param region Region.
+   * @param xBlock X block coordinate.
+   * @param yBlock Y block coordinate.
+   * @return A markers manager.
+   */
+  public BlockMarkersManager getBlockManager(int region, int xBlock, int yBlock)
+  {
+    String key=getKey(region,xBlock,yBlock);
+    BlockMarkersManager blockManager=_cache.get(key);
+    if (blockManager==null)
+    {
+      File blockFile=getBlockFile(region,xBlock,yBlock);
+      int firstId=getFirstId(region,xBlock,yBlock);
+      blockManager=new BlockMarkersManager(blockFile,firstId);
+      blockManager.load();
+      _cache.put(key,blockManager);
+    }
+    return blockManager;
   }
 
   /**
@@ -44,62 +55,59 @@ public class GlobalMarkersManager
    */
   public Marker getMarkerById(int markerId)
   {
-    ensureLoaded();
-    return _markers.get(Integer.valueOf(markerId));
+    BlockMarkersManager blockManager=getBlockForMarker(markerId);
+    return blockManager.getMarkerById(markerId);
   }
 
   /**
    * Register a marker.
    * @param marker Marker to add.
+   * @param region Region code.
+   * @param landblockX Landblock X.
+   * @param landblockY Landblock Y.
    */
-  public void registerMarker(Marker marker)
+  public void registerMarker(Marker marker, int region, int landblockX, int landblockY)
   {
-    Integer key=Integer.valueOf(marker.getId());
-    _markers.put(key,marker);
+    BlockMarkersManager blockManager=getBlockManager(region,landblockX/BLOCK_SIZE,landblockY/BLOCK_SIZE);
+    blockManager.registerMarker(marker);
+  }
+
+  private static int getFirstId(int region, int xBlock, int yBlock)
+  {
+    int id=region<<28;
+    id+=(xBlock<<24);
+    id+=(yBlock<<20);
+    return id;
+  }
+
+  private BlockMarkersManager getBlockForMarker(int markerId)
+  {
+    int region=(markerId&0x30000000)>>28;
+    int xBlock=(markerId&0xF000000)>>24;
+    int yBlock=(markerId&0xF00000)>>20;
+    BlockMarkersManager blockManager=getBlockManager(region,xBlock,yBlock);
+    return blockManager;
   }
 
   /**
-   * Get all the markers found in the given geographic box.
-   * @param box Box to use.
-   * @return A possibly empty but never <code>null</code> list of markers.
-   */
-  public List<Marker> getMarkers(GeoBox box)
-  {
-    ensureLoaded();
-    List<Marker> ret=new ArrayList<Marker>();
-    for(Marker marker : _markers.values())
-    {
-      if (box.isInBox(marker.getPosition()))
-      {
-        ret.add(marker);
-      }
-    }
-    return ret;
-  }
-
-  private void ensureLoaded()
-  {
-    if (_loaded)
-    {
-      return;
-    }
-    File markersFile=new File(_rootDir,"markers.xml");
-    MarkersManager allMarkers=MapsIO.loadMarkers(markersFile);
-    for(Marker marker : allMarkers.getAllMarkers())
-    {
-      registerMarker(marker);
-    }
-    _loaded=true;
-  }
-
-  /**
-   * Write the markers file.
+   * Write the markers files.
    */
   public void write()
   {
-    File markersFile=new File(_rootDir,"markers.xml");
-    List<Marker> markers=new ArrayList<Marker>(_markers.values());
-    Collections.sort(markers,new MarkerIdentifierComparator());
-    MapXMLWriter.writeMarkersFile(markersFile,markers,EncodingNames.UTF_8);
+    for(BlockMarkersManager blockManager : _cache.values())
+    {
+      blockManager.write();
+    }
+  }
+
+  private File getBlockFile(int region, int xBlock, int yBlock)
+  {
+    String fileName="markers-"+getKey(region,xBlock,yBlock)+".xml";
+    return new File(_rootDir,fileName);
+  }
+
+  private String getKey(int region, int xBlock, int yBlock)
+  {
+    return region+"-"+xBlock+"-"+yBlock;
   }
 }
