@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import delta.common.utils.text.EncodingNames;
 import delta.games.lotro.maps.data.Marker;
 import delta.games.lotro.maps.data.MarkersManager;
@@ -20,6 +22,8 @@ import delta.games.lotro.maps.data.markers.comparators.MarkerIdentifierComparato
  */
 public class BlockMarkersManager
 {
+  private static final Logger LOGGER=Logger.getLogger(BlockMarkersManager.class);
+
   private Map<Integer,Marker> _markers;
   private File _markersFile;
   private int _firstId;
@@ -77,7 +81,7 @@ public class BlockMarkersManager
    */
   public void load()
   {
-    System.out.println("Loading: "+_markersFile);
+    LOGGER.debug("Loading markers from file: "+_markersFile);
     clear();
     if (_markersFile.exists())
     {
@@ -87,6 +91,7 @@ public class BlockMarkersManager
         registerMarker(marker);
       }
     }
+    LOGGER.debug("Loaded "+_markers.size()+" markers.");
   }
 
   /**
