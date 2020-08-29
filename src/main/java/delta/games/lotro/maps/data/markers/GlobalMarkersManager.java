@@ -82,7 +82,7 @@ public class GlobalMarkersManager
 
   private BlockMarkersManager getBlockForMarker(int markerId)
   {
-    int region=(markerId&0x30000000)>>28;
+    int region=(markerId&0x70000000)>>28;
     int xBlock=(markerId&0xF000000)>>24;
     int yBlock=(markerId&0xF00000)>>20;
     BlockMarkersManager blockManager=getBlockManager(region,xBlock,yBlock);
