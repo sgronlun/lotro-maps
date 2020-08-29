@@ -1,54 +1,62 @@
 package delta.games.lotro.maps.data.markers.index.io.xml;
 
 import java.io.File;
-import java.util.List;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
-import delta.common.utils.xml.DOMParsingTools;
+import org.apache.log4j.Logger;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+import delta.common.utils.NumericTools;
 import delta.games.lotro.maps.data.markers.index.MarkersIndex;
 
 /**
  * Parser for the markers indexes stored in XML.
  * @author DAM
  */
-public class MarkersIndexXMLParser
+public class MarkersIndexXMLParser extends DefaultHandler
 {
+  private static final Logger LOGGER=Logger.getLogger(MarkersIndexXMLParser.class);
+
+  private MarkersIndex _index;
+
   /**
    * Parse the XML file.
    * @param source Source file.
+   * @param key Index key.
    * @return Parsed index or <code>null</code>.
    */
-  public MarkersIndex parseXML(File source)
+  public MarkersIndex parseXML(File source, int key)
   {
-    MarkersIndex index=null;
-    Element root=DOMParsingTools.parse(source);
-    if (root!=null)
+    _index=new MarkersIndex(key);
+    try
     {
-      index=parseIndex(root);
+      // Use the default (non-validating) parser
+      SAXParserFactory factory = SAXParserFactory.newInstance();
+      SAXParser saxParser = factory.newSAXParser();
+      saxParser.parse(source, this);
+      saxParser.reset();
+      return _index;
     }
-    return index;
+    catch(Exception e)
+    {
+      LOGGER.error("Error when loading markers index file " + source, e);
+    }
+    return null;
   }
 
-  /**
-   * Build a markers index from an XML tag.
-   * @param rootTag Root tag.
-   * @return A markers index.
-   */
-  private MarkersIndex parseIndex(Element rootTag)
+  @Override
+  public void startElement(String uri, String localName, String qualifiedName, Attributes attributes)
+          throws SAXException
   {
-    NamedNodeMap attrs=rootTag.getAttributes();
-    // Key
-    int key=DOMParsingTools.getIntAttribute(attrs,MarkersIndexXMLConstants.INDEX_KEY_ATTR,0);
-    MarkersIndex index=new MarkersIndex(key);
-    // Values
-    List<Element> markerTags=DOMParsingTools.getChildTagsByName(rootTag,MarkersIndexXMLConstants.MARKER_TAG);
-    for(Element markerTag : markerTags)
+    if (MarkersIndexXMLConstants.MARKER_TAG.equals(qualifiedName))
     {
-      int markerId=DOMParsingTools.getIntAttribute(markerTag.getAttributes(),MarkersIndexXMLConstants.MARKER_ID_ATTR,0);
-      index.addMarker(markerId);
+      String markerIdStr=attributes.getValue(MarkersIndexXMLConstants.MARKER_ID_ATTR);
+      int markerId=NumericTools.parseInt(markerIdStr,-1);
+      _index.addMarker(markerId);
     }
-    return index;
   }
 }

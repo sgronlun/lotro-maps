@@ -45,7 +45,7 @@ public class MarkersIndexesManager
       File from=getFileForDidIndex(did);
       if (from.exists())
       {
-        index=loadIndex(from);
+        index=loadIndex(from,did);
       }
       else
       {
@@ -72,7 +72,7 @@ public class MarkersIndexesManager
       File from=getFileForContentLayerIndex(contentLayerId);
       if (from.exists())
       {
-        index=loadIndex(from);
+        index=loadIndex(from,contentLayerId);
       }
       else
       {
@@ -107,10 +107,10 @@ public class MarkersIndexesManager
     }
   }
 
-  private MarkersIndex loadIndex(File from)
+  private MarkersIndex loadIndex(File from, int key)
   {
     MarkersIndexXMLParser parser=new MarkersIndexXMLParser();
-    MarkersIndex index=parser.parseXML(from);
+    MarkersIndex index=parser.parseXML(from,key);
     return index;
   }
 
