@@ -17,6 +17,8 @@ import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
 import delta.games.lotro.maps.data.comparators.MarkerNameComparator;
+import delta.games.lotro.maps.data.view.BoundedZoomFilter;
+import delta.games.lotro.maps.data.view.ZoomFilter;
 import delta.games.lotro.maps.ui.layers.BasemapLayer;
 import delta.games.lotro.maps.ui.layers.Layer;
 import delta.games.lotro.maps.ui.layers.LayerPriorityComparator;
@@ -34,7 +36,9 @@ public class MapCanvas extends JPanel implements MapView
 
   private MapsManager _mapsManager;
   private MapBundle _currentMap;
+  // View definition
   private GeoReference _viewReference;
+  private ZoomFilter _zoomFilter;
   // Layers
   private BasemapLayer _basemapLayer;
   private List<Layer> _layers;
@@ -151,7 +155,10 @@ public class MapCanvas extends JPanel implements MapView
     _basemapLayer.setMap(_currentMap.getMap());
     // Set reference
     GeoReference reference=_currentMap.getMap().getGeoReference();
-    _viewReference=new GeoReference(reference.getStart(),reference.getGeo2PixelFactor());
+    float geo2pixel=reference.getGeo2PixelFactor();
+    _viewReference=new GeoReference(reference.getStart(),geo2pixel);
+    // Set zoom filter
+    _zoomFilter=new BoundedZoomFilter(Float.valueOf(geo2pixel),Float.valueOf(geo2pixel*16));
     repaint();
   }
 
@@ -161,6 +168,11 @@ public class MapCanvas extends JPanel implements MapView
    */
   public void zoom(float factor)
   {
+    float newGeo2PixelFactor=_viewReference.getGeo2PixelFactor()*factor;
+    if ((_zoomFilter!=null) && (!_zoomFilter.acceptZoomLevel(newGeo2PixelFactor)))
+    {
+      return;
+    }
     int width=getWidth();
     int height=getHeight();
     //System.out.println("Zoom: "+factor);
@@ -182,7 +194,7 @@ public class MapCanvas extends JPanel implements MapView
     float lonCenter=centerGeo.getLongitude();
     GeoPoint newStart=new GeoPoint(lonCenter-newDeltaLon/2,latCenter+newDeltaLat/2);
     //System.out.println("New start geo: "+newStart);
-    _viewReference=new GeoReference(newStart,_viewReference.getGeo2PixelFactor()*factor);
+    _viewReference=new GeoReference(newStart,newGeo2PixelFactor);
     //System.out.println("New view reference: "+_viewReference);
     repaint();
   }
