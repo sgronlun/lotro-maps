@@ -193,6 +193,7 @@ public class MapCanvas extends JPanel implements MapView
     float latCenter=centerGeo.getLatitude();
     float lonCenter=centerGeo.getLongitude();
     GeoPoint newStart=new GeoPoint(lonCenter-newDeltaLon/2,latCenter+newDeltaLat/2);
+    newStart=checkNewStart(newStart,newGeo2PixelFactor);
     //System.out.println("New start geo: "+newStart);
     _viewReference=new GeoReference(newStart,newGeo2PixelFactor);
     //System.out.println("New view reference: "+_viewReference);
@@ -217,9 +218,50 @@ public class MapCanvas extends JPanel implements MapView
     float newStartLat=currentStart.getLatitude()+deltaLat;
     float newStartLon=currentStart.getLongitude()+deltaLon;
     GeoPoint newStart=new GeoPoint(newStartLon,newStartLat);
-    _viewReference=new GeoReference(newStart,_viewReference.getGeo2PixelFactor());
+    float geo2pixel=_viewReference.getGeo2PixelFactor();
+    newStart=checkNewStart(newStart,geo2pixel);
+    _viewReference=new GeoReference(newStart,geo2pixel);
     //System.out.println("New view reference: "+_viewReference);
     repaint();
+  }
+
+  private GeoPoint checkNewStart(GeoPoint newStart, float geo2Pixel)
+  {
+    GeoReference reference=_currentMap.getMap().getGeoReference();
+    // 1) Check top left
+    GeoPoint mapStart=reference.getStart();
+    // Longitude
+    float newLongitude=newStart.getLongitude();
+    if (newStart.getLongitude()<mapStart.getLongitude())
+    {
+      newLongitude=mapStart.getLongitude();
+    }
+    // Latitude
+    float newLatitude=newStart.getLatitude();
+    if (newStart.getLatitude()>mapStart.getLatitude())
+    {
+      newLatitude=mapStart.getLatitude();
+    }
+
+    // 2) Check bottom right
+    int width=getWidth();
+    float deltaLon=width/geo2Pixel;
+    int height=getHeight();
+    float deltaLat=height/geo2Pixel;
+    GeoPoint newEnd=new GeoPoint(newLongitude+deltaLon,newLatitude-deltaLat);
+    GeoBox mapBounds=getMapBounds();
+    GeoPoint mapEnd=new GeoPoint(mapBounds.getMax().getLongitude(),mapBounds.getMin().getLatitude());
+    // Longitude
+    if (newEnd.getLongitude()>mapEnd.getLongitude())
+    {
+      newLongitude=mapEnd.getLongitude()-deltaLon;
+    }
+    // Latitude
+    if (newEnd.getLatitude()<mapEnd.getLatitude())
+    {
+      newLatitude=mapEnd.getLatitude()+deltaLat;
+    }
+    return new GeoPoint(newLongitude,newLatitude);
   }
 
   @Override
