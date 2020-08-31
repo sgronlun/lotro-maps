@@ -68,6 +68,18 @@ public class MapCanvas extends JPanel implements MapView
   }
 
   /**
+   * Get geographic bounds for this view.
+   * @return some geographic bounds.
+   */
+  public GeoBox getGeoBounds()
+  {
+    GeoPoint topLeft=_viewReference.pixel2geo(new Dimension(0,0));
+    GeoPoint bottomRight=_viewReference.pixel2geo(new Dimension(getWidth(),getHeight()));
+    GeoBox box=new GeoBox(topLeft,bottomRight);
+    return box;
+  }
+
+  /**
    * Add a layer.
    * @param layer Layer to add.
    */

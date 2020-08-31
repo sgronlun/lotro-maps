@@ -1,5 +1,6 @@
 package delta.games.lotro.maps.ui;
 
+import delta.games.lotro.maps.data.GeoBox;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
@@ -15,6 +16,12 @@ public interface MapView
    * @return the current view reference.
    */
   GeoReference getViewReference();
+
+  /**
+   * Get geographic bounds for this view.
+   * @return some geographic bounds.
+   */
+  GeoBox getGeoBounds();
 
   /**
    * Get the current map bundle.
