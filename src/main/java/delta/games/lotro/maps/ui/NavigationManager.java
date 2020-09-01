@@ -146,7 +146,6 @@ public class NavigationManager
   {
     if (map!=null)
     {
-      _canvas.setMap(map.getKey());
       _currentMap=map;
     }
   }
