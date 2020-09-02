@@ -69,6 +69,15 @@ public class MapWindowController extends DefaultWindowController implements Navi
   }
 
   /**
+   * Get the managed map canvas.
+   * @return the managed map canvas.
+   */
+  public MapCanvas getMapCanvas()
+  {
+    return _mapPanel.getCanvas();
+  }
+
+  /**
    * Add a navigation listener.
    * @param listener Listener to add.
    */
