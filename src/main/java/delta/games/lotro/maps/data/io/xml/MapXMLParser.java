@@ -11,8 +11,7 @@ import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.GeoreferencedBasemap;
 import delta.games.lotro.maps.data.MapLink;
-import delta.games.lotro.maps.data.Marker;
-import delta.games.lotro.maps.data.MarkersManager;
+import delta.games.lotro.maps.data.markers.io.xml.MarkersXMLParser;
 
 /**
  * Parser for a map stored in XML.
@@ -32,7 +31,7 @@ public class MapXMLParser
     GeoreferencedBasemap map=new GeoreferencedBasemap(key);
 
     // Name
-    String name=DOMParsingTools.getStringAttribute(attrs,MapXMLConstants.LABEL_ATTR,"");
+    String name=DOMParsingTools.getStringAttribute(attrs,MapXMLConstants.MAP_LABEL_ATTR,"");
     map.setName(name);
     // Geographic reference
     Element geoTag=DOMParsingTools.getChildTagByName(root,MapXMLConstants.GEO_TAG);
@@ -42,27 +41,6 @@ public class MapXMLParser
       map.setGeoReference(geoReference);
     }
     return map;
-  }
-
-  /**
-   * Parse the markers of a map.
-   * @param root Root element.
-   * @return A markers manager.
-   */
-  public static MarkersManager parseMarkers(Element root)
-  {
-    // Markers
-    MarkersManager markersManager=new MarkersManager();
-    List<Element> markerTags=DOMParsingTools.getChildTagsByName(root,MapXMLConstants.MARKER_TAG,true);
-    for(Element markerTag : markerTags)
-    {
-      Marker marker=parseMarker(markerTag);
-      if (marker!=null)
-      {
-        markersManager.addMarker(marker);
-      }
-    }
-    return markersManager;
   }
 
   /**
@@ -101,7 +79,7 @@ public class MapXMLParser
     Element startTag=DOMParsingTools.getChildTagByName(geoTag,MapXMLConstants.POINT_TAG);
     if (startTag!=null)
     {
-      GeoPoint start=parsePoint(startTag);
+      GeoPoint start=MarkersXMLParser.parsePoint(startTag);
       ret=new GeoReference(start,factor);
     }
     return ret;
@@ -122,7 +100,7 @@ public class MapXMLParser
     GeoPoint hotPoint=null;
     if (positionTag!=null)
     {
-      hotPoint=parsePoint(positionTag);
+      hotPoint=MarkersXMLParser.parsePoint(positionTag);
     }
     MapLink link=null;
     if ((target!=null) && (hotPoint!=null))
@@ -130,47 +108,5 @@ public class MapXMLParser
       link=new MapLink(target,hotPoint);
     }
     return link;
-  }
-
-  /**
-   * Build a marker from an XML tag.
-   * @param markerTag Marker tag.
-   * @return A marker.
-   */
-  private static Marker parseMarker(Element markerTag)
-  {
-    Marker marker=new Marker();
-    NamedNodeMap attrs=markerTag.getAttributes();
-    // Identifier
-    int id=DOMParsingTools.getIntAttribute(attrs,MapXMLConstants.ID_ATTR,0);
-    marker.setId(id);
-    // Label
-    String label=DOMParsingTools.getStringAttribute(attrs,MapXMLConstants.LABEL_ATTR,"");
-    marker.setLabel(label);
-    // Category code
-    int categoryCode=DOMParsingTools.getIntAttribute(attrs,MapXMLConstants.CATEGORY_ATTR,0);
-    marker.setCategoryCode(categoryCode);
-    // DID
-    int did=DOMParsingTools.getIntAttribute(attrs,MapXMLConstants.DID_ATTR,0);
-    marker.setDid(did);
-    // Position
-    GeoPoint position=parsePoint(markerTag);
-    marker.setPosition(position);
-    return marker;
-  }
-
-  /**
-   * Build a point from an XML tag.
-   * @param pointTag Point tag.
-   * @return A point.
-   */
-  public static GeoPoint parsePoint(Element pointTag)
-  {
-    NamedNodeMap attrs=pointTag.getAttributes();
-    // Latitude
-    float latitude=DOMParsingTools.getFloatAttribute(attrs,MapXMLConstants.LATITUDE_ATTR,0);
-    // Longitude
-    float longitude=DOMParsingTools.getFloatAttribute(attrs,MapXMLConstants.LONGITUDE_ATTR,0);
-    return new GeoPoint(longitude,latitude);
   }
 }

@@ -8,7 +8,6 @@ import org.w3c.dom.Element;
 import delta.common.utils.xml.DOMParsingTools;
 import delta.games.lotro.maps.data.GeoreferencedBasemap;
 import delta.games.lotro.maps.data.MapLink;
-import delta.games.lotro.maps.data.MarkersManager;
 import delta.games.lotro.maps.data.io.xml.MapXMLParser;
 
 /**
@@ -42,36 +41,6 @@ public class MapsIO
       map=MapXMLParser.parseMap(root);
     }
     return map;
-  }
-
-  /**
-   * Load map markers from the given file.
-   * @param markersFile Markers file.
-   * @return A markers manager.
-   */
-  public static MarkersManager loadMarkers(File markersFile)
-  {
-    MarkersManager markers=null;
-    if (markersFile.exists())
-    {
-      markers=parseMarkers(markersFile);
-    }
-    if (markers==null)
-    {
-      markers=new MarkersManager();
-    }
-    return markers;
-  }
-
-  private static MarkersManager parseMarkers(File markersFile)
-  {
-    MarkersManager markers=null;
-    Element root=DOMParsingTools.parse(markersFile);
-    if (root!=null)
-    {
-      markers=MapXMLParser.parseMarkers(root);
-    }
-    return markers;
   }
 
   /**

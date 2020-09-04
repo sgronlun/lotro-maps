@@ -10,7 +10,7 @@ import delta.common.ui.swing.draw.HaloPainter;
 import delta.common.utils.collections.filters.Filter;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.Marker;
-import delta.games.lotro.maps.data.MarkersManager;
+import delta.games.lotro.maps.data.markers.MarkersUtils;
 import delta.games.lotro.maps.ui.MapView;
 import delta.games.lotro.maps.ui.MarkerIconProvider;
 
@@ -71,7 +71,7 @@ public class MarkersLayer implements Layer
   public List<Marker> getVisibleMarkers()
   {
     List<Marker> markers=getMarkers();
-    return MarkersManager.getFilteredMarkers(_filter,markers);
+    return MarkersUtils.getFilteredMarkers(_filter,markers);
   }
 
   private List<Marker> getMarkers()

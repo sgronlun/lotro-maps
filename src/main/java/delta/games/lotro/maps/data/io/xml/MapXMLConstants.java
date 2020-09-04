@@ -14,6 +14,10 @@ public class MapXMLConstants
    * Tag 'map', attribute 'key'.
    */
   public static final String MAP_KEY_ATTR="key";
+  /**
+   * Tag 'map', attribute 'label'.
+   */
+  public static final String MAP_LABEL_ATTR="label";
 
   /**
    * Tag 'geo'.
@@ -38,42 +42,7 @@ public class MapXMLConstants
   public static final String LINK_TARGET_ATTR="target";
 
   /**
-   * Attribute 'label'.
-   */
-  public static final String LABEL_ATTR="label";
-
-  /**
-   * Tag 'markers'.
-   */
-  public static final String MARKERS_TAG="markers";
-  /**
-   * Tag 'marker'.
-   */
-  public static final String MARKER_TAG="marker";
-  /**
-   * Tag 'marker', attribute 'id'.
-   */
-  public static final String ID_ATTR="id";
-  /**
-   * Tag 'marker', attribute 'category'.
-   */
-  public static final String CATEGORY_ATTR="category";
-  /**
-   * Tag 'marker', attribute 'did'.
-   */
-  public static final String DID_ATTR="did";
-
-  /**
    * Tag 'point'.
    */
   public static final String POINT_TAG="point";
-  /**
-   * Attribute 'latitude'.
-   */
-  public static final String LATITUDE_ATTR="latitude";
-  /**
-   * Attribute 'longitude'.
-   */
-  public static final String LONGITUDE_ATTR="longitude";
-
 }

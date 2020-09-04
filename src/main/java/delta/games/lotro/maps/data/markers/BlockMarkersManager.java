@@ -9,12 +9,10 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import delta.common.utils.text.EncodingNames;
 import delta.games.lotro.maps.data.Marker;
-import delta.games.lotro.maps.data.MarkersManager;
-import delta.games.lotro.maps.data.io.MapsIO;
-import delta.games.lotro.maps.data.io.xml.MapXMLWriter;
 import delta.games.lotro.maps.data.markers.comparators.MarkerIdentifierComparator;
+import delta.games.lotro.maps.data.markers.io.xml.MarkersIO;
+import delta.games.lotro.maps.data.markers.io.xml.MarkersXMLWriter;
 
 /**
  * Markers manager for a single block.
@@ -85,8 +83,8 @@ public class BlockMarkersManager
     clear();
     if (_markersFile.exists())
     {
-      MarkersManager allMarkers=MapsIO.loadMarkers(_markersFile);
-      for(Marker marker : allMarkers.getAllMarkers())
+      List<Marker> allMarkers=MarkersIO.loadMarkers(_markersFile);
+      for(Marker marker : allMarkers)
       {
         registerMarker(marker);
       }
@@ -110,6 +108,6 @@ public class BlockMarkersManager
   {
     List<Marker> markers=new ArrayList<Marker>(_markers.values());
     Collections.sort(markers,new MarkerIdentifierComparator());
-    MapXMLWriter.writeMarkersFile(_markersFile,markers,EncodingNames.UTF_8);
+    MarkersXMLWriter.writeMarkersFile(_markersFile,markers);
   }
 }

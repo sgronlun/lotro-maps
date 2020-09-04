@@ -15,7 +15,7 @@ import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.GeoreferencedBasemap;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapLink;
-import delta.games.lotro.maps.data.Marker;
+import delta.games.lotro.maps.data.markers.io.xml.MarkersXMLWriter;
 
 /**
  * Writes a map bundle to an XML file.
@@ -73,7 +73,7 @@ public class MapXMLWriter
     attrs.addAttribute("","",MapXMLConstants.MAP_KEY_ATTR,XmlWriter.CDATA,key);
     // Name
     String name=map.getName();
-    attrs.addAttribute("","",MapXMLConstants.LABEL_ATTR,XmlWriter.CDATA,name);
+    attrs.addAttribute("","",MapXMLConstants.MAP_LABEL_ATTR,XmlWriter.CDATA,name);
     hd.startElement("","",MapXMLConstants.MAP_TAG,attrs);
 
     // Geo reference
@@ -141,87 +141,8 @@ public class MapXMLWriter
   private static void writeGeoPoint(TransformerHandler hd, GeoPoint point) throws Exception
   {
     AttributesImpl attrs=new AttributesImpl();
-    writeGeoPointAttrs(hd,point,attrs);
+    MarkersXMLWriter.writeGeoPointAttrs(hd,point,attrs);
     hd.startElement("","",MapXMLConstants.POINT_TAG,attrs);
     hd.endElement("","",MapXMLConstants.POINT_TAG);
-  }
-
-  /**
-   * Write the attributes of a point to the given XML stream.
-   * @param hd XML output stream.
-   * @param point Point to write.
-   * @param attrs Attributes to use.
-   * @throws Exception
-   */
-  private static void writeGeoPointAttrs(TransformerHandler hd, GeoPoint point, AttributesImpl attrs) throws Exception
-  {
-    // Longitude
-    float longitude=point.getLongitude();
-    attrs.addAttribute("","",MapXMLConstants.LONGITUDE_ATTR,XmlWriter.CDATA,String.valueOf(longitude));
-    // Latitude
-    float latitude=point.getLatitude();
-    attrs.addAttribute("","",MapXMLConstants.LATITUDE_ATTR,XmlWriter.CDATA,String.valueOf(latitude));
-  }
-
-  /**
-   * Write map markers to an XML file.
-   * @param outFile Output file.
-   * @param markers Markers to use.
-   * @param encoding Encoding to use.
-   * @return <code>true</code> if it succeeds, <code>false</code> otherwise.
-   */
-  public static boolean writeMarkersFile(File outFile, final List<Marker> markers, String encoding)
-  {
-    XmlFileWriterHelper helper=new XmlFileWriterHelper();
-    XmlWriter writer=new XmlWriter()
-    {
-      @Override
-      public void writeXml(TransformerHandler hd) throws Exception
-      {
-        writeMarkers(hd,markers);
-      }
-    };
-    boolean ret=helper.write(outFile,encoding,writer);
-    return ret;
-  }
-
-  /**
-   * Write a markers structure to the given XML stream.
-   * @param hd XML output stream.
-   * @param markers Markers to write.
-   * @throws Exception
-   */
-  private static void writeMarkers(TransformerHandler hd, List<Marker> markers) throws Exception
-  {
-    AttributesImpl attrs=new AttributesImpl();
-    hd.startElement("","",MapXMLConstants.MARKERS_TAG,attrs);
-    for(Marker marker : markers)
-    {
-      AttributesImpl markerAttrs=new AttributesImpl();
-      // Identifier
-      int id=marker.getId();
-      markerAttrs.addAttribute("","",MapXMLConstants.ID_ATTR,XmlWriter.CDATA,String.valueOf(id));
-      // Label
-      String label=marker.getLabel();
-      markerAttrs.addAttribute("","",MapXMLConstants.LABEL_ATTR,XmlWriter.CDATA,label);
-      // Category
-      int category=marker.getCategoryCode();
-      markerAttrs.addAttribute("","",MapXMLConstants.CATEGORY_ATTR,XmlWriter.CDATA,String.valueOf(category));
-      // DID
-      int did=marker.getDid();
-      if (did!=0)
-      {
-        markerAttrs.addAttribute("","",MapXMLConstants.DID_ATTR,XmlWriter.CDATA,String.valueOf(did));
-      }
-      // Position
-      GeoPoint position=marker.getPosition();
-      if (position!=null)
-      {
-        writeGeoPointAttrs(hd,position,markerAttrs);
-      }
-      hd.startElement("","",MapXMLConstants.MARKER_TAG,markerAttrs);
-      hd.endElement("","",MapXMLConstants.MARKER_TAG);
-    }
-    hd.endElement("","",MapXMLConstants.MARKERS_TAG);
   }
 }
