@@ -7,8 +7,8 @@ import delta.common.utils.collections.filters.CompoundFilter;
 import delta.common.utils.collections.filters.Filter;
 import delta.common.utils.collections.filters.Operator;
 import delta.games.lotro.maps.data.Marker;
-import delta.games.lotro.maps.data.filters.MarkerCategoryFilter;
-import delta.games.lotro.maps.data.filters.MarkerNameFilter;
+import delta.games.lotro.maps.data.markers.filters.MarkerCategoryFilter;
+import delta.games.lotro.maps.data.markers.filters.MarkerNameFilter;
 
 /**
  * Filter for map markers using both name and categories.

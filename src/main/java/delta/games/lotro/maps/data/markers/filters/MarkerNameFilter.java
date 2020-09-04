@@ -1,4 +1,4 @@
-package delta.games.lotro.maps.data.filters;
+package delta.games.lotro.maps.data.markers.filters;
 
 import delta.common.utils.collections.filters.Filter;
 import delta.common.utils.text.MatchType;

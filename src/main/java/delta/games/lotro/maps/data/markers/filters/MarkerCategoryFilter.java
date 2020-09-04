@@ -1,4 +1,4 @@
-package delta.games.lotro.maps.data.filters;
+package delta.games.lotro.maps.data.markers.filters;
 
 import java.util.HashSet;
 import java.util.Set;

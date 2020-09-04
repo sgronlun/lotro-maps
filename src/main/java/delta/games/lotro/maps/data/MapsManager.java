@@ -176,15 +176,4 @@ public class MapsManager
     Collections.sort(bundles,new MapBundleNameComparator());
     return bundles;
   }
-
-  /**
-   * Main method for this test.
-   * @param args Not used.
-   */
-  public static void main(String[] args)
-  {
-    File rootDir=new File("../lotro-maps-db");
-    MapsManager mapsManager=new MapsManager(rootDir);
-    mapsManager.load();
-  }
 }
