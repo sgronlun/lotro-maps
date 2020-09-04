@@ -9,6 +9,7 @@ import org.xml.sax.helpers.AttributesImpl;
 
 import delta.common.utils.io.xml.XmlFileWriterHelper;
 import delta.common.utils.io.xml.XmlWriter;
+import delta.common.utils.text.EncodingNames;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.GeoreferencedBasemap;
@@ -23,24 +24,17 @@ import delta.games.lotro.maps.data.Marker;
 public class MapXMLWriter
 {
   /**
-   * Write map files.
+   * Write link file for a bundle.
    * @param bundle Map bundle.
-   * @param encoding Encoding.
    * @return <code>true</code> if it succeeds, <code>false</code> otherwise.
    */
-  public static boolean writeMapFiles(MapBundle bundle, String encoding)
+  public static boolean writeLinkFiles(MapBundle bundle)
   {
     File rootDir=bundle.getRootDir();
-    // Map description
-    File mapFile=new File(rootDir,"map.xml");
-    boolean mapOk=writeMapFile(mapFile,bundle.getMap(),encoding);
-    // Markers
-    File markersFile=new File(rootDir,"markers.xml");
-    boolean markersOk=writeMarkersFile(markersFile,bundle.getData().getAllMarkers(),encoding);
     // Links
     File linksFile=new File(rootDir,"links.xml");
-    boolean linksOk=writeLinksFile(linksFile,bundle.getLinks(),encoding);
-    return mapOk & markersOk & linksOk;
+    boolean linksOk=writeLinksFile(linksFile,bundle.getLinks());
+    return linksOk;
   }
 
   /**
@@ -104,10 +98,9 @@ public class MapXMLWriter
    * Write map markers to an XML file.
    * @param outFile Output file.
    * @param links Links to use.
-   * @param encoding Encoding to use.
    * @return <code>true</code> if it succeeds, <code>false</code> otherwise.
    */
-  public static boolean writeLinksFile(File outFile, final List<MapLink> links, String encoding)
+  public static boolean writeLinksFile(File outFile, final List<MapLink> links)
   {
     XmlFileWriterHelper helper=new XmlFileWriterHelper();
     XmlWriter writer=new XmlWriter()
@@ -118,7 +111,7 @@ public class MapXMLWriter
         writeLinks(hd,links);
       }
     };
-    boolean ret=helper.write(outFile,encoding,writer);
+    boolean ret=helper.write(outFile,EncodingNames.UTF_8,writer);
     return ret;
   }
 

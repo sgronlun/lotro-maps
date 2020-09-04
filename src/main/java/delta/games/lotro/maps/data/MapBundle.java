@@ -16,8 +16,6 @@ public class MapBundle
   private File _rootDir;
   // Map description
   private GeoreferencedBasemap _map;
-  // Map points
-  private MarkersManager _markers;
   // Map links
   private List<MapLink> _links;
 
@@ -76,20 +74,6 @@ public class MapBundle
     File imageFile=new File(_rootDir,"map.png");
     _map.setImageFile(imageFile);
     return _map;
-  }
-
-  /**
-   * Get the managed markers.
-   * @return the managed markers.
-   */
-  public MarkersManager getData()
-  {
-    if (_markers==null)
-    {
-      File markersFile=new File(_rootDir,"markers.xml");
-      _markers=MapsIO.loadMarkers(markersFile);
-    }
-    return _markers;
   }
 
   /**

@@ -12,7 +12,6 @@ import delta.common.utils.files.filter.FileTypePredicate;
 import delta.common.utils.text.EncodingNames;
 import delta.games.lotro.maps.data.io.xml.CategoriesXMLParser;
 import delta.games.lotro.maps.data.io.xml.CategoriesXMLWriter;
-import delta.games.lotro.maps.data.io.xml.MapXMLWriter;
 import delta.games.lotro.maps.data.markers.GlobalMarkersManager;
 import delta.games.lotro.maps.data.markers.MarkersFinder;
 
@@ -111,30 +110,6 @@ public class MapsManager
     File mapDir=new File(mapsDir,mapKey);
     File linksFile=new File(mapDir,"links.xml");
     return linksFile;
-  }
-
-  /**
-   * Save all maps.
-   */
-  public void saveMaps()
-  {
-    for(String key : _maps.keySet())
-    {
-      saveMap(key);
-    }
-  }
-
-  /**
-   * Save a map to files.
-   * @param key Key of the targeted map.
-   */
-  public void saveMap(String key)
-  {
-    MapBundle bundle=_maps.get(key);
-    if (bundle!=null)
-    {
-      MapXMLWriter.writeMapFiles(bundle,EncodingNames.UTF_8);
-    }
   }
 
   /**
