@@ -30,7 +30,6 @@ public class NavigationManager
 
   private MapBundle _currentMap;
   private Stack<String> _navigationHistory;
-  private List<Dimension> _hotPoints;
   private MouseListener _listener;
 
   /**
@@ -42,7 +41,6 @@ public class NavigationManager
     _canvas=canvas;
     _navigationListeners=new ListenersManager<NavigationListener>();
     _navigationHistory=new Stack<String>();
-    _hotPoints=new ArrayList<Dimension>();
     _listener=new NavigationMouseListener();
     _canvas.addMouseListener(_listener);
     LinksLayer linksLayer=new LinksLayer(_canvas);
@@ -64,7 +62,6 @@ public class NavigationManager
   public void dispose()
   {
     _navigationHistory.clear();
-    _hotPoints.clear();
     if (_listener!=null)
     {
       _canvas.removeMouseListener(_listener);
@@ -75,18 +72,19 @@ public class NavigationManager
     _canvas=null;
   }
 
-  private void updateHotPoints()
+  private List<Dimension> getHotPoints()
   {
-    _hotPoints.clear();
+    List<Dimension> hotPoints=new ArrayList<Dimension>();
     if (_currentMap!=null)
     {
       List<MapLink> links=_currentMap.getLinks();
       for(MapLink link : links)
       {
         Dimension hotPoint=_canvas.getViewReference().geo2pixel(link.getHotPoint());
-        _hotPoints.add(hotPoint);
+        hotPoints.add(hotPoint);
       }
     }
+    return hotPoints;
   }
 
   private void handleRightClick(int x, int y)
@@ -123,11 +121,11 @@ public class NavigationManager
 
   private MapLink testForHotPoint(int x, int y)
   {
-    updateHotPoints();
-    int nbHotPoints=_hotPoints.size();
+    List<Dimension> hotPoints=getHotPoints();
+    int nbHotPoints=hotPoints.size();
     for(int i=0;i<nbHotPoints;i++)
     {
-      Dimension hotPoint=_hotPoints.get(i);
+      Dimension hotPoint=hotPoints.get(i);
       if ((Math.abs(hotPoint.width-x) < SENSIBILITY) && (Math.abs(hotPoint.height-y) < SENSIBILITY))
       {
         // Found a hot point
