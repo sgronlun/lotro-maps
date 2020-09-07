@@ -4,11 +4,11 @@ import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
 import delta.common.utils.ListenersManager;
+import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapLink;
 import delta.games.lotro.maps.ui.layers.LinksLayer;
@@ -72,21 +72,6 @@ public class NavigationManager
     _canvas=null;
   }
 
-  private List<Dimension> getHotPoints()
-  {
-    List<Dimension> hotPoints=new ArrayList<Dimension>();
-    if (_currentMap!=null)
-    {
-      List<MapLink> links=_currentMap.getLinks();
-      for(MapLink link : links)
-      {
-        Dimension hotPoint=_canvas.getViewReference().geo2pixel(link.getHotPoint());
-        hotPoints.add(hotPoint);
-      }
-    }
-    return hotPoints;
-  }
-
   private void handleRightClick(int x, int y)
   {
     if (!_navigationHistory.isEmpty())
@@ -121,16 +106,19 @@ public class NavigationManager
 
   private MapLink testForHotPoint(int x, int y)
   {
-    List<Dimension> hotPoints=getHotPoints();
-    int nbHotPoints=hotPoints.size();
-    for(int i=0;i<nbHotPoints;i++)
+    if (_currentMap==null)
     {
-      Dimension hotPoint=hotPoints.get(i);
+      return null;
+    }
+    GeoReference viewReference=_canvas.getViewReference();
+    List<MapLink> links=_currentMap.getLinks();
+    for(MapLink link : links)
+    {
+      Dimension hotPoint=viewReference.geo2pixel(link.getHotPoint());
       if ((Math.abs(hotPoint.width-x) < SENSIBILITY) && (Math.abs(hotPoint.height-y) < SENSIBILITY))
       {
         // Found a hot point
-        List<MapLink> links=_currentMap.getLinks();
-        return links.get(i);
+        return link;
       }
     }
     return null;
