@@ -59,7 +59,7 @@ public class MapsIO
       {
         ret=MapXMLParser.parseLinks(root);
       }
-  }
+    }
     return ret;
   }
 }

@@ -1,4 +1,4 @@
-package delta.games.lotro.maps.data;
+package delta.games.lotro.maps.data.categories;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Set;
 
 import delta.common.utils.text.EncodingNames;
-import delta.games.lotro.maps.data.io.xml.CategoriesXMLParser;
-import delta.games.lotro.maps.data.io.xml.CategoriesXMLWriter;
+import delta.games.lotro.maps.data.categories.io.xml.CategoriesXMLParser;
+import delta.games.lotro.maps.data.categories.io.xml.CategoriesXMLWriter;
 
 /**
  * Marker categories manager.
@@ -30,6 +30,15 @@ public class CategoriesManager
     _categoriesDir=categoriesDir;
     _mapByCode=new HashMap<Integer,Category>();
     load();
+  }
+
+  /**
+   * Get the root directory for categories data.
+   * @return a directory.
+   */
+  public File getCategoriesDir()
+  {
+    return _categoriesDir;
   }
 
   /**

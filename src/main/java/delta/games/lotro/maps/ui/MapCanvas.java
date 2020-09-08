@@ -16,7 +16,7 @@ import delta.games.lotro.maps.data.GeoreferencedBasemap;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
-import delta.games.lotro.maps.data.comparators.MarkerNameComparator;
+import delta.games.lotro.maps.data.markers.comparators.MarkerNameComparator;
 import delta.games.lotro.maps.data.view.BoundedZoomFilter;
 import delta.games.lotro.maps.data.view.ZoomFilter;
 import delta.games.lotro.maps.ui.layers.BasemapLayer;

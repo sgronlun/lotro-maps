@@ -5,7 +5,7 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
-import delta.games.lotro.maps.data.CategoriesManager;
+import delta.games.lotro.maps.data.categories.CategoriesManager;
 import delta.games.lotro.maps.ui.filter.CategoryChooserController;
 
 /**

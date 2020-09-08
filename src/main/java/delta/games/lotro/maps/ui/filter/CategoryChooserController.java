@@ -28,9 +28,9 @@ import javax.swing.border.TitledBorder;
 import delta.common.ui.ImageUtils;
 import delta.common.ui.swing.GuiFactory;
 import delta.common.utils.NumericTools;
-import delta.games.lotro.maps.data.CategoriesManager;
-import delta.games.lotro.maps.data.Category;
-import delta.games.lotro.maps.data.comparators.CategoryNameComparator;
+import delta.games.lotro.maps.data.categories.CategoriesManager;
+import delta.games.lotro.maps.data.categories.Category;
+import delta.games.lotro.maps.data.categories.comparators.CategoryNameComparator;
 
 /**
  * Controller for a category chooser panel.

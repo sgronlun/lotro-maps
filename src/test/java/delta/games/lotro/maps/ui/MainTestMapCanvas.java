@@ -5,10 +5,10 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
-import delta.games.lotro.maps.data.CategoriesManager;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
+import delta.games.lotro.maps.data.categories.CategoriesManager;
 import delta.games.lotro.maps.data.markers.MarkersFinder;
 import delta.games.lotro.maps.ui.layers.MarkersLayer;
 import delta.games.lotro.maps.ui.layers.SimpleMarkersProvider;

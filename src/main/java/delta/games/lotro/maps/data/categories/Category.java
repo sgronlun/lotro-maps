@@ -1,4 +1,4 @@
-package delta.games.lotro.maps.data;
+package delta.games.lotro.maps.data.categories;
 
 /**
  * Marker category.

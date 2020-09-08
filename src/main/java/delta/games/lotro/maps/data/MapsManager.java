@@ -9,6 +9,7 @@ import java.util.List;
 
 import delta.common.utils.files.FilesFinder;
 import delta.common.utils.files.filter.FileTypePredicate;
+import delta.games.lotro.maps.data.categories.CategoriesManager;
 import delta.games.lotro.maps.data.markers.GlobalMarkersManager;
 import delta.games.lotro.maps.data.markers.MarkersFinder;
 

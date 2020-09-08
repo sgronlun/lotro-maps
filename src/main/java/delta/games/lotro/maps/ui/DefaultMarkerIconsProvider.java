@@ -5,9 +5,9 @@ import java.io.File;
 import java.util.HashMap;
 
 import delta.common.ui.ImageUtils;
-import delta.games.lotro.maps.data.CategoriesManager;
-import delta.games.lotro.maps.data.Category;
 import delta.games.lotro.maps.data.Marker;
+import delta.games.lotro.maps.data.categories.CategoriesManager;
+import delta.games.lotro.maps.data.categories.Category;
 
 /**
  * Default mark icons provider.

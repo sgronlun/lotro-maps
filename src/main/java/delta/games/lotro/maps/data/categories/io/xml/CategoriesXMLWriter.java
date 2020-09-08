@@ -1,4 +1,4 @@
-package delta.games.lotro.maps.data.io.xml;
+package delta.games.lotro.maps.data.categories.io.xml;
 
 import java.io.File;
 import java.util.List;
@@ -9,8 +9,8 @@ import org.xml.sax.helpers.AttributesImpl;
 
 import delta.common.utils.io.xml.XmlFileWriterHelper;
 import delta.common.utils.io.xml.XmlWriter;
-import delta.games.lotro.maps.data.CategoriesManager;
-import delta.games.lotro.maps.data.Category;
+import delta.games.lotro.maps.data.categories.CategoriesManager;
+import delta.games.lotro.maps.data.categories.Category;
 
 /**
  * Writes a categories registry to an XML file.

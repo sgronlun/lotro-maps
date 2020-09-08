@@ -1,4 +1,4 @@
-package delta.games.lotro.maps.data.comparators;
+package delta.games.lotro.maps.data.markers.comparators;
 
 import java.util.Comparator;
 

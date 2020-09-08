@@ -1,4 +1,4 @@
-package delta.games.lotro.maps.data.io.xml;
+package delta.games.lotro.maps.data.categories.io.xml;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
 import delta.common.utils.xml.DOMParsingTools;
-import delta.games.lotro.maps.data.Category;
+import delta.games.lotro.maps.data.categories.Category;
 
 /**
  * Parser for the categories registry stored in XML.

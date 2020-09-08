@@ -1,4 +1,4 @@
-package delta.games.lotro.maps.data.io.xml;
+package delta.games.lotro.maps.data.categories.io.xml;
 
 /**
  * Constants for tags and attribute names used in the categories XML files.

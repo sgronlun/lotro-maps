@@ -1,8 +1,8 @@
-package delta.games.lotro.maps.data.comparators;
+package delta.games.lotro.maps.data.categories.comparators;
 
 import java.util.Comparator;
 
-import delta.games.lotro.maps.data.Category;
+import delta.games.lotro.maps.data.categories.Category;
 
 /**
  * Comparator for marker categories, using their name.

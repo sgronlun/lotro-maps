@@ -10,7 +10,7 @@ import javax.swing.JTextField;
 import delta.common.ui.swing.GuiFactory;
 import delta.common.ui.swing.text.DynamicTextEditionController;
 import delta.common.ui.swing.text.TextListener;
-import delta.games.lotro.maps.data.CategoriesManager;
+import delta.games.lotro.maps.data.categories.CategoriesManager;
 import delta.games.lotro.maps.ui.MapPanelController;
 
 /**
