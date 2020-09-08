@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
+import delta.games.lotro.maps.data.CategoriesManager;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
@@ -35,7 +36,8 @@ public class MainTestMapCanvas
     String key=bundle.getKey();
     panel.setMap(key);
     MapCanvas canvas=panel.getCanvas();
-    MarkerIconProvider iconsProvider=new DefaultMarkerIconsProvider(mapsManager);
+    CategoriesManager categoriesManager=mapsManager.getCategories();
+    MarkerIconProvider iconsProvider=new DefaultMarkerIconsProvider(categoriesManager);
     SimpleMarkersProvider markersProvider=new SimpleMarkersProvider();
     MarkersFinder finder=mapsManager.getMarkersFinder();
     List<Marker> markers=finder.findMarkers(breaArea,0);

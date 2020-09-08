@@ -17,6 +17,7 @@ import javax.swing.border.TitledBorder;
 import delta.common.ui.swing.GuiFactory;
 import delta.common.ui.swing.combobox.ComboBoxItem;
 import delta.common.ui.swing.windows.DefaultWindowController;
+import delta.games.lotro.maps.data.CategoriesManager;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
@@ -57,9 +58,10 @@ public class MapWindowController extends DefaultWindowController implements Navi
     addNavigationListener(this);
     // Markers filter
     MapMarkersFilter filter=new MapMarkersFilter();
-    _filter=new MapFilterPanelController(mapsManager,filter,_mapPanel);
+    CategoriesManager categoriesManager=mapsManager.getCategories();
+    _filter=new MapFilterPanelController(categoriesManager,filter,_mapPanel);
     // Markers layer
-    MarkerIconProvider iconsProvider=new DefaultMarkerIconsProvider(mapsManager);
+    MarkerIconProvider iconsProvider=new DefaultMarkerIconsProvider(categoriesManager);
     _markersProvider=new SimpleMarkersProvider();
     MarkersLayer markersLayer=new MarkersLayer(canvas,iconsProvider,_markersProvider);
     markersLayer.setFilter(filter);

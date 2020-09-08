@@ -1,13 +1,13 @@
 package delta.games.lotro.maps.data.io.xml;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
 import delta.common.utils.xml.DOMParsingTools;
-import delta.games.lotro.maps.data.CategoriesManager;
 import delta.games.lotro.maps.data.Category;
 
 /**
@@ -17,31 +17,27 @@ import delta.games.lotro.maps.data.Category;
 public class CategoriesXMLParser
 {
   /**
-   * Parse the XML file.
-   * @param source Source file.
-   * @return Parsed categories or <code>null</code>.
+   * Load categories from a file.
+   * @param categoriesFile Input file.
+   * @return the loaded categories.
    */
-  public CategoriesManager parseXML(File source)
+  public static List<Category> load(File categoriesFile)
   {
-    CategoriesManager registry=null;
-    Element root=DOMParsingTools.parse(source);
-    if (root!=null)
+    List<Category> ret=new ArrayList<Category>();
+    if (categoriesFile.exists())
     {
-      registry=parseCategories(root);
+      Element root=DOMParsingTools.parse(categoriesFile);
+      if (root!=null)
+      {
+        List<Element> categoryTags=DOMParsingTools.getChildTagsByName(root,CategoryXMLConstants.CATEGORY_TAG,false);
+        for(Element categoryTag : categoryTags)
+        {
+          Category category=parseCategory(categoryTag);
+          ret.add(category);
+        }
+      }
     }
-    return registry;
-  }
-
-  private CategoriesManager parseCategories(Element root)
-  {
-    CategoriesManager categories=new CategoriesManager();
-    List<Element> categoryTags=DOMParsingTools.getChildTagsByName(root,CategoryXMLConstants.CATEGORY_TAG,false);
-    for(Element categoryTag : categoryTags)
-    {
-      Category category=parseCategory(categoryTag);
-      categories.addCategory(category);
-    }
-    return categories;
+    return ret;
   }
 
   /**
@@ -49,7 +45,7 @@ public class CategoriesXMLParser
    * @param categoryTag Category tag.
    * @return A category.
    */
-  public Category parseCategory(Element categoryTag)
+  private static Category parseCategory(Element categoryTag)
   {
     NamedNodeMap attrs=categoryTag.getAttributes();
 

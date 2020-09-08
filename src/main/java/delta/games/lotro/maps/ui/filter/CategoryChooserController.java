@@ -30,7 +30,6 @@ import delta.common.ui.swing.GuiFactory;
 import delta.common.utils.NumericTools;
 import delta.games.lotro.maps.data.CategoriesManager;
 import delta.games.lotro.maps.data.Category;
-import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.comparators.CategoryNameComparator;
 
 /**
@@ -41,7 +40,7 @@ public class CategoryChooserController
 {
   // Data
   private Set<Integer> _selectedCodes;
-  private MapsManager _mapsManager;
+  private CategoriesManager _categoriesManager;
   // UI
   private JPanel _panel;
   private HashMap<Integer,JCheckBox> _checkboxes;
@@ -52,11 +51,11 @@ public class CategoryChooserController
 
   /**
    * Constructor.
-   * @param mapsManager Maps manager.
+   * @param categoriesManager Categories manager.
    */
-  public CategoryChooserController(MapsManager mapsManager)
+  public CategoryChooserController(CategoriesManager categoriesManager)
   {
-    _mapsManager=mapsManager;
+    _categoriesManager=categoriesManager;
     _selectedCodes=new HashSet<Integer>();
     _checkboxes=new HashMap<Integer,JCheckBox>();
     build();
@@ -240,8 +239,7 @@ public class CategoryChooserController
 
   private JPanel buildCategoriesPanel()
   {
-    CategoriesManager categoriesManager=_mapsManager.getCategories();
-    List<Category> categories=categoriesManager.getAllSortedByCode();
+    List<Category> categories=_categoriesManager.getAllSortedByCode();
     Collections.sort(categories,new CategoryNameComparator());
     JPanel panel=GuiFactory.buildPanel(new GridBagLayout());
     ActionListener al=new ActionListener()
@@ -275,8 +273,7 @@ public class CategoryChooserController
     int y=0;
     for(Category category : categories)
     {
-      String iconName=category.getIcon();
-      File iconFile=_mapsManager.getIconFile(iconName);
+      File iconFile=_categoriesManager.getIconFile(category);
       BufferedImage image=null;
       if (iconFile.exists())
       {
@@ -323,7 +320,7 @@ public class CategoryChooserController
     _triggerButton=null;
     _popup=null;
     // Data
-    _mapsManager=null;
+    _categoriesManager=null;
     // Listeners
     _listener=null;
   }

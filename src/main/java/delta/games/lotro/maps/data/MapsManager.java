@@ -9,9 +9,6 @@ import java.util.List;
 
 import delta.common.utils.files.FilesFinder;
 import delta.common.utils.files.filter.FileTypePredicate;
-import delta.common.utils.text.EncodingNames;
-import delta.games.lotro.maps.data.io.xml.CategoriesXMLParser;
-import delta.games.lotro.maps.data.io.xml.CategoriesXMLWriter;
 import delta.games.lotro.maps.data.markers.GlobalMarkersManager;
 import delta.games.lotro.maps.data.markers.MarkersFinder;
 
@@ -35,7 +32,8 @@ public class MapsManager
   {
     _rootDir=rootDir;
     _maps=new HashMap<String,MapBundle>();
-    _categoriesManager=new CategoriesManager();
+    File categoriesDir=new File(_rootDir,"categories");
+    _categoriesManager=new CategoriesManager(categoriesDir);
     File markersDir=new File(_rootDir,"markers");
     _markersManager=new GlobalMarkersManager(markersDir);
     _markersFinder=new MarkersFinder(_rootDir,_markersManager);
@@ -82,10 +80,6 @@ public class MapsManager
    */
   public void load()
   {
-    // Load categories
-    CategoriesXMLParser parser=new CategoriesXMLParser();
-    File categoriesFile=new File(_rootDir,"categories.xml");
-    _categoriesManager=parser.parseXML(categoriesFile);
     // Load all maps
     FileFilter filter=new FileTypePredicate(FileTypePredicate.DIRECTORY);
     FilesFinder finder=new FilesFinder();
@@ -113,16 +107,6 @@ public class MapsManager
   }
 
   /**
-   * Save categories.
-   */
-  public void saveCategories()
-  {
-    CategoriesXMLWriter writer=new CategoriesXMLWriter();
-    File toFile=new File(_rootDir,"categories.xml");
-    writer.write(toFile,_categoriesManager,EncodingNames.UTF_8);
-  }
-
-  /**
    * Get a map using its identifying key.
    * @param key Key to use.
    * @return A map bundle or <code>null</code> if not found.
@@ -133,34 +117,10 @@ public class MapsManager
   }
 
   /**
-   * Get the directory for a single map.
-   * @param key Map identifier.
-   * @return A directory.
-   */
-  public File getMapDir(String key)
-  {
-    File mapsDir=new File(_rootDir,"maps");
-    File mapDir=new File(mapsDir,key);
-    return mapDir;
-  }
-
-  /**
-   * Get the file for a marker icon.
-   * @param iconName Icon name.
-   * @return A file.
-   */
-  public File getIconFile(String iconName)
-  {
-    File iconsDir=new File(_rootDir,"images");
-    String pathName=iconName+".png";
-    return new File(iconsDir,pathName);
-  }
-
-  /**
    * Add a map.
    * @param bundle Map to add.
    */
-  public void addMap(MapBundle bundle)
+  private void addMap(MapBundle bundle)
   {
     String key=bundle.getKey();
     _maps.put(key,bundle);

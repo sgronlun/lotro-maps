@@ -5,8 +5,8 @@ import java.io.File;
 import java.util.HashMap;
 
 import delta.common.ui.ImageUtils;
+import delta.games.lotro.maps.data.CategoriesManager;
 import delta.games.lotro.maps.data.Category;
-import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
 
 /**
@@ -15,16 +15,16 @@ import delta.games.lotro.maps.data.Marker;
  */
 public class DefaultMarkerIconsProvider implements MarkerIconProvider
 {
-  private MapsManager _mapsManager;
+  private CategoriesManager _categoriesManager;
   private HashMap<String,BufferedImage> _markerIcons;
 
   /**
    * Constructor.
-   * @param mapsManager Parent maps manager.
+   * @param categoriesManager Categories manager.
    */
-  public DefaultMarkerIconsProvider(MapsManager mapsManager)
+  public DefaultMarkerIconsProvider(CategoriesManager categoriesManager)
   {
-    _mapsManager=mapsManager;
+    _categoriesManager=categoriesManager;
     _markerIcons=new HashMap<String,BufferedImage>();
   }
 
@@ -33,11 +33,11 @@ public class DefaultMarkerIconsProvider implements MarkerIconProvider
     BufferedImage image=null;
     int categoryCode = marker.getCategoryCode();
     if (categoryCode!=0) {
-      Category category=_mapsManager.getCategories().getByCode(categoryCode);
+      Category category=_categoriesManager.getByCode(categoryCode);
       String icon = category.getIcon();
       image=_markerIcons.get(icon);
       if (image==null) {
-        File iconFile=_mapsManager.getIconFile(icon);
+        File iconFile=_categoriesManager.getIconFile(category);
         if (iconFile.exists())
         {
           image=ImageUtils.loadImage(iconFile);

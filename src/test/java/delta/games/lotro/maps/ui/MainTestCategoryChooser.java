@@ -5,7 +5,7 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
-import delta.games.lotro.maps.data.MapsManager;
+import delta.games.lotro.maps.data.CategoriesManager;
 import delta.games.lotro.maps.ui.filter.CategoryChooserController;
 
 /**
@@ -20,11 +20,9 @@ public class MainTestCategoryChooser
    */
   public static void main(String[] args)
   {
-    File rootDir=new File("../lotro-maps-db");
-    MapsManager mapsManager=new MapsManager(rootDir);
-    mapsManager.load();
-
-    CategoryChooserController controller=new CategoryChooserController(mapsManager);
+    File from=new File("../lotro-maps-db/categories");
+    CategoriesManager categoriesManager=new CategoriesManager(from);
+    CategoryChooserController controller=new CategoryChooserController(categoriesManager);
     JFrame f=new JFrame();
     JButton button=controller.getTriggerButton();
     f.getContentPane().add(button);

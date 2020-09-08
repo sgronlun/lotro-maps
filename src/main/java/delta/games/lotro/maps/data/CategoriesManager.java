@@ -1,5 +1,6 @@
 package delta.games.lotro.maps.data;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,20 +8,63 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import delta.common.utils.text.EncodingNames;
+import delta.games.lotro.maps.data.io.xml.CategoriesXMLParser;
+import delta.games.lotro.maps.data.io.xml.CategoriesXMLWriter;
+
 /**
  * Marker categories manager.
  * @author DAM
  */
 public class CategoriesManager
 {
+  private File _categoriesDir;
   private HashMap<Integer,Category> _mapByCode;
 
   /**
    * Constructor.
+   * @param categoriesDir Categories directory.
    */
-  public CategoriesManager()
+  public CategoriesManager(File categoriesDir)
   {
+    _categoriesDir=categoriesDir;
     _mapByCode=new HashMap<Integer,Category>();
+    load();
+  }
+
+  /**
+   * (Re-)load categories.
+   */
+  public void load()
+  {
+    _mapByCode.clear();
+    File categoriesFile=getCategoriesFile();
+    List<Category> categories=CategoriesXMLParser.load(categoriesFile);
+    for(Category category : categories)
+    {
+      addCategory(category);
+    }
+  }
+
+  /**
+   * Get the categories file.
+   * @return the categories file.
+   */
+  public File getCategoriesFile()
+  {
+    return new File(_categoriesDir,"categories.xml");
+  }
+
+  /**
+   * Get the icon file for a marker category.
+   * @param category Category.
+   * @return An icon file.
+   */
+  public File getIconFile(Category category)
+  {
+    String iconName=category.getIcon();
+    String pathName=iconName+".png";
+    return new File(_categoriesDir,pathName);
   }
 
   /**
@@ -76,5 +120,15 @@ public class CategoriesManager
   public void removeCategory(int code)
   {
     _mapByCode.remove(Integer.valueOf(code));
+  }
+
+  /**
+   * Save categories.
+   */
+  public void save()
+  {
+    CategoriesXMLWriter writer=new CategoriesXMLWriter();
+    File to=getCategoriesFile();
+    writer.write(to,this,EncodingNames.UTF_8);
   }
 }
