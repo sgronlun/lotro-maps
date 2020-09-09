@@ -18,9 +18,12 @@ import delta.common.ui.swing.GuiFactory;
 import delta.common.ui.swing.combobox.ComboBoxItem;
 import delta.common.ui.swing.windows.DefaultWindowController;
 import delta.games.lotro.maps.data.MapBundle;
+import delta.games.lotro.maps.data.MapLink;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
 import delta.games.lotro.maps.data.categories.CategoriesManager;
+import delta.games.lotro.maps.ui.controllers.NavigationController;
+import delta.games.lotro.maps.ui.controllers.ViewInputsManager;
 import delta.games.lotro.maps.ui.filter.MapFilterPanelController;
 import delta.games.lotro.maps.ui.filter.MapMarkersFilter;
 import delta.games.lotro.maps.ui.layers.MarkersLayer;
@@ -39,11 +42,14 @@ public class MapWindowController extends DefaultWindowController implements Navi
 
   // Data
   private SimpleMarkersProvider _markersProvider;
-  // Controllers
+  // UI controllers
   private MapPanelController _mapPanel;
   private MapFilterPanelController _filter;
   private MapChooserController _mapChooser;
+  // Map control
+  private ViewInputsManager _inputsMgr;
   private NavigationManager _navigation;
+  private NavigationController _navigationController;
 
   /**
    * Constructor.
@@ -52,9 +58,13 @@ public class MapWindowController extends DefaultWindowController implements Navi
   public MapWindowController(MapsManager mapsManager)
   {
     _mapPanel=new MapPanelController(mapsManager);
-    // Navigation support
     MapCanvas canvas=_mapPanel.getCanvas();
+    // Inputs manager
+    _inputsMgr=new ViewInputsManager(canvas);
+    // Navigation support
     _navigation=new NavigationManager(canvas);
+    _navigationController=new NavigationController(canvas,_navigation);
+    _inputsMgr.addInputController(_navigationController);
     addNavigationListener(this);
     // Markers filter
     MapMarkersFilter filter=new MapMarkersFilter();
@@ -107,6 +117,8 @@ public class MapWindowController extends DefaultWindowController implements Navi
       _navigation.setMap(map);
       _mapPanel.setMap(key);
       _mapChooser.selectMap(key);
+      List<MapLink> links=map.getLinks();
+      _navigationController.setLinks(links);
       pack();
     }
   }
@@ -186,6 +198,7 @@ public class MapWindowController extends DefaultWindowController implements Navi
   @Override
   public void dispose()
   {
+    _markersProvider=null;
     if (_filter!=null)
     {
       _filter.dispose();
@@ -205,6 +218,21 @@ public class MapWindowController extends DefaultWindowController implements Navi
     {
       _navigation.dispose();
       _navigation=null;
+    }
+    if (_inputsMgr!=null)
+    {
+      _inputsMgr.dispose();
+      _inputsMgr=null;
+    }
+    if (_navigation!=null)
+    {
+      _navigation.dispose();
+      _navigation=null;
+    }
+    if (_navigationController!=null)
+    {
+      _navigationController.dispose();
+      _navigationController=null;
     }
     super.dispose();
   }
