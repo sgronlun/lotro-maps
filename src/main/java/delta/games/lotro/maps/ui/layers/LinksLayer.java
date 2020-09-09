@@ -10,14 +10,14 @@ import delta.common.ui.swing.icons.IconsManager;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapLink;
-import delta.games.lotro.maps.data.Marker;
+import delta.games.lotro.maps.data.MapPoint;
 import delta.games.lotro.maps.ui.MapView;
 
 /**
  * Layer for map links.
  * @author DAM
  */
-public class LinksLayer implements Layer
+public class LinksLayer implements VectorLayer
 {
   private MapView _view;
   private BufferedImage _gotoIcon;
@@ -39,7 +39,7 @@ public class LinksLayer implements Layer
   }
 
   @Override
-  public List<Marker> getVisibleMarkers()
+  public List<MapPoint> getVisiblePoints()
   {
     return null;
   }
@@ -68,7 +68,7 @@ public class LinksLayer implements Layer
   private void paintLink(MapLink link, Graphics g)
   {
     GeoReference viewReference=_view.getViewReference();
-    Dimension pixelPosition=viewReference.geo2pixel(link.getHotPoint());
+    Dimension pixelPosition=viewReference.geo2pixel(link.getPosition());
 
     int x=pixelPosition.width;
     int y=pixelPosition.height;

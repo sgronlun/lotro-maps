@@ -114,7 +114,7 @@ public class NavigationManager
     List<MapLink> links=_currentMap.getLinks();
     for(MapLink link : links)
     {
-      Dimension hotPoint=viewReference.geo2pixel(link.getHotPoint());
+      Dimension hotPoint=viewReference.geo2pixel(link.getPosition());
       if ((Math.abs(hotPoint.width-x) < SENSIBILITY) && (Math.abs(hotPoint.height-y) < SENSIBILITY))
       {
         // Found a hot point

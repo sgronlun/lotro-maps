@@ -14,14 +14,15 @@ import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.GeoreferencedBasemap;
 import delta.games.lotro.maps.data.MapBundle;
+import delta.games.lotro.maps.data.MapPoint;
+import delta.games.lotro.maps.data.MapPointNameComparator;
 import delta.games.lotro.maps.data.MapsManager;
-import delta.games.lotro.maps.data.Marker;
-import delta.games.lotro.maps.data.markers.comparators.MarkerNameComparator;
 import delta.games.lotro.maps.data.view.BoundedZoomFilter;
 import delta.games.lotro.maps.data.view.ZoomFilter;
 import delta.games.lotro.maps.ui.layers.BasemapLayer;
 import delta.games.lotro.maps.ui.layers.Layer;
 import delta.games.lotro.maps.ui.layers.LayerPriorityComparator;
+import delta.games.lotro.maps.ui.layers.VectorLayer;
 
 /**
  * Map display.
@@ -297,9 +298,9 @@ public class MapCanvas extends JPanel implements MapView
     }
   }
 
-  private List<Marker> findMarkersAtLocation(int x, int y, int sensibility)
+  private List<MapPoint> findPointsAtLocation(int x, int y, int sensibility)
   {
-    List<Marker> ret=new ArrayList<Marker>();
+    List<MapPoint> ret=new ArrayList<MapPoint>();
     GeoReference viewReference=getViewReference();
     GeoPoint topLeft=viewReference.pixel2geo(new Dimension(x-sensibility,y-sensibility));
     GeoPoint bottomRight=viewReference.pixel2geo(new Dimension(x+sensibility,y+sensibility));
@@ -307,15 +308,20 @@ public class MapCanvas extends JPanel implements MapView
 
     for(Layer layer : _layers)
     {
-      List<Marker> visibleMarkers=layer.getVisibleMarkers();
-      if (visibleMarkers!=null)
+      if (!(layer instanceof VectorLayer))
       {
-        for(Marker visibleMarker : visibleMarkers)
+        continue;
+      }
+      VectorLayer vectorLayer=(VectorLayer)layer;
+      List<MapPoint> visiblePoints=vectorLayer.getVisiblePoints();
+      if (visiblePoints!=null)
+      {
+        for(MapPoint visiblePoint : visiblePoints)
         {
-          boolean ok=box.isInBox(visibleMarker.getPosition());
+          boolean ok=box.isInBox(visiblePoint.getPosition());
           if (ok)
           {
-            ret.add(visibleMarker);
+            ret.add(visiblePoint);
           }
         }
       }
@@ -326,18 +332,22 @@ public class MapCanvas extends JPanel implements MapView
   @Override
   public String getToolTipText(MouseEvent event)
   {
-    List<Marker> markers=findMarkersAtLocation(event.getX(),event.getY(),SENSIBILITY);
-    if (markers.size()>0)
+    List<MapPoint> points=findPointsAtLocation(event.getX(),event.getY(),SENSIBILITY);
+    if (points.size()>0)
     {
-      Collections.sort(markers,new MarkerNameComparator());
+      Collections.sort(points,new MapPointNameComparator());
       StringBuilder sb=new StringBuilder();
       sb.append("<html>");
       int count=0;
-      for(Marker marker : markers)
+      for(MapPoint point : points)
       {
-        if (count>0) sb.append("<br>");
-        sb.append(marker.getLabel());
-        count++;
+        String label=point.getLabel();
+        if (label!=null)
+        {
+          if (count>0) sb.append("<br>");
+          sb.append(label);
+          count++;
+        }
       }
       sb.append("</html>");
       return sb.toString();

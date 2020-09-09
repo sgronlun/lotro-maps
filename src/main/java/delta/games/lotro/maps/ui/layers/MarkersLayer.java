@@ -9,8 +9,9 @@ import java.util.List;
 import delta.common.ui.swing.draw.HaloPainter;
 import delta.common.utils.collections.filters.Filter;
 import delta.games.lotro.maps.data.GeoReference;
+import delta.games.lotro.maps.data.MapPoint;
 import delta.games.lotro.maps.data.Marker;
-import delta.games.lotro.maps.data.markers.MarkersUtils;
+import delta.games.lotro.maps.data.markers.MapPointsUtils;
 import delta.games.lotro.maps.ui.MapView;
 import delta.games.lotro.maps.ui.MarkerIconProvider;
 
@@ -18,7 +19,7 @@ import delta.games.lotro.maps.ui.MarkerIconProvider;
  * Layer for markers.
  * @author DAM
  */
-public class MarkersLayer implements Layer
+public class MarkersLayer implements VectorLayer
 {
   private MapView _view;
   private Filter<Marker> _filter;
@@ -68,10 +69,11 @@ public class MarkersLayer implements Layer
   }
 
   @Override
-  public List<Marker> getVisibleMarkers()
+  public List<MapPoint> getVisiblePoints()
   {
     List<Marker> markers=getMarkers();
-    return MarkersUtils.getFilteredMarkers(_filter,markers);
+    List<MapPoint> ret=MapPointsUtils.getFilteredMarkers(_filter,markers);
+    return ret;
   }
 
   private List<Marker> getMarkers()

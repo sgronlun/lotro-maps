@@ -125,7 +125,7 @@ public class MapXMLWriter
       String target=link.getTargetMapKey();
       linkAttrs.addAttribute("","",MapXMLConstants.LINK_TARGET_ATTR,XmlWriter.CDATA,target);
       hd.startElement("","",MapXMLConstants.LINK_TAG,linkAttrs);
-      GeoPoint hotPoint=link.getHotPoint();
+      GeoPoint hotPoint=link.getPosition();
       writeGeoPoint(hd,hotPoint);
       hd.endElement("","",MapXMLConstants.LINK_TAG);
     }

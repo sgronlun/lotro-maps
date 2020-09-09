@@ -4,7 +4,7 @@ package delta.games.lotro.maps.data;
  * Map link: a point on a map that links to another map.
  * @author DAM
  */
-public class MapLink
+public class MapLink implements MapPoint
 {
   private GeoPoint _hotPoint;
   private String _targetMapKey;
@@ -21,10 +21,19 @@ public class MapLink
   }
 
   /**
+   * Get the label for this point.
+   * @return a label or <code>null</code> if none.
+   */
+  public String getLabel()
+  {
+    return null;
+  }
+
+  /**
    * Get the geographic hot point.
    * @return the hot point.
    */
-  public GeoPoint getHotPoint()
+  public GeoPoint getPosition()
   {
     return _hotPoint;
   }

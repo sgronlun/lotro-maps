@@ -41,15 +41,6 @@ public class MapsManager
   }
 
   /**
-   * Get the root directory for this map.
-   * @return a directory.
-   */
-  public File getRootDir()
-  {
-    return _rootDir;
-  }
-
-  /**
    * Get the categories manager.
    * @return the categories manager.
    */
@@ -92,19 +83,6 @@ public class MapsManager
       MapBundle bundle=new MapBundle(key,mapDir);
       addMap(bundle);
     }
-  }
-
-  /**
-   * Get the links file for a map.
-   * @param mapKey Key of the targeted map.
-   * @return A file.
-   */
-  public File getLinksFile(String mapKey)
-  {
-    File mapsDir=new File(_rootDir,"maps");
-    File mapDir=new File(mapsDir,mapKey);
-    File linksFile=new File(mapDir,"links.xml");
-    return linksFile;
   }
 
   /**

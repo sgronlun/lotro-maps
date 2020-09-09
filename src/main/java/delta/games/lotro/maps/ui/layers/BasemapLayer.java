@@ -6,21 +6,19 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.List;
 
 import delta.common.ui.ImageUtils;
 import delta.games.lotro.maps.data.GeoBox;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.GeoreferencedBasemap;
-import delta.games.lotro.maps.data.Marker;
 import delta.games.lotro.maps.ui.MapView;
 
 /**
  * Base map layer.
  * @author DAM
  */
-public class BasemapLayer implements Layer
+public class BasemapLayer implements RasterLayer
 {
   private MapView _view;
   private GeoreferencedBasemap _currentMap;
@@ -40,12 +38,6 @@ public class BasemapLayer implements Layer
   public int getPriority()
   {
     return 0;
-  }
-
-  @Override
-  public List<Marker> getVisibleMarkers()
-  {
-    return null;
   }
 
   /**

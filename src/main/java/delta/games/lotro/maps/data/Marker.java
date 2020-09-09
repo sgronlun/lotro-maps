@@ -4,7 +4,7 @@ package delta.games.lotro.maps.data;
  * Marker.
  * @author DAM
  */
-public class Marker
+public class Marker implements MapPoint
 {
   private int _id;
   private GeoPoint _position;
