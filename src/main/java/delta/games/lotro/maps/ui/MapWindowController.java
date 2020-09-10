@@ -26,6 +26,7 @@ import delta.games.lotro.maps.ui.controllers.NavigationController;
 import delta.games.lotro.maps.ui.controllers.ViewInputsManager;
 import delta.games.lotro.maps.ui.filter.MapFilterPanelController;
 import delta.games.lotro.maps.ui.filter.MapMarkersFilter;
+import delta.games.lotro.maps.ui.layers.LinksLayer;
 import delta.games.lotro.maps.ui.layers.MarkersLayer;
 import delta.games.lotro.maps.ui.layers.SimpleMarkersProvider;
 
@@ -50,6 +51,8 @@ public class MapWindowController extends DefaultWindowController implements Navi
   private ViewInputsManager _inputsMgr;
   private NavigationManager _navigation;
   private NavigationController _navigationController;
+  // Layers
+  private LinksLayer _linksLayer;
 
   /**
    * Constructor.
@@ -62,7 +65,9 @@ public class MapWindowController extends DefaultWindowController implements Navi
     // Inputs manager
     _inputsMgr=new ViewInputsManager(canvas);
     // Navigation support
-    _navigation=new NavigationManager(canvas);
+    _navigation=new NavigationManager();
+    _linksLayer=new LinksLayer(canvas);
+    canvas.addLayer(_linksLayer);
     _navigationController=new NavigationController(canvas,_navigation);
     _inputsMgr.addInputController(_navigationController);
     addNavigationListener(this);
@@ -119,6 +124,7 @@ public class MapWindowController extends DefaultWindowController implements Navi
       _mapChooser.selectMap(key);
       List<MapLink> links=map.getLinks();
       _navigationController.setLinks(links);
+      _linksLayer.setLinks(links);
       pack();
     }
   }

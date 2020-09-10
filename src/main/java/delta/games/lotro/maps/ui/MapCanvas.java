@@ -145,7 +145,10 @@ public class MapCanvas extends JPanel implements MapView
     return _viewReference;
   }
 
-  @Override
+  /**
+   * Get the maps manager.
+   * @return the maps manager.
+   */
   public MapsManager getMapsManager()
   {
     return _mapsManager;

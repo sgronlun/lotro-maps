@@ -4,7 +4,6 @@ import java.util.Stack;
 
 import delta.common.utils.ListenersManager;
 import delta.games.lotro.maps.data.MapBundle;
-import delta.games.lotro.maps.ui.layers.LinksLayer;
 
 /**
  * Manages navigation on a map canvas.
@@ -12,24 +11,20 @@ import delta.games.lotro.maps.ui.layers.LinksLayer;
  */
 public class NavigationManager
 {
-  private MapCanvas _canvas;
   // Listeners
   private ListenersManager<NavigationListener> _navigationListeners;
-
+  // Current map
   private MapBundle _currentMap;
+  // Maps history
   private Stack<String> _navigationHistory;
 
   /**
    * Constructor.
-   * @param canvas Decorated canvas.
    */
-  public NavigationManager(MapCanvas canvas)
+  public NavigationManager()
   {
-    _canvas=canvas;
     _navigationListeners=new ListenersManager<NavigationListener>();
     _navigationHistory=new Stack<String>();
-    LinksLayer linksLayer=new LinksLayer(_canvas);
-    _canvas.addLayer(linksLayer);
   }
 
   /**
@@ -49,7 +44,6 @@ public class NavigationManager
     _navigationHistory.clear();
     _navigationListeners=null;
     _currentMap=null;
-    _canvas=null;
   }
 
   /**
