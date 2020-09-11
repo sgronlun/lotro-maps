@@ -19,6 +19,7 @@ import delta.games.lotro.maps.data.MapPointNameComparator;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.view.BoundedZoomFilter;
 import delta.games.lotro.maps.data.view.ZoomFilter;
+import delta.games.lotro.maps.ui.controllers.ViewInputsManager;
 import delta.games.lotro.maps.ui.layers.BasemapLayer;
 import delta.games.lotro.maps.ui.layers.Layer;
 import delta.games.lotro.maps.ui.layers.LayerPriorityComparator;
@@ -40,6 +41,8 @@ public class MapCanvas extends JPanel implements MapView
   // View definition
   private GeoReference _viewReference;
   private ZoomFilter _zoomFilter;
+  // Input controller
+  private ViewInputsManager _inputsMgr;
   // Layers
   private BasemapLayer _basemapLayer;
   private List<Layer> _layers;
@@ -53,9 +56,20 @@ public class MapCanvas extends JPanel implements MapView
     _mapsManager=mapsManager;
     _currentMap=null;
     setToolTipText("");
+    // Inputs manager
+    _inputsMgr=new ViewInputsManager(this);
     _layers=new ArrayList<Layer>();
     _basemapLayer=new BasemapLayer(this);
     addLayer(_basemapLayer);
+  }
+
+  /**
+   * Get the inputs manager.
+   * @return the inputs manager.
+   */
+  public ViewInputsManager getInputsManager()
+  {
+    return _inputsMgr;
   }
 
   /**
@@ -356,5 +370,17 @@ public class MapCanvas extends JPanel implements MapView
       return sb.toString();
     }
     return null;
+  }
+
+  /**
+   * Release all managed resources.
+   */
+  public void dispose()
+  {
+    if (_inputsMgr!=null)
+    {
+      _inputsMgr.dispose();
+      _inputsMgr=null;
+    }
   }
 }

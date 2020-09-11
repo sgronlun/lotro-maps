@@ -247,8 +247,6 @@ public class MapPanelController
    */
   public void dispose()
   {
-    // Data
-    _canvas=null;
     // Controllers
     if (_locationDisplay!=null)
     {
@@ -263,6 +261,12 @@ public class MapPanelController
     {
       _locationController.dispose();
       _locationController=null;
+    }
+    // Data
+    if (_canvas!=null)
+    {
+      _canvas.dispose();
+      _canvas=null;
     }
     // UI
     _layers=null;

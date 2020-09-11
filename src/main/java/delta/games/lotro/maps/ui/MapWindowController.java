@@ -48,7 +48,6 @@ public class MapWindowController extends DefaultWindowController implements Navi
   private MapFilterPanelController _filter;
   private MapChooserController _mapChooser;
   // Map control
-  private ViewInputsManager _inputsMgr;
   private NavigationManager _navigation;
   private NavigationController _navigationController;
   // Layers
@@ -62,14 +61,13 @@ public class MapWindowController extends DefaultWindowController implements Navi
   {
     _mapPanel=new MapPanelController(mapsManager);
     MapCanvas canvas=_mapPanel.getCanvas();
-    // Inputs manager
-    _inputsMgr=new ViewInputsManager(canvas);
     // Navigation support
     _navigation=new NavigationManager();
     _linksLayer=new LinksLayer(canvas);
     canvas.addLayer(_linksLayer);
     _navigationController=new NavigationController(canvas,_navigation);
-    _inputsMgr.addInputController(_navigationController);
+    ViewInputsManager inputsMgr=canvas.getInputsManager();
+    inputsMgr.addInputController(_navigationController);
     addNavigationListener(this);
     // Markers filter
     MapMarkersFilter filter=new MapMarkersFilter();
@@ -224,11 +222,6 @@ public class MapWindowController extends DefaultWindowController implements Navi
     {
       _navigation.dispose();
       _navigation=null;
-    }
-    if (_inputsMgr!=null)
-    {
-      _inputsMgr.dispose();
-      _inputsMgr=null;
     }
     if (_navigation!=null)
     {
