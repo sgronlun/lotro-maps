@@ -1,9 +1,8 @@
-package delta.games.lotro.maps.ui;
+package delta.games.lotro.maps.ui.navigation;
 
 import java.util.Stack;
 
 import delta.common.utils.ListenersManager;
-import delta.games.lotro.maps.data.MapBundle;
 
 /**
  * Manages navigation on a map canvas.
@@ -13,8 +12,6 @@ public class NavigationManager
 {
   // Listeners
   private ListenersManager<NavigationListener> _navigationListeners;
-  // Current map
-  private MapBundle _currentMap;
   // Maps history
   private Stack<String> _navigationHistory;
 
@@ -43,7 +40,6 @@ public class NavigationManager
   {
     _navigationHistory.clear();
     _navigationListeners=null;
-    _currentMap=null;
   }
 
   /**
@@ -51,21 +47,13 @@ public class NavigationManager
    */
   public void back()
   {
-    if (!_navigationHistory.isEmpty())
+    if (_navigationHistory.size()<=1)
     {
-      String old=_navigationHistory.pop();
-      requestMap(old);
+      return;
     }
-  }
-
-  /**
-   * Request a new map.
-   * @param targetMapKey Map key.
-   */
-  public void forward(String targetMapKey)
-  {
-    _navigationHistory.push(_currentMap.getKey());
-    requestMap(targetMapKey);
+    _navigationHistory.pop();
+    String mapKey=_navigationHistory.pop();
+    requestMap(mapKey);
   }
 
   /**
@@ -74,21 +62,17 @@ public class NavigationManager
    */
   public void requestMap(String key)
   {
+    if (!_navigationHistory.isEmpty())
+    {
+      if (_navigationHistory.peek().equals(key))
+      {
+        return;
+      }
+    }
+    _navigationHistory.push(key);
     for(NavigationListener navigationListener : _navigationListeners)
     {
       navigationListener.mapChangeRequest(key);
-    }
-  }
-
-  /**
-   * Set the current map.
-   * @param map Map to set as current.
-   */
-  public void setMap(MapBundle map)
-  {
-    if (map!=null)
-    {
-      _currentMap=map;
     }
   }
 }

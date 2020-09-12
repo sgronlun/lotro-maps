@@ -1,4 +1,4 @@
-package delta.games.lotro.maps.ui.controllers;
+package delta.games.lotro.maps.ui.navigation;
 
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
@@ -8,7 +8,7 @@ import java.util.List;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.MapLink;
 import delta.games.lotro.maps.ui.MapView;
-import delta.games.lotro.maps.ui.NavigationManager;
+import delta.games.lotro.maps.ui.controllers.MouseInputController;
 
 /**
  * Input controller for maps navigation:
@@ -80,7 +80,7 @@ public class NavigationController implements MouseInputController
     if (link!=null)
     {
       String targetMapKey=link.getTargetMapKey();
-      _navigationMgr.forward(targetMapKey);
+      _navigationMgr.requestMap(targetMapKey);
     }
   }
 

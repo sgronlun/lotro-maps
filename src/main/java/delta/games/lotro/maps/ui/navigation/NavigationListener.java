@@ -1,4 +1,4 @@
-package delta.games.lotro.maps.ui;
+package delta.games.lotro.maps.ui.navigation;
 
 /**
  * Listener for navigation events.
