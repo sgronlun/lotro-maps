@@ -12,7 +12,6 @@ import javax.swing.JPanel;
 import delta.games.lotro.maps.data.GeoBox;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
-import delta.games.lotro.maps.data.GeoreferencedBasemap;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapPoint;
 import delta.games.lotro.maps.data.MapPointNameComparator;
@@ -138,19 +137,13 @@ public class MapCanvas extends JPanel implements MapView
     return _layers;
   }
 
-  @Override
+  /**
+   * Get the current map bundle.
+   * @return the current map.
+   */
   public MapBundle getCurrentMap()
   {
     return _currentMap;
-  }
-
-  /**
-   * Get the current map.
-   * @return the current map.
-   */
-  public GeoreferencedBasemap getMap()
-  {
-    return (_currentMap!=null)?_currentMap.getMap():null;
   }
 
   @Override

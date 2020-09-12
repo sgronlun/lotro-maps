@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoreferencedBasemap;
+import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
 import delta.games.lotro.maps.ui.layers.MarkersLayer;
@@ -68,7 +69,8 @@ public class MainTestCustomMarkersLayer
     markersProvider.setMarkers(markers);
     MarkersLayer custom=new MarkersLayer(customIconProvider,markersProvider);
     canvas.addLayer(custom);
-    GeoreferencedBasemap map=panel.getCanvas().getMap();
+    MapBundle mapBundle=mapsManager.getMapByKey(key);
+    GeoreferencedBasemap map=mapBundle.getMap();
     String mapTitle=(map!=null)?map.getName():"?";
 
     JFrame f=new JFrame();
