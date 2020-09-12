@@ -21,7 +21,6 @@ import delta.games.lotro.maps.ui.MarkerIconProvider;
  */
 public class MarkersLayer implements VectorLayer
 {
-  private MapView _view;
   private Filter<Marker> _filter;
   private boolean _useLabels;
   private int _priority;
@@ -30,13 +29,11 @@ public class MarkersLayer implements VectorLayer
 
   /**
    * Constructor.
-   * @param view Map view.
    * @param iconProvider Icon provider.
    * @param markersProvider Markers provider.
    */
-  public MarkersLayer(MapView view, MarkerIconProvider iconProvider, MarkersProvider markersProvider)
+  public MarkersLayer(MarkerIconProvider iconProvider, MarkersProvider markersProvider)
   {
-    _view=view;
     _filter=null;
     _useLabels=false;
     _priority=50;
@@ -88,16 +85,17 @@ public class MarkersLayer implements VectorLayer
 
   /**
    * Paint the markers.
+   * @param view Parent view.
    * @param g Graphics.
    */
   @Override
-  public void paintLayer(Graphics g)
+  public void paintLayer(MapView view, Graphics g)
   {
     List<Marker> markers=getMarkers();
-    paintMarkers(markers,g);
+    paintMarkers(view,markers,g);
   }
 
-  private void paintMarkers(List<Marker> markers, Graphics g)
+  private void paintMarkers(MapView view, List<Marker> markers, Graphics g)
   {
     if ((markers==null) || (markers.size()==0))
     {
@@ -108,14 +106,14 @@ public class MarkersLayer implements VectorLayer
       boolean ok=((_filter==null)||(_filter.accept(marker)));
       if (ok)
       {
-        paintMarker(marker,g);
+        paintMarker(view,marker,g);
       }
     }
   }
 
-  private void paintMarker(Marker marker, Graphics g)
+  private void paintMarker(MapView view, Marker marker, Graphics g)
   {
-    GeoReference viewReference=_view.getViewReference();
+    GeoReference viewReference=view.getViewReference();
     Dimension pixelPosition=viewReference.geo2pixel(marker.getPosition());
 
     // Grab icon

@@ -19,17 +19,14 @@ import delta.games.lotro.maps.ui.MapView;
  */
 public class LinksLayer implements VectorLayer
 {
-  private MapView _view;
   private BufferedImage _gotoIcon;
   private List<MapLink> _links;
 
   /**
    * Constructor.
-   * @param view Map view.
    */
-  public LinksLayer(MapView view)
+  public LinksLayer()
   {
-    _view=view;
     _gotoIcon=IconsManager.getImage("/resources/icons/goto.png");
     _links=new ArrayList<MapLink>();
   }
@@ -58,23 +55,24 @@ public class LinksLayer implements VectorLayer
 
   /**
    * Paint the links.
+   * @param view Parent view.
    * @param g Graphics.
    */
   @Override
-  public void paintLayer(Graphics g)
+  public void paintLayer(MapView view, Graphics g)
   {
     if (_links.size()>0)
     {
       for(MapLink link : _links)
       {
-        paintLink(link,g);
+        paintLink(view,link,g);
       }
     }
   }
 
-  private void paintLink(MapLink link, Graphics g)
+  private void paintLink(MapView view, MapLink link, Graphics g)
   {
-    GeoReference viewReference=_view.getViewReference();
+    GeoReference viewReference=view.getViewReference();
     Dimension pixelPosition=viewReference.geo2pixel(link.getPosition());
 
     int x=pixelPosition.width;

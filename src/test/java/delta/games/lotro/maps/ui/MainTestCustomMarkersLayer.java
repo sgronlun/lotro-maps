@@ -66,7 +66,7 @@ public class MainTestCustomMarkersLayer
     SimpleMarkersProvider markersProvider=new SimpleMarkersProvider();
     List<Marker> markers=getMarkers();
     markersProvider.setMarkers(markers);
-    MarkersLayer custom=new MarkersLayer(canvas,customIconProvider,markersProvider);
+    MarkersLayer custom=new MarkersLayer(customIconProvider,markersProvider);
     canvas.addLayer(custom);
     GeoreferencedBasemap map=panel.getCanvas().getMap();
     String mapTitle=(map!=null)?map.getName():"?";

@@ -59,7 +59,7 @@ public class MapCanvas extends JPanel implements MapView
     // Inputs manager
     _inputsMgr=new ViewInputsManager(this);
     _layers=new ArrayList<Layer>();
-    _basemapLayer=new BasemapLayer(this);
+    _basemapLayer=new BasemapLayer();
     addLayer(_basemapLayer);
   }
 
@@ -185,9 +185,9 @@ public class MapCanvas extends JPanel implements MapView
     _basemapLayer.setMap(_currentMap.getMap());
     // Set reference
     GeoReference reference=_currentMap.getMap().getGeoReference();
-    float geo2pixel=reference.getGeo2PixelFactor();
-    _viewReference=new GeoReference(reference.getStart(),geo2pixel);
+    _viewReference=new GeoReference(reference);
     // Set zoom filter
+    float geo2pixel=reference.getGeo2PixelFactor();
     _zoomFilter=new BoundedZoomFilter(Float.valueOf(geo2pixel),Float.valueOf(geo2pixel*16));
     repaint();
   }
@@ -257,9 +257,9 @@ public class MapCanvas extends JPanel implements MapView
 
   private GeoPoint checkNewStart(GeoPoint newStart, float geo2Pixel)
   {
-    GeoReference reference=_currentMap.getMap().getGeoReference();
+    GeoBox mapBounds=getMapBounds();
     // 1) Check top left
-    GeoPoint mapStart=reference.getStart();
+    GeoPoint mapStart=new GeoPoint(mapBounds.getMin().getLongitude(),mapBounds.getMax().getLatitude());
     // Longitude
     float newLongitude=newStart.getLongitude();
     if (newStart.getLongitude()<mapStart.getLongitude())
@@ -279,7 +279,6 @@ public class MapCanvas extends JPanel implements MapView
     int height=getHeight();
     float deltaLat=height/geo2Pixel;
     GeoPoint newEnd=new GeoPoint(newLongitude+deltaLon,newLatitude-deltaLat);
-    GeoBox mapBounds=getMapBounds();
     GeoPoint mapEnd=new GeoPoint(mapBounds.getMax().getLongitude(),mapBounds.getMin().getLatitude());
     // Longitude
     if (newEnd.getLongitude()>mapEnd.getLongitude())
@@ -311,7 +310,7 @@ public class MapCanvas extends JPanel implements MapView
     super.paintComponent(g);
     for(Layer layer : _layers)
     {
-      layer.paintLayer(g);
+      layer.paintLayer(this,g);
     }
   }
 

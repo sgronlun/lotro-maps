@@ -35,6 +35,17 @@ public class GeoReference
   }
 
   /**
+   * Copy constructor.
+   * @param source Source reference.
+   */
+  public GeoReference(GeoReference source)
+  {
+    _start=source._start;
+    _geo2pixel=source._geo2pixel;
+    _pixel2geo=1/_geo2pixel;
+  }
+
+  /**
    * Get the start point of the map (most north/western point).
    * @return a geographic point.
    */

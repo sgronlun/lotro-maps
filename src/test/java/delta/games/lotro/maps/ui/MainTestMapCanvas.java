@@ -42,7 +42,7 @@ public class MainTestMapCanvas
     MarkersFinder finder=mapsManager.getMarkersFinder();
     List<Marker> markers=finder.findMarkers(breaArea,0);
     markersProvider.setMarkers(markers);
-    MarkersLayer markersLayer=new MarkersLayer(canvas,iconsProvider,markersProvider);
+    MarkersLayer markersLayer=new MarkersLayer(iconsProvider,markersProvider);
     canvas.addLayer(markersLayer);
     markersLayer.useLabels(true);
 

@@ -66,7 +66,7 @@ public class MapWindowController extends DefaultWindowController implements Navi
     // Markers layer
     MarkerIconProvider iconsProvider=new DefaultMarkerIconsProvider(categoriesManager);
     _markersProvider=new SimpleMarkersProvider();
-    MarkersLayer markersLayer=new MarkersLayer(canvas,iconsProvider,_markersProvider);
+    MarkersLayer markersLayer=new MarkersLayer(iconsProvider,_markersProvider);
     markersLayer.setFilter(filter);
     canvas.addLayer(markersLayer);
     // Map chooser
@@ -203,6 +203,11 @@ public class MapWindowController extends DefaultWindowController implements Navi
     {
       _mapPanel.dispose();
       _mapPanel=null;
+    }
+    if (_navigation!=null)
+    {
+      _navigation.dispose();
+      _navigation=null;
     }
     super.dispose();
   }

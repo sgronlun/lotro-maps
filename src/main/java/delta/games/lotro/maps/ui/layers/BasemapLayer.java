@@ -20,17 +20,14 @@ import delta.games.lotro.maps.ui.MapView;
  */
 public class BasemapLayer implements RasterLayer
 {
-  private MapView _view;
   private GeoreferencedBasemap _currentMap;
   private BufferedImage _background;
 
   /**
    * Constructor.
-   * @param view Map view.
    */
-  public BasemapLayer(MapView view)
+  public BasemapLayer()
   {
-    _view=view;
     _background=null;
   }
 
@@ -86,11 +83,11 @@ public class BasemapLayer implements RasterLayer
    * @param g Graphics.
    */
   @Override
-  public void paintLayer(Graphics g)
+  public void paintLayer(MapView view, Graphics g)
   {
     if (_background!=null)
     {
-      GeoReference viewReference=_view.getViewReference();
+      GeoReference viewReference=view.getViewReference();
       //System.out.println("Repaint!");
       int dx1=0;int dy1=0;int dx2=_background.getWidth();int dy2=_background.getHeight();
       GeoReference reference=_currentMap.getGeoReference();

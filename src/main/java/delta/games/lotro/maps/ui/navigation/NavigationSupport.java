@@ -38,7 +38,7 @@ public class NavigationSupport implements NavigationListener
   {
     // Navigation support
     _navigation=new NavigationManager();
-    _linksLayer=new LinksLayer(canvas);
+    _linksLayer=new LinksLayer();
     canvas.addLayer(_linksLayer);
     _navigationController=new NavigationController(canvas,_navigation);
     ViewInputsManager inputsMgr=canvas.getInputsManager();
