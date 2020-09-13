@@ -18,6 +18,8 @@ import delta.games.lotro.maps.data.MapPointNameComparator;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.view.BoundedZoomFilter;
 import delta.games.lotro.maps.data.view.ZoomFilter;
+import delta.games.lotro.maps.ui.constraints.MapBoundsConstraint;
+import delta.games.lotro.maps.ui.constraints.MapConstraint;
 import delta.games.lotro.maps.ui.controllers.ViewInputsManager;
 import delta.games.lotro.maps.ui.layers.BasemapLayer;
 import delta.games.lotro.maps.ui.layers.Layer;
@@ -40,6 +42,7 @@ public class MapCanvas extends JPanel implements MapView
   // View definition
   private GeoReference _viewReference;
   private ZoomFilter _zoomFilter;
+  private MapConstraint _constraint;
   // Input controller
   private ViewInputsManager _inputsMgr;
   // Layers
@@ -72,13 +75,12 @@ public class MapCanvas extends JPanel implements MapView
   }
 
   /**
-   * Get the geographic bounds for the current map.
-   * @return a geographic box.
+   * Set the map constraint.
+   * @param constraint Constraint to set.
    */
-  public GeoBox getMapBounds()
+  public void setMapConstraint(MapConstraint constraint)
   {
-    // TODO Move that elsewhere!
-    return _basemapLayer.getMapBounds();
+    _constraint=constraint;
   }
 
   /**
@@ -176,6 +178,8 @@ public class MapCanvas extends JPanel implements MapView
     _currentMap=map;
     // Set base map
     _basemapLayer.setMap(_currentMap.getMap());
+    GeoBox mapBounds=_basemapLayer.getMapBounds();
+    setMapConstraint(new MapBoundsConstraint(this,mapBounds));
     // Set reference
     GeoReference reference=_currentMap.getMap().getGeoReference();
     _viewReference=new GeoReference(reference);
@@ -216,7 +220,10 @@ public class MapCanvas extends JPanel implements MapView
     float latCenter=centerGeo.getLatitude();
     float lonCenter=centerGeo.getLongitude();
     GeoPoint newStart=new GeoPoint(lonCenter-newDeltaLon/2,latCenter+newDeltaLat/2);
-    newStart=checkNewStart(newStart,newGeo2PixelFactor);
+    if (_constraint!=null)
+    {
+      newStart=_constraint.checkNewStart(newStart,newGeo2PixelFactor);
+    }
     //System.out.println("New start geo: "+newStart);
     _viewReference=new GeoReference(newStart,newGeo2PixelFactor);
     //System.out.println("New view reference: "+_viewReference);
@@ -242,48 +249,13 @@ public class MapCanvas extends JPanel implements MapView
     float newStartLon=currentStart.getLongitude()+deltaLon;
     GeoPoint newStart=new GeoPoint(newStartLon,newStartLat);
     float geo2pixel=_viewReference.getGeo2PixelFactor();
-    newStart=checkNewStart(newStart,geo2pixel);
+    if (_constraint!=null)
+    {
+      newStart=_constraint.checkNewStart(newStart,geo2pixel);
+    }
     _viewReference=new GeoReference(newStart,geo2pixel);
     //System.out.println("New view reference: "+_viewReference);
     repaint();
-  }
-
-  private GeoPoint checkNewStart(GeoPoint newStart, float geo2Pixel)
-  {
-    GeoBox mapBounds=getMapBounds();
-    // 1) Check top left
-    GeoPoint mapStart=new GeoPoint(mapBounds.getMin().getLongitude(),mapBounds.getMax().getLatitude());
-    // Longitude
-    float newLongitude=newStart.getLongitude();
-    if (newStart.getLongitude()<mapStart.getLongitude())
-    {
-      newLongitude=mapStart.getLongitude();
-    }
-    // Latitude
-    float newLatitude=newStart.getLatitude();
-    if (newStart.getLatitude()>mapStart.getLatitude())
-    {
-      newLatitude=mapStart.getLatitude();
-    }
-
-    // 2) Check bottom right
-    int width=getWidth();
-    float deltaLon=width/geo2Pixel;
-    int height=getHeight();
-    float deltaLat=height/geo2Pixel;
-    GeoPoint newEnd=new GeoPoint(newLongitude+deltaLon,newLatitude-deltaLat);
-    GeoPoint mapEnd=new GeoPoint(mapBounds.getMax().getLongitude(),mapBounds.getMin().getLatitude());
-    // Longitude
-    if (newEnd.getLongitude()>mapEnd.getLongitude())
-    {
-      newLongitude=mapEnd.getLongitude()-deltaLon;
-    }
-    // Latitude
-    if (newEnd.getLatitude()<mapEnd.getLatitude())
-    {
-      newLatitude=mapEnd.getLatitude()+deltaLat;
-    }
-    return new GeoPoint(newLongitude,newLatitude);
   }
 
   @Override

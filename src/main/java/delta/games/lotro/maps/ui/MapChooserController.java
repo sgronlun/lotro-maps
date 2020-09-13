@@ -11,6 +11,7 @@ import delta.common.ui.swing.combobox.ItemSelectionListener;
 import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapBundleNameComparator;
 import delta.games.lotro.maps.data.MapsManager;
+import delta.games.lotro.maps.ui.navigation.NavigationSupport;
 
 /**
  * Controller for a map chooser.
@@ -21,18 +22,18 @@ public class MapChooserController
   // Data
   private MapsManager _mapsManager;
   // Controllers
-  private MapWindowController _parent;
+  private NavigationSupport _navigation;
   // UI
   private ComboBoxController<MapBundle> _mapsCombo;
 
   /**
    * Constructor.
-   * @param parent Parent window.
+   * @param navigation Navigation support.
    * @param mapsManager Maps manager.
    */
-  public MapChooserController(MapWindowController parent, MapsManager mapsManager)
+  public MapChooserController(NavigationSupport navigation, MapsManager mapsManager)
   {
-    _parent=parent;
+    _navigation=navigation;
     _mapsManager=mapsManager;
     _mapsCombo=buildCombo();
   }
@@ -60,7 +61,7 @@ public class MapChooserController
     {
       public void itemSelected(MapBundle item)
       {
-        _parent.requestMap(item.getKey());
+        _navigation.requestMap(item.getKey());
       }
     };
     combo.addListener(listener);
@@ -84,7 +85,7 @@ public class MapChooserController
     // Data
     _mapsManager=null;
     // Controllers
-    _parent=null;
+    _navigation=null;
     // UI
     if (_mapsCombo!=null)
     {
