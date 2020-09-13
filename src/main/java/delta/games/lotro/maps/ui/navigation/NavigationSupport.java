@@ -3,9 +3,7 @@ package delta.games.lotro.maps.ui.navigation;
 import java.util.List;
 
 import delta.common.utils.ListenersManager;
-import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapLink;
-import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.ui.MapCanvas;
 import delta.games.lotro.maps.ui.controllers.ViewInputsManager;
 import delta.games.lotro.maps.ui.layers.LinksLayer;
@@ -14,10 +12,8 @@ import delta.games.lotro.maps.ui.layers.LinksLayer;
  * Adds navigation support to a map.
  * @author DAM
  */
-public class NavigationSupport implements NavigationListener
+public class NavigationSupport
 {
-  // View
-  private MapCanvas _canvas;
   // Navigation
   private NavigationManager _navigation;
   private NavigationController _navigationController;
@@ -30,7 +26,6 @@ public class NavigationSupport implements NavigationListener
    */
   public NavigationSupport(MapCanvas canvas)
   {
-    _canvas=canvas;
     init(canvas);
   }
 
@@ -43,7 +38,6 @@ public class NavigationSupport implements NavigationListener
     _navigationController=new NavigationController(canvas,_navigation);
     ViewInputsManager inputsMgr=canvas.getInputsManager();
     inputsMgr.addInputController(_navigationController);
-    _navigation.getNavigationListeners().addListener(this);
   }
 
   /**
@@ -64,17 +58,14 @@ public class NavigationSupport implements NavigationListener
     return _navigation.getNavigationListeners();
   }
 
-  @Override
-  public void mapChangeRequest(String key)
+  /**
+   * Set the links to show.
+   * @param links
+   */
+  public void setLinks(List<MapLink> links)
   {
-    MapsManager mapsManager=_canvas.getMapsManager();
-    MapBundle map=mapsManager.getMapByKey(key);
-    if (map!=null)
-    {
-      List<MapLink> links=map.getLinks();
-      _navigationController.setLinks(links);
-      _linksLayer.setLinks(links);
-    }
+    _navigationController.setLinks(links);
+    _linksLayer.setLinks(links);
   }
 
   /**
