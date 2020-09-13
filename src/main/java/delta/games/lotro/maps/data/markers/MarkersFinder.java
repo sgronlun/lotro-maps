@@ -38,9 +38,9 @@ public class MarkersFinder
    */
   public List<Marker> findMarkers(int zoneId, int contentLayer)
   {
-    MarkersIndex zoneIndex=_indexsMgr.getDidIndex(zoneId,true);
+    MarkersIndex zoneIndex=_indexsMgr.getDidIndex(zoneId);
     Set<Integer> zoneMarkers=zoneIndex.getMarkers();
-    MarkersIndex contentLayerIndex=_indexsMgr.getContentLayerIndex(contentLayer,true);
+    MarkersIndex contentLayerIndex=_indexsMgr.getContentLayerIndex(contentLayer);
     Set<Integer> contentLayerMarkers=contentLayerIndex.getMarkers();
     Set<Integer> markersToGet=new TreeSet<Integer>(zoneMarkers);
     markersToGet.retainAll(contentLayerMarkers);

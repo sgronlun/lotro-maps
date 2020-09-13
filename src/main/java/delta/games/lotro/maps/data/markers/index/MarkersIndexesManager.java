@@ -32,15 +32,13 @@ public class MarkersIndexesManager
   /**
    * Get an index for a DID.
    * @param did DID to use.
-   * @param createIfNecessary Indicates if the index shall be created if
-   * it does not exist.
    * @return An index or <code>null</code>.
    */
-  public MarkersIndex getDidIndex(int did, boolean createIfNecessary)
+  public MarkersIndex getDidIndex(int did)
   {
     Integer key=Integer.valueOf(did);
     MarkersIndex index=_didIndexes.get(key);
-    if ((index==null) && (createIfNecessary))
+    if (index==null)
     {
       File from=getFileForDidIndex(did);
       if (from.exists())
@@ -59,15 +57,13 @@ public class MarkersIndexesManager
   /**
    * Get an index for a content layer.
    * @param contentLayerId Content layer to use.
-   * @param createIfNecessary Indicates if the index shall be created if
-   * it does not exist.
    * @return An index or <code>null</code>.
    */
-  public MarkersIndex getContentLayerIndex(int contentLayerId, boolean createIfNecessary)
+  public MarkersIndex getContentLayerIndex(int contentLayerId)
   {
     Integer key=Integer.valueOf(contentLayerId);
     MarkersIndex index=_contentLayerIndexes.get(key);
-    if ((index==null) && (createIfNecessary))
+    if (index==null)
     {
       File from=getFileForContentLayerIndex(contentLayerId);
       if (from.exists())
