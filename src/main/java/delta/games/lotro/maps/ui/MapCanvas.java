@@ -186,7 +186,6 @@ public class MapCanvas extends JPanel implements MapView
     // Set zoom filter
     float geo2pixel=reference.getGeo2PixelFactor();
     _zoomFilter=new BoundedZoomFilter(Float.valueOf(geo2pixel),Float.valueOf(geo2pixel*16));
-    repaint();
   }
 
   /**
