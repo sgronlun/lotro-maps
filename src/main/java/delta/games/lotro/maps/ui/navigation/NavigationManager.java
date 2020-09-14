@@ -13,7 +13,7 @@ public class NavigationManager
   // Listeners
   private ListenersManager<NavigationListener> _navigationListeners;
   // Maps history
-  private Stack<String> _navigationHistory;
+  private Stack<Integer> _navigationHistory;
 
   /**
    * Constructor.
@@ -21,7 +21,7 @@ public class NavigationManager
   public NavigationManager()
   {
     _navigationListeners=new ListenersManager<NavigationListener>();
-    _navigationHistory=new Stack<String>();
+    _navigationHistory=new Stack<Integer>();
   }
 
   /**
@@ -52,24 +52,24 @@ public class NavigationManager
       return;
     }
     _navigationHistory.pop();
-    String mapKey=_navigationHistory.pop();
-    requestMap(mapKey);
+    Integer mapKey=_navigationHistory.pop();
+    requestMap(mapKey.intValue());
   }
 
   /**
    * Request a map change.
    * @param key Key of the map to show.
    */
-  public void requestMap(String key)
+  public void requestMap(int key)
   {
     if (!_navigationHistory.isEmpty())
     {
-      if (_navigationHistory.peek().equals(key))
+      if (_navigationHistory.peek().intValue()==key)
       {
         return;
       }
     }
-    _navigationHistory.push(key);
+    _navigationHistory.push(Integer.valueOf(key));
     for(NavigationListener navigationListener : _navigationListeners)
     {
       navigationListener.mapChangeRequest(key);

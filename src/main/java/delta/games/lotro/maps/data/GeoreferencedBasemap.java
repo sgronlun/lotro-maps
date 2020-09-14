@@ -8,7 +8,7 @@ import java.io.File;
  */
 public class GeoreferencedBasemap
 {
-  private String _key;
+  private int _key;
   private String _name;
   private GeoReference _geoRef;
   private File _imageFile;
@@ -17,7 +17,7 @@ public class GeoreferencedBasemap
    * Constructor.
    * @param key Identifying key for this basemap.
    */
-  public GeoreferencedBasemap(String key)
+  public GeoreferencedBasemap(int key)
   {
     _key=key;
     _name="";
@@ -27,7 +27,7 @@ public class GeoreferencedBasemap
    * Get the identifying key for this basemap.
    * @return an identifying key.
    */
-  public String getKey()
+  public int getKey()
   {
     return _key;
   }

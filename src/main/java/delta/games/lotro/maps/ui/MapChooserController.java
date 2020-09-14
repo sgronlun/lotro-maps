@@ -42,7 +42,7 @@ public class MapChooserController
    * Select the given map.
    * @param key Key of the map to set.
    */
-  public void selectMap(String key)
+  public void selectMap(int key)
   {
     MapBundle bundle=_mapsManager.getMapByKey(key);
     _mapsCombo.selectItem(bundle);

@@ -9,8 +9,8 @@ import java.util.List;
 
 import delta.common.ui.swing.icons.IconsManager;
 import delta.games.lotro.maps.data.GeoReference;
-import delta.games.lotro.maps.data.MapLink;
 import delta.games.lotro.maps.data.MapPoint;
+import delta.games.lotro.maps.data.links.MapLink;
 import delta.games.lotro.maps.ui.MapView;
 
 /**

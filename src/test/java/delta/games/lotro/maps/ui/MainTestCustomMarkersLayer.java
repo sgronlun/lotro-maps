@@ -60,7 +60,7 @@ public class MainTestCustomMarkersLayer
     mapsManager.load();
 
     MapPanelController panel=new MapPanelController(mapsManager);
-    String key="268452526"; // Northern Mirkwood
+    int key=268452526; // Northern Mirkwood
     panel.setMap(key);
     MapCanvas canvas=panel.getCanvas();
     MarkerIconProvider customIconProvider=new CompletedOrNotMarkerIconProvider();

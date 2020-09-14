@@ -1,13 +1,11 @@
 package delta.games.lotro.maps.data.io;
 
 import java.io.File;
-import java.util.List;
 
 import org.w3c.dom.Element;
 
 import delta.common.utils.xml.DOMParsingTools;
 import delta.games.lotro.maps.data.GeoreferencedBasemap;
-import delta.games.lotro.maps.data.MapLink;
 import delta.games.lotro.maps.data.io.xml.MapXMLParser;
 
 /**
@@ -41,25 +39,5 @@ public class MapsIO
       map=MapXMLParser.parseMap(root);
     }
     return map;
-  }
-
-  /**
-   * Load map links.
-   * @param rootDirectory Root map directory.
-   * @return a list of map links, or <code>null</code>.
-   */
-  public static List<MapLink> loadLinks(File rootDirectory)
-  {
-    List<MapLink> ret=null;
-    File linksFile=new File(rootDirectory,"links.xml");
-    if (linksFile.exists())
-    {
-      Element root=DOMParsingTools.parse(linksFile);
-      if (root!=null)
-      {
-        ret=MapXMLParser.parseLinks(root);
-      }
-    }
-    return ret;
   }
 }

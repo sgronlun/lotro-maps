@@ -7,9 +7,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import delta.common.utils.NumericTools;
 import delta.common.utils.files.FilesFinder;
 import delta.common.utils.files.filter.FileTypePredicate;
 import delta.games.lotro.maps.data.categories.CategoriesManager;
+import delta.games.lotro.maps.data.links.LinksManager;
 import delta.games.lotro.maps.data.markers.GlobalMarkersManager;
 import delta.games.lotro.maps.data.markers.MarkersFinder;
 
@@ -20,10 +22,14 @@ import delta.games.lotro.maps.data.markers.MarkersFinder;
 public class MapsManager
 {
   private File _rootDir;
-  private HashMap<String,MapBundle> _maps;
+  private HashMap<Integer,MapBundle> _maps;
+  // Categories
   private CategoriesManager _categoriesManager;
+  // Markers
   private GlobalMarkersManager _markersManager;
   private MarkersFinder _markersFinder;
+  // Links
+  private LinksManager _linksManager;
 
   /**
    * Constructor.
@@ -32,12 +38,16 @@ public class MapsManager
   public MapsManager(File rootDir)
   {
     _rootDir=rootDir;
-    _maps=new HashMap<String,MapBundle>();
+    _maps=new HashMap<Integer,MapBundle>();
+    // Categories
     File categoriesDir=new File(_rootDir,"categories");
     _categoriesManager=new CategoriesManager(categoriesDir);
+    // Markers
     File markersDir=new File(_rootDir,"markers");
     _markersManager=new GlobalMarkersManager(markersDir);
     _markersFinder=new MarkersFinder(_rootDir,_markersManager);
+    // Links
+    _linksManager=new LinksManager(rootDir);
   }
 
   /**
@@ -68,6 +78,15 @@ public class MapsManager
   }
 
   /**
+   * Get the links manager.
+   * @return the links manager.
+   */
+  public LinksManager getLinksManager()
+  {
+    return _linksManager;
+  }
+
+  /**
    * Load map data.
    */
   public void load()
@@ -79,8 +98,8 @@ public class MapsManager
     List<File> mapDirs=finder.find(FilesFinder.ABSOLUTE_MODE,mapsDir,filter,false);
     for(File mapDir : mapDirs)
     {
-      String key=mapDir.getName();
-      MapBundle bundle=new MapBundle(key,mapDir);
+      int mapId=NumericTools.parseInt(mapDir.getName(),0);
+      MapBundle bundle=new MapBundle(mapId,mapDir);
       addMap(bundle);
     }
   }
@@ -90,9 +109,9 @@ public class MapsManager
    * @param key Key to use.
    * @return A map bundle or <code>null</code> if not found.
    */
-  public MapBundle getMapByKey(String key)
+  public MapBundle getMapByKey(int key)
   {
-    return _maps.get(key);
+    return _maps.get(Integer.valueOf(key));
   }
 
   /**
@@ -101,8 +120,8 @@ public class MapsManager
    */
   private void addMap(MapBundle bundle)
   {
-    String key=bundle.getKey();
-    _maps.put(key,bundle);
+    int key=bundle.getKey();
+    _maps.put(Integer.valueOf(key),bundle);
   }
 
   /**

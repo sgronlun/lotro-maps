@@ -193,9 +193,9 @@ public class MapPanelController
 
   /**
    * Set the map to display.
-   * @param key
+   * @param key Map identifier.
    */
-  public void setMap(String key)
+  public void setMap(int key)
   {
     _canvas.setMap(key);
     //System.out.println("Key: "+key);

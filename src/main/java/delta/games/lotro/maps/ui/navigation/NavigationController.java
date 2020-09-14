@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import delta.games.lotro.maps.data.GeoReference;
-import delta.games.lotro.maps.data.MapLink;
+import delta.games.lotro.maps.data.links.MapLink;
 import delta.games.lotro.maps.ui.MapView;
 import delta.games.lotro.maps.ui.controllers.MouseInputController;
 
@@ -79,7 +79,7 @@ public class NavigationController implements MouseInputController
     MapLink link=testForHotPoint(x,y);
     if (link!=null)
     {
-      String targetMapKey=link.getTargetMapKey();
+      int targetMapKey=link.getTargetMapKey();
       _navigationMgr.requestMap(targetMapKey);
     }
   }

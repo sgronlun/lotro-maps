@@ -1,8 +1,5 @@
 package delta.games.lotro.maps.data.io.xml;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
@@ -10,7 +7,6 @@ import delta.common.utils.xml.DOMParsingTools;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.GeoreferencedBasemap;
-import delta.games.lotro.maps.data.MapLink;
 import delta.games.lotro.maps.data.markers.io.xml.MarkersXMLParser;
 
 /**
@@ -27,7 +23,7 @@ public class MapXMLParser
   public static GeoreferencedBasemap parseMap(Element root)
   {
     NamedNodeMap attrs=root.getAttributes();
-    String key=DOMParsingTools.getStringAttribute(attrs,MapXMLConstants.MAP_KEY_ATTR,null);
+    int key=DOMParsingTools.getIntAttribute(attrs,MapXMLConstants.MAP_KEY_ATTR,0);
     GeoreferencedBasemap map=new GeoreferencedBasemap(key);
 
     // Name
@@ -41,26 +37,6 @@ public class MapXMLParser
       map.setGeoReference(geoReference);
     }
     return map;
-  }
-
-  /**
-   * Parse the links of a map.
-   * @param root Root element.
-   * @return A collection of links.
-   */
-  public static List<MapLink> parseLinks(Element root)
-  {
-    List<MapLink> links=new ArrayList<MapLink>();
-    List<Element> linkTags=DOMParsingTools.getChildTagsByName(root,MapXMLConstants.LINK_TAG,true);
-    for(Element linkTag : linkTags)
-    {
-      MapLink link=parseLink(linkTag);
-      if (link!=null)
-      {
-        links.add(link);
-      }
-    }
-    return links;
   }
 
   /**
@@ -83,30 +59,5 @@ public class MapXMLParser
       ret=new GeoReference(start,factor);
     }
     return ret;
-  }
-
-  /**
-   * Build a link from an XML tag.
-   * @param linkTag Link tag.
-   * @return A link.
-   */
-  private static MapLink parseLink(Element linkTag)
-  {
-    NamedNodeMap attrs=linkTag.getAttributes();
-    // Target
-    String target=DOMParsingTools.getStringAttribute(attrs,MapXMLConstants.LINK_TARGET_ATTR,null);
-    // Position
-    Element positionTag=DOMParsingTools.getChildTagByName(linkTag,MapXMLConstants.POINT_TAG);
-    GeoPoint hotPoint=null;
-    if (positionTag!=null)
-    {
-      hotPoint=MarkersXMLParser.parsePoint(positionTag);
-    }
-    MapLink link=null;
-    if ((target!=null) && (hotPoint!=null))
-    {
-      link=new MapLink(target,hotPoint);
-    }
-    return link;
   }
 }

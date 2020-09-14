@@ -1,7 +1,6 @@
 package delta.games.lotro.maps.data.io.xml;
 
 import java.io.File;
-import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -9,12 +8,9 @@ import org.xml.sax.helpers.AttributesImpl;
 
 import delta.common.utils.io.xml.XmlFileWriterHelper;
 import delta.common.utils.io.xml.XmlWriter;
-import delta.common.utils.text.EncodingNames;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.GeoreferencedBasemap;
-import delta.games.lotro.maps.data.MapBundle;
-import delta.games.lotro.maps.data.MapLink;
 import delta.games.lotro.maps.data.markers.io.xml.MarkersXMLWriter;
 
 /**
@@ -23,20 +19,6 @@ import delta.games.lotro.maps.data.markers.io.xml.MarkersXMLWriter;
  */
 public class MapXMLWriter
 {
-  /**
-   * Write link file for a bundle.
-   * @param bundle Map bundle.
-   * @return <code>true</code> if it succeeds, <code>false</code> otherwise.
-   */
-  public static boolean writeLinkFiles(MapBundle bundle)
-  {
-    File rootDir=bundle.getRootDir();
-    // Links
-    File linksFile=new File(rootDir,"links.xml");
-    boolean linksOk=writeLinksFile(linksFile,bundle.getLinks());
-    return linksOk;
-  }
-
   /**
    * Write map markers to an XML file.
    * @param outFile Output file.
@@ -69,8 +51,8 @@ public class MapXMLWriter
   {
     AttributesImpl attrs=new AttributesImpl();
     // Key
-    String key=map.getKey();
-    attrs.addAttribute("","",MapXMLConstants.MAP_KEY_ATTR,XmlWriter.CDATA,key);
+    int key=map.getKey();
+    attrs.addAttribute("","",MapXMLConstants.MAP_KEY_ATTR,XmlWriter.CDATA,String.valueOf(key));
     // Name
     String name=map.getName();
     attrs.addAttribute("","",MapXMLConstants.MAP_LABEL_ATTR,XmlWriter.CDATA,name);
@@ -92,44 +74,6 @@ public class MapXMLWriter
       hd.endElement("","",MapXMLConstants.GEO_TAG);
     }
     hd.endElement("","",MapXMLConstants.MAP_TAG);
-  }
-
-  /**
-   * Write map markers to an XML file.
-   * @param outFile Output file.
-   * @param links Links to use.
-   * @return <code>true</code> if it succeeds, <code>false</code> otherwise.
-   */
-  public static boolean writeLinksFile(File outFile, final List<MapLink> links)
-  {
-    XmlFileWriterHelper helper=new XmlFileWriterHelper();
-    XmlWriter writer=new XmlWriter()
-    {
-      @Override
-      public void writeXml(TransformerHandler hd) throws Exception
-      {
-        writeLinks(hd,links);
-      }
-    };
-    boolean ret=helper.write(outFile,EncodingNames.UTF_8,writer);
-    return ret;
-  }
-
-  private static void writeLinks(TransformerHandler hd, List<MapLink> links) throws Exception
-  {
-    hd.startElement("","",MapXMLConstants.LINKS_TAG,new AttributesImpl());
-    // Links
-    for(MapLink link : links)
-    {
-      AttributesImpl linkAttrs=new AttributesImpl();
-      String target=link.getTargetMapKey();
-      linkAttrs.addAttribute("","",MapXMLConstants.LINK_TARGET_ATTR,XmlWriter.CDATA,target);
-      hd.startElement("","",MapXMLConstants.LINK_TAG,linkAttrs);
-      GeoPoint hotPoint=link.getPosition();
-      writeGeoPoint(hd,hotPoint);
-      hd.endElement("","",MapXMLConstants.LINK_TAG);
-    }
-    hd.endElement("","",MapXMLConstants.LINKS_TAG);
   }
 
   /**

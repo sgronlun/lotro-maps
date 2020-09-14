@@ -3,7 +3,7 @@ package delta.games.lotro.maps.ui.navigation;
 import java.util.List;
 
 import delta.common.utils.ListenersManager;
-import delta.games.lotro.maps.data.MapLink;
+import delta.games.lotro.maps.data.links.MapLink;
 import delta.games.lotro.maps.ui.MapCanvas;
 import delta.games.lotro.maps.ui.controllers.ViewInputsManager;
 import delta.games.lotro.maps.ui.layers.LinksLayer;
@@ -44,7 +44,7 @@ public class NavigationSupport
    * Request a map change.
    * @param key Key of the map to show.
    */
-  public void requestMap(String key)
+  public void requestMap(int key)
   {
     _navigation.requestMap(key);
   }

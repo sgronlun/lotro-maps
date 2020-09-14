@@ -31,9 +31,9 @@ public class MainTestMapCanvas
 
     int breeMapId=268437716;
     int breaArea=1879064015;
-    MapBundle bundle=mapsManager.getMapByKey(String.valueOf(breeMapId));
+    MapBundle bundle=mapsManager.getMapByKey(breeMapId);
     MapPanelController panel=new MapPanelController(mapsManager);
-    String key=bundle.getKey();
+    int key=bundle.getKey();
     panel.setMap(key);
     MapCanvas canvas=panel.getCanvas();
     CategoriesManager categoriesManager=mapsManager.getCategories();

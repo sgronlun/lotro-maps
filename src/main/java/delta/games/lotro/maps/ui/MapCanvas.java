@@ -167,7 +167,7 @@ public class MapCanvas extends JPanel implements MapView
    * Set the map to display.
    * @param key Map identifier.
    */
-  public void setMap(String key)
+  public void setMap(int key)
   {
     // Get map
     MapBundle map=_mapsManager.getMapByKey(key);

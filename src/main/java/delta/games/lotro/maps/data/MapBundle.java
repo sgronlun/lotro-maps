@@ -1,8 +1,6 @@
 package delta.games.lotro.maps.data;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import delta.games.lotro.maps.data.io.MapsIO;
 
@@ -12,19 +10,17 @@ import delta.games.lotro.maps.data.io.MapsIO;
  */
 public class MapBundle
 {
-  private String _key;
+  private int _key;
   private File _rootDir;
   // Map description
   private GeoreferencedBasemap _map;
-  // Map links
-  private List<MapLink> _links;
 
   /**
    * Constructor.
    * @param rootDir Root directory.
    * @param key Identifying key for the managed map.
    */
-  public MapBundle(String key, File rootDir)
+  public MapBundle(int key, File rootDir)
   {
     _key=key;
     _rootDir=rootDir;
@@ -43,7 +39,7 @@ public class MapBundle
    * Get the identifying key for the managed map.
    * @return an identifying key.
    */
-  public String getKey()
+  public int getKey()
   {
     return _key;
   }
@@ -74,22 +70,5 @@ public class MapBundle
     File imageFile=new File(_rootDir,"map.png");
     _map.setImageFile(imageFile);
     return _map;
-  }
-
-  /**
-   * Get the managed map.
-   * @return the managed map.
-   */
-  public List<MapLink> getLinks()
-  {
-    if (_links==null)
-    {
-      _links=MapsIO.loadLinks(_rootDir);
-    }
-    if (_links==null)
-    {
-      _links=new ArrayList<MapLink>();
-    }
-    return _links;
   }
 }
