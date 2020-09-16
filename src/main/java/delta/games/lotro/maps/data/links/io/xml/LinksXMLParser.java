@@ -69,9 +69,12 @@ public class LinksXMLParser
     int contentLayerId=DOMParsingTools.getIntAttribute(attrs,LinksXMLConstants.LINK_CONTENT_LAYER_ATTR,0);
     // Target
     int target=DOMParsingTools.getIntAttribute(attrs,LinksXMLConstants.LINK_TARGET_ATTR,0);
+    // Label
+    String label=DOMParsingTools.getStringAttribute(attrs,LinksXMLConstants.LINK_LABEL_ATTR,null);
     // Position
     GeoPoint hotPoint=MarkersXMLParser.parsePoint(linkTag);
     MapLink link=new MapLink(parentId,contentLayerId,target,hotPoint);
+    link.setLabel(label);
     return link;
   }
 }

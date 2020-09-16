@@ -57,6 +57,12 @@ public class LinksXMLWriter
       // Target
       int target=link.getTargetMapKey();
       linkAttrs.addAttribute("","",LinksXMLConstants.LINK_TARGET_ATTR,XmlWriter.CDATA,String.valueOf(target));
+      // Label
+      String label=link.getLabel();
+      if ((label!=null) && (label.length()>0))
+      {
+        linkAttrs.addAttribute("","",LinksXMLConstants.LINK_LABEL_ATTR,XmlWriter.CDATA,label);
+      }
       // Position
       GeoPoint hotPoint=link.getPosition();
       MarkersXMLWriter.writeGeoPointAttrs(hd,hotPoint,linkAttrs);

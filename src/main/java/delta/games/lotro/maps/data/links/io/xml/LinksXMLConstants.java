@@ -26,4 +26,8 @@ public class LinksXMLConstants
    * Tag 'link', attribute 'target'.
    */
   public static final String LINK_TARGET_ATTR="target";
+  /**
+   * Tag 'link', attribute 'label'.
+   */
+  public static final String LINK_LABEL_ATTR="label";
 }

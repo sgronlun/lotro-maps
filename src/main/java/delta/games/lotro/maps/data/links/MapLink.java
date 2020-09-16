@@ -13,6 +13,7 @@ public class MapLink implements MapPoint
   private int _contentLayerId;
   private GeoPoint _hotPoint;
   private int _targetMapKey;
+  private String _text;
 
   /**
    * Constructor.
@@ -35,7 +36,16 @@ public class MapLink implements MapPoint
    */
   public String getLabel()
   {
-    return null;
+    return _text;
+  }
+
+  /**
+   * Set the label for this link.
+   * @param text Text to set.
+   */
+  public void setLabel(String text)
+  {
+    _text=text;
   }
 
   /**
@@ -77,6 +87,6 @@ public class MapLink implements MapPoint
   @Override
   public String toString()
   {
-    return "Link to " + _targetMapKey + "@" + _hotPoint;
+    return "Link to " + _targetMapKey + "@" + _hotPoint + ", from="+_parentId+", layer="+_contentLayerId+", label="+_text;
   }
 }
