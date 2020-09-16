@@ -38,9 +38,9 @@ public class LinksLayer implements VectorLayer
   }
 
   @Override
-  public List<MapPoint> getVisiblePoints()
+  public List<? extends MapPoint> getVisiblePoints()
   {
-    return null;
+    return _links;
   }
 
   /**

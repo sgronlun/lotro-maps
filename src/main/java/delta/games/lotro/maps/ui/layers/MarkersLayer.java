@@ -66,7 +66,7 @@ public class MarkersLayer implements VectorLayer
   }
 
   @Override
-  public List<MapPoint> getVisiblePoints()
+  public List<? extends MapPoint> getVisiblePoints()
   {
     List<Marker> markers=getMarkers();
     List<MapPoint> ret=MapPointsUtils.getFilteredMarkers(_filter,markers);

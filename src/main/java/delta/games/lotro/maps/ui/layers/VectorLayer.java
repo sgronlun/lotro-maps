@@ -14,5 +14,5 @@ public interface VectorLayer extends Layer
    * Get the list of visible points for this layer.
    * @return A possibly empty list of points, or <code>null</code>.
    */
-  List<MapPoint> getVisiblePoints();
+  List<? extends MapPoint> getVisiblePoints();
 }

@@ -293,7 +293,7 @@ public class MapCanvas extends JPanel implements MapView
         continue;
       }
       VectorLayer vectorLayer=(VectorLayer)layer;
-      List<MapPoint> visiblePoints=vectorLayer.getVisiblePoints();
+      List<? extends MapPoint> visiblePoints=vectorLayer.getVisiblePoints();
       if (visiblePoints!=null)
       {
         for(MapPoint visiblePoint : visiblePoints)
