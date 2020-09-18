@@ -45,7 +45,11 @@ public class MapChooserController
   public void selectMap(int key)
   {
     MapBundle bundle=_mapsManager.getMapByKey(key);
-    _mapsCombo.selectItem(bundle);
+    MapBundle selectedBundle=_mapsCombo.getSelectedItem();
+    if (selectedBundle!=bundle)
+    {
+      _mapsCombo.setSelectedItem(bundle);
+    }
   }
 
   private ComboBoxController<MapBundle> buildCombo()

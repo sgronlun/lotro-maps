@@ -3,6 +3,7 @@ package delta.games.lotro.maps.ui.navigation;
 import java.util.Stack;
 
 import delta.common.utils.ListenersManager;
+import delta.games.lotro.maps.ui.MapView;
 
 /**
  * Manages navigation on a map canvas.
@@ -10,18 +11,22 @@ import delta.common.utils.ListenersManager;
  */
 public class NavigationManager
 {
+  // Map view
+  private MapView _view;
   // Listeners
   private ListenersManager<NavigationListener> _navigationListeners;
   // Maps history
-  private Stack<Integer> _navigationHistory;
+  private Stack<MapViewDefinition> _navigationHistory;
 
   /**
    * Constructor.
+   * @param view Associated view.
    */
-  public NavigationManager()
+  public NavigationManager(MapView view)
   {
+    _view=view;
     _navigationListeners=new ListenersManager<NavigationListener>();
-    _navigationHistory=new Stack<Integer>();
+    _navigationHistory=new Stack<MapViewDefinition>();
   }
 
   /**
@@ -38,6 +43,7 @@ public class NavigationManager
    */
   public void dispose()
   {
+    _view=null;
     _navigationHistory.clear();
     _navigationListeners=null;
   }
@@ -47,32 +53,38 @@ public class NavigationManager
    */
   public void back()
   {
-    if (_navigationHistory.size()<=1)
+    if (_navigationHistory.size()==0)
     {
       return;
     }
-    _navigationHistory.pop();
-    Integer mapKey=_navigationHistory.pop();
-    requestMap(mapKey.intValue());
+    MapViewDefinition item=_navigationHistory.pop();
+    requestMap(item);
+  }
+
+  /**
+   * Request the display of a map.
+   * @param mapKey Map identifier.
+   */
+  public void requestMap(int mapKey)
+  {
+    MapViewDefinition currentMapView=_view.getMapViewDefinition();
+    if (currentMapView!=null)
+    {
+      _navigationHistory.push(currentMapView);
+    }
+    MapViewDefinition newMapView=new MapViewDefinition(mapKey,null,null);
+    requestMap(newMapView);
   }
 
   /**
    * Request a map change.
-   * @param key Key of the map to show.
+   * @param viewDefinition Map view definition.
    */
-  public void requestMap(int key)
+  public void requestMap(MapViewDefinition viewDefinition)
   {
-    if (!_navigationHistory.isEmpty())
-    {
-      if (_navigationHistory.peek().intValue()==key)
-      {
-        return;
-      }
-    }
-    _navigationHistory.push(Integer.valueOf(key));
     for(NavigationListener navigationListener : _navigationListeners)
     {
-      navigationListener.mapChangeRequest(key);
+      navigationListener.mapChangeRequest(viewDefinition);
     }
   }
 }

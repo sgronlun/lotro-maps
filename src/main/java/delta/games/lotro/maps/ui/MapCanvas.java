@@ -25,6 +25,7 @@ import delta.games.lotro.maps.ui.layers.BasemapLayer;
 import delta.games.lotro.maps.ui.layers.Layer;
 import delta.games.lotro.maps.ui.layers.LayerPriorityComparator;
 import delta.games.lotro.maps.ui.layers.VectorLayer;
+import delta.games.lotro.maps.ui.navigation.MapViewDefinition;
 
 /**
  * Map display.
@@ -155,6 +156,28 @@ public class MapCanvas extends JPanel implements MapView
   }
 
   /**
+   * Set the view georeference.
+   * @param viewReference Georeference to set.
+   */
+  public void setViewReference(GeoReference viewReference)
+  {
+    _viewReference=viewReference;
+  }
+
+  @Override
+  public MapViewDefinition getMapViewDefinition()
+  {
+    if (_currentMap==null)
+    {
+      return null;
+    }
+    int key=_currentMap.getKey();
+    Dimension size=getSize();
+    MapViewDefinition mapViewDefinition=new MapViewDefinition(key,_viewReference,size);
+    return mapViewDefinition;
+  }
+
+  /**
    * Get the maps manager.
    * @return the maps manager.
    */
@@ -181,10 +204,10 @@ public class MapCanvas extends JPanel implements MapView
     GeoBox mapBounds=_basemapLayer.getMapBounds();
     setMapConstraint(new MapBoundsConstraint(this,mapBounds));
     // Set reference
-    GeoReference reference=_currentMap.getMap().getGeoReference();
-    _viewReference=new GeoReference(reference);
+    GeoReference mapReference=_currentMap.getMap().getGeoReference();
+    _viewReference=new GeoReference(mapReference);
     // Set zoom filter
-    float geo2pixel=reference.getGeo2PixelFactor();
+    float geo2pixel=mapReference.getGeo2PixelFactor();
     _zoomFilter=new BoundedZoomFilter(Float.valueOf(geo2pixel),Float.valueOf(geo2pixel*16));
   }
 

@@ -16,11 +16,13 @@ import javax.swing.SwingUtilities;
 
 import delta.common.ui.swing.GuiFactory;
 import delta.common.ui.swing.labels.LabelWithHalo;
+import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.ui.layers.Layer;
 import delta.games.lotro.maps.ui.layers.MarkersLayer;
 import delta.games.lotro.maps.ui.location.MapLocationController;
 import delta.games.lotro.maps.ui.location.MapLocationPanelController;
+import delta.games.lotro.maps.ui.navigation.MapViewDefinition;
 
 /**
  * Controller for a map panel.
@@ -193,18 +195,38 @@ public class MapPanelController
 
   /**
    * Set the map to display.
-   * @param key Map identifier.
+   * @param mapKey Map identifier.
    */
-  public void setMap(int key)
+  public void setMap(int mapKey)
   {
-    _canvas.setMap(key);
+    MapViewDefinition mapViewDefinition=new MapViewDefinition(mapKey,null,null);
+    setMap(mapViewDefinition);
+  }
+
+  /**
+   * Set the map to display.
+   * @param mapViewDefinition Map view definition.
+   */
+  public void setMap(MapViewDefinition mapViewDefinition)
+  {
+    int mapKey=mapViewDefinition.getMapKey();
+    _canvas.setMap(mapKey);
     //System.out.println("Key: "+key);
     // Set map size
-    Dimension size=new Dimension(1024,768);
-    Dimension sizeToSet=fitInSize(size);
-    _canvas.setSize(sizeToSet);
-    _layers.setPreferredSize(sizeToSet);
-    int height=sizeToSet.height;
+    Dimension viewSize=mapViewDefinition.getDimension();
+    if (viewSize==null)
+    {
+      Dimension size=new Dimension(1024,768);
+      viewSize=fitInSize(size);
+    }
+    GeoReference viewReference=mapViewDefinition.getViewReference();
+    if (viewReference!=null)
+    {
+      _canvas.setViewReference(viewReference);
+    }
+    _canvas.setSize(viewSize);
+    _layers.setPreferredSize(viewSize);
+    int height=viewSize.height;
     // Place location display (lower left)
     JPanel locationPanel=_locationDisplay.getPanel();
     locationPanel.setSize(100,40);

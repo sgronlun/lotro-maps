@@ -32,7 +32,7 @@ public class NavigationSupport
   private void init(MapCanvas canvas)
   {
     // Navigation support
-    _navigation=new NavigationManager();
+    _navigation=new NavigationManager(canvas);
     _linksLayer=new LinksLayer();
     canvas.addLayer(_linksLayer);
     _navigationController=new NavigationController(canvas,_navigation);

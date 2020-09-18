@@ -2,6 +2,7 @@ package delta.games.lotro.maps.ui;
 
 import delta.games.lotro.maps.data.GeoBox;
 import delta.games.lotro.maps.data.GeoReference;
+import delta.games.lotro.maps.ui.navigation.MapViewDefinition;
 
 /**
  * Interface of a map view.
@@ -20,4 +21,10 @@ public interface MapView
    * @return some geographic bounds.
    */
   GeoBox getGeoBounds();
+
+  /**
+   * Get the view definition for this map view.
+   * @return a view definition or <code>null</code> if no basemap.
+   */
+  MapViewDefinition getMapViewDefinition();
 }
