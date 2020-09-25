@@ -24,6 +24,14 @@ public class RadarImageCache
   }
 
   /**
+   * Reset cache.
+   */
+  public void reset()
+  {
+    _cache.clear();
+  }
+
+  /**
    * Get the radar image for the given landblock.
    * @param region Region.
    * @param blockX Landblock X.
