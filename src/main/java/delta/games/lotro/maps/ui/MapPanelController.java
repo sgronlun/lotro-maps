@@ -50,7 +50,7 @@ public class MapPanelController
    */
   public MapPanelController(MapsManager mapsManager)
   {
-    _canvas=new MapCanvas(mapsManager);
+    _canvas=new MapCanvas(mapsManager.getBasemapsManager());
     // Init zoom controller
     initZoomController();
     // Init pan controller

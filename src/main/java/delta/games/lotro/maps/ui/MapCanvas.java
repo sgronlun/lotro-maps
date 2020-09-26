@@ -12,10 +12,10 @@ import javax.swing.JPanel;
 import delta.games.lotro.maps.data.GeoBox;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
-import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapPoint;
 import delta.games.lotro.maps.data.MapPointNameComparator;
-import delta.games.lotro.maps.data.MapsManager;
+import delta.games.lotro.maps.data.basemaps.GeoreferencedBasemap;
+import delta.games.lotro.maps.data.basemaps.GeoreferencedBasemapsManager;
 import delta.games.lotro.maps.data.view.BoundedZoomFilter;
 import delta.games.lotro.maps.data.view.ZoomFilter;
 import delta.games.lotro.maps.ui.constraints.MapBoundsConstraint;
@@ -38,8 +38,8 @@ public class MapCanvas extends JPanel implements MapView
    */
   private static final int SENSIBILITY=10;
 
-  private MapsManager _mapsManager;
-  private MapBundle _currentMap;
+  private GeoreferencedBasemapsManager _basemapsManager;
+  private GeoreferencedBasemap _currentMap;
   // View definition
   private GeoReference _viewReference;
   private ZoomFilter _zoomFilter;
@@ -52,11 +52,11 @@ public class MapCanvas extends JPanel implements MapView
 
   /**
    * Constructor.
-   * @param mapsManager Maps manager.
+   * @param basemapsManager Basemaps manager.
    */
-  public MapCanvas(MapsManager mapsManager)
+  public MapCanvas(GeoreferencedBasemapsManager basemapsManager)
   {
-    _mapsManager=mapsManager;
+    _basemapsManager=basemapsManager;
     _currentMap=null;
     setToolTipText("");
     // Inputs manager
@@ -141,10 +141,10 @@ public class MapCanvas extends JPanel implements MapView
   }
 
   /**
-   * Get the current map bundle.
-   * @return the current map.
+   * Get the current basemap.
+   * @return the current basemap.
    */
-  public MapBundle getCurrentMap()
+  public GeoreferencedBasemap getCurrentBasemap()
   {
     return _currentMap;
   }
@@ -171,40 +171,40 @@ public class MapCanvas extends JPanel implements MapView
     {
       return null;
     }
-    int key=_currentMap.getKey();
+    int basemapId=_currentMap.getIdentifier();
     Dimension size=getSize();
-    MapViewDefinition mapViewDefinition=new MapViewDefinition(key,_viewReference,size);
+    MapViewDefinition mapViewDefinition=new MapViewDefinition(basemapId,_viewReference,size);
     return mapViewDefinition;
   }
 
   /**
-   * Get the maps manager.
-   * @return the maps manager.
+   * Get the basemaps manager.
+   * @return the basemaps manager.
    */
-  public MapsManager getMapsManager()
+  public GeoreferencedBasemapsManager getBasemapsManager()
   {
-    return _mapsManager;
+    return _basemapsManager;
   }
 
   /**
    * Set the map to display.
-   * @param key Map identifier.
+   * @param basemapId Map identifier.
    */
-  public void setMap(int key)
+  public void setMap(int basemapId)
   {
     // Get map
-    MapBundle map=_mapsManager.getMapByKey(key);
+    GeoreferencedBasemap map=_basemapsManager.getMapById(basemapId);
     if (map==null)
     {
       return;
     }
     _currentMap=map;
     // Set base map
-    _basemapLayer.setMap(_currentMap.getMap());
+    _basemapLayer.setMap(_currentMap);
     GeoBox mapBounds=_basemapLayer.getMapBounds();
     setMapConstraint(new MapBoundsConstraint(this,mapBounds));
     // Set reference
-    GeoReference mapReference=_currentMap.getMap().getGeoReference();
+    GeoReference mapReference=_currentMap.getGeoReference();
     _viewReference=new GeoReference(mapReference);
     // Set zoom filter
     float geo2pixel=mapReference.getGeo2PixelFactor();

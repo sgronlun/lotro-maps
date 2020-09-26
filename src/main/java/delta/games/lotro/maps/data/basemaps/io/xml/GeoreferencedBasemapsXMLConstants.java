@@ -1,23 +1,27 @@
-package delta.games.lotro.maps.data.io.xml;
+package delta.games.lotro.maps.data.basemaps.io.xml;
 
 /**
  * Constants for tags and attribute names used in the map XML files.
  * @author DAM
  */
-public class MapXMLConstants
+public class GeoreferencedBasemapsXMLConstants
 {
+  /**
+   * Tag 'maps'.
+   */
+  public static final String MAPS_TAG="maps";
   /**
    * Tag 'map'.
    */
   public static final String MAP_TAG="map";
   /**
-   * Tag 'map', attribute 'key'.
+   * Tag 'map', attribute 'id'.
    */
-  public static final String MAP_KEY_ATTR="key";
+  public static final String MAP_ID_ATTR="id";
   /**
-   * Tag 'map', attribute 'label'.
+   * Tag 'map', attribute 'name'.
    */
-  public static final String MAP_LABEL_ATTR="label";
+  public static final String MAP_NAME_ATTR="name";
 
   /**
    * Tag 'geo'.

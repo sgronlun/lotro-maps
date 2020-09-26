@@ -5,9 +5,10 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
-import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
+import delta.games.lotro.maps.data.basemaps.GeoreferencedBasemap;
+import delta.games.lotro.maps.data.basemaps.GeoreferencedBasemapsManager;
 import delta.games.lotro.maps.data.categories.CategoriesManager;
 import delta.games.lotro.maps.data.markers.MarkersFinder;
 import delta.games.lotro.maps.ui.layers.MarkersLayer;
@@ -27,14 +28,14 @@ public class MainTestMapCanvas
   {
     File rootDir=new File("../lotro-maps-db");
     MapsManager mapsManager=new MapsManager(rootDir);
-    mapsManager.load();
+    GeoreferencedBasemapsManager basemapsManager=mapsManager.getBasemapsManager();
 
     int breeMapId=268437716;
     int breaArea=1879064015;
-    MapBundle bundle=mapsManager.getMapByKey(breeMapId);
+    GeoreferencedBasemap basemap=basemapsManager.getMapById(breeMapId);
     MapPanelController panel=new MapPanelController(mapsManager);
-    int key=bundle.getKey();
-    panel.setMap(key);
+    int basemapId=basemap.getIdentifier();
+    panel.setMap(basemapId);
     MapCanvas canvas=panel.getCanvas();
     CategoriesManager categoriesManager=mapsManager.getCategories();
     MarkerIconProvider iconsProvider=new DefaultMarkerIconsProvider(categoriesManager);
@@ -47,7 +48,7 @@ public class MainTestMapCanvas
     markersLayer.useLabels(true);
 
     JFrame f=new JFrame();
-    String title=bundle.getName();
+    String title=basemap.getName();
     f.setTitle(title);
     f.getContentPane().add(panel.getLayers());
     f.pack();

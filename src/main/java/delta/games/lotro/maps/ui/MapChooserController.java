@@ -8,9 +8,9 @@ import javax.swing.JComboBox;
 import delta.common.ui.swing.combobox.ComboBoxController;
 import delta.common.ui.swing.combobox.ComboBoxItem;
 import delta.common.ui.swing.combobox.ItemSelectionListener;
-import delta.games.lotro.maps.data.MapBundle;
-import delta.games.lotro.maps.data.MapBundleNameComparator;
-import delta.games.lotro.maps.data.MapsManager;
+import delta.games.lotro.maps.data.basemaps.GeoreferencedBasemap;
+import delta.games.lotro.maps.data.basemaps.GeoreferencedBasemapNameComparator;
+import delta.games.lotro.maps.data.basemaps.GeoreferencedBasemapsManager;
 import delta.games.lotro.maps.ui.navigation.NavigationSupport;
 
 /**
@@ -20,52 +20,52 @@ import delta.games.lotro.maps.ui.navigation.NavigationSupport;
 public class MapChooserController
 {
   // Data
-  private MapsManager _mapsManager;
+  private GeoreferencedBasemapsManager _basemapsManager;
   // Controllers
   private NavigationSupport _navigation;
   // UI
-  private ComboBoxController<MapBundle> _mapsCombo;
+  private ComboBoxController<GeoreferencedBasemap> _mapsCombo;
 
   /**
    * Constructor.
    * @param navigation Navigation support.
-   * @param mapsManager Maps manager.
+   * @param basemapsManager Basemaps manager.
    */
-  public MapChooserController(NavigationSupport navigation, MapsManager mapsManager)
+  public MapChooserController(NavigationSupport navigation, GeoreferencedBasemapsManager basemapsManager)
   {
     _navigation=navigation;
-    _mapsManager=mapsManager;
+    _basemapsManager=basemapsManager;
     _mapsCombo=buildCombo();
   }
 
   /**
    * Select the given map.
-   * @param key Key of the map to set.
+   * @param basemapId Key of the map to set.
    */
-  public void selectMap(int key)
+  public void selectMap(int basemapId)
   {
-    MapBundle bundle=_mapsManager.getMapByKey(key);
-    MapBundle selectedBundle=_mapsCombo.getSelectedItem();
-    if (selectedBundle!=bundle)
+    GeoreferencedBasemap mapToShow=_basemapsManager.getMapById(basemapId);
+    GeoreferencedBasemap selectedMap=_mapsCombo.getSelectedItem();
+    if (selectedMap!=mapToShow)
     {
-      _mapsCombo.setSelectedItem(bundle);
+      _mapsCombo.setSelectedItem(mapToShow);
     }
   }
 
-  private ComboBoxController<MapBundle> buildCombo()
+  private ComboBoxController<GeoreferencedBasemap> buildCombo()
   {
-    ComboBoxController<MapBundle> combo=new ComboBoxController<MapBundle>();
-    List<MapBundle> maps=_mapsManager.getMaps();
-    Collections.sort(maps,new MapBundleNameComparator());
-    for(MapBundle map : maps)
+    ComboBoxController<GeoreferencedBasemap> combo=new ComboBoxController<GeoreferencedBasemap>();
+    List<GeoreferencedBasemap> maps=_basemapsManager.getBasemaps();
+    Collections.sort(maps,new GeoreferencedBasemapNameComparator());
+    for(GeoreferencedBasemap map : maps)
     {
       combo.addItem(map,map.getName());
     }
-    ItemSelectionListener<MapBundle> listener=new ItemSelectionListener<MapBundle>()
+    ItemSelectionListener<GeoreferencedBasemap> listener=new ItemSelectionListener<GeoreferencedBasemap>()
     {
-      public void itemSelected(MapBundle item)
+      public void itemSelected(GeoreferencedBasemap item)
       {
-        _navigation.requestMap(item.getKey());
+        _navigation.requestMap(item.getIdentifier());
       }
     };
     combo.addListener(listener);
@@ -76,7 +76,7 @@ public class MapChooserController
    * Get the managed combobox.
    * @return the managed combobox.
    */
-  public JComboBox<ComboBoxItem<MapBundle>> getCombo()
+  public JComboBox<ComboBoxItem<GeoreferencedBasemap>> getCombo()
   {
     return _mapsCombo.getComboBox();
   }
@@ -87,7 +87,7 @@ public class MapChooserController
   public void dispose()
   {
     // Data
-    _mapsManager=null;
+    _basemapsManager=null;
     // Controllers
     _navigation=null;
     // UI

@@ -1,35 +1,41 @@
-package delta.games.lotro.maps.data;
+package delta.games.lotro.maps.data.basemaps;
 
 import java.io.File;
+
+import delta.common.utils.id.Identifiable;
+import delta.games.lotro.maps.data.GeoReference;
 
 /**
  * Georeferenced base map.
  * @author DAM
  */
-public class GeoreferencedBasemap
+public class GeoreferencedBasemap implements Identifiable
 {
-  private int _key;
+  private int _id;
   private String _name;
   private GeoReference _geoRef;
   private File _imageFile;
 
   /**
    * Constructor.
-   * @param key Identifying key for this basemap.
+   * @param id Identifier for this basemap.
+   * @param name Map name.
+   * @param geoReference Geographic reference.
    */
-  public GeoreferencedBasemap(int key)
+  public GeoreferencedBasemap(int id, String name, GeoReference geoReference)
   {
-    _key=key;
-    _name="";
+    _id=id;
+    _name=name;
+    _geoRef=geoReference;
   }
 
   /**
-   * Get the identifying key for this basemap.
-   * @return an identifying key.
+   * Get the identifier for this basemap.
+   * @return an identifier.
    */
-  public int getKey()
+  public int getIdentifier()
   {
-    return _key;
+    return _id;
   }
 
   /**
@@ -42,30 +48,12 @@ public class GeoreferencedBasemap
   }
 
   /**
-   * Set the name for this basemap.
-   * @param name Name to set.
-   */
-  public void setName(String name)
-  {
-    _name=name;
-  }
-
-  /**
    * Get the geographic reference.
    * @return the geographic reference.
    */
   public GeoReference getGeoReference()
   {
     return _geoRef;
-  }
-
-  /**
-   * Set the geographic reference.
-   * @param geoReference Geographic reference to set.
-   */
-  public void setGeoReference(GeoReference geoReference)
-  {
-    _geoRef=geoReference;
   }
 
   /**
@@ -89,6 +77,6 @@ public class GeoreferencedBasemap
   @Override
   public String toString()
   {
-    return "Basemap: key="+_key+", name="+_name+", reference=" + _geoRef + ", file="+_imageFile;
+    return "Basemap: ID="+_id+", name="+_name+", reference=" + _geoRef + ", file="+_imageFile;
   }
 }

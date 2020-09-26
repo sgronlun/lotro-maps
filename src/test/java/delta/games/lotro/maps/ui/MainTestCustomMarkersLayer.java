@@ -7,10 +7,10 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import delta.games.lotro.maps.data.GeoPoint;
-import delta.games.lotro.maps.data.GeoreferencedBasemap;
-import delta.games.lotro.maps.data.MapBundle;
 import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.data.Marker;
+import delta.games.lotro.maps.data.basemaps.GeoreferencedBasemap;
+import delta.games.lotro.maps.data.basemaps.GeoreferencedBasemapsManager;
 import delta.games.lotro.maps.ui.layers.MarkersLayer;
 import delta.games.lotro.maps.ui.layers.SimpleMarkersProvider;
 
@@ -57,7 +57,6 @@ public class MainTestCustomMarkersLayer
   {
     File rootDir=new File("../lotro-maps-db");
     MapsManager mapsManager=new MapsManager(rootDir);
-    mapsManager.load();
 
     MapPanelController panel=new MapPanelController(mapsManager);
     int key=268452526; // Northern Mirkwood
@@ -69,8 +68,8 @@ public class MainTestCustomMarkersLayer
     markersProvider.setMarkers(markers);
     MarkersLayer custom=new MarkersLayer(customIconProvider,markersProvider);
     canvas.addLayer(custom);
-    MapBundle mapBundle=mapsManager.getMapByKey(key);
-    GeoreferencedBasemap map=mapBundle.getMap();
+    GeoreferencedBasemapsManager basemapsManager=mapsManager.getBasemapsManager();
+    GeoreferencedBasemap map=basemapsManager.getMapById(key);
     String mapTitle=(map!=null)?map.getName():"?";
 
     JFrame f=new JFrame();
