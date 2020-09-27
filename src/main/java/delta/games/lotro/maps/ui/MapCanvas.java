@@ -14,21 +14,23 @@ import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.MapPoint;
 import delta.games.lotro.maps.data.MapPointNameComparator;
-import delta.games.lotro.maps.data.basemaps.GeoreferencedBasemap;
-import delta.games.lotro.maps.data.basemaps.GeoreferencedBasemapsManager;
-import delta.games.lotro.maps.data.view.BoundedZoomFilter;
 import delta.games.lotro.maps.data.view.ZoomFilter;
-import delta.games.lotro.maps.ui.constraints.MapBoundsConstraint;
 import delta.games.lotro.maps.ui.constraints.MapConstraint;
 import delta.games.lotro.maps.ui.controllers.ViewInputsManager;
-import delta.games.lotro.maps.ui.layers.BasemapLayer;
 import delta.games.lotro.maps.ui.layers.Layer;
 import delta.games.lotro.maps.ui.layers.LayerPriorityComparator;
 import delta.games.lotro.maps.ui.layers.VectorLayer;
-import delta.games.lotro.maps.ui.navigation.MapViewDefinition;
 
 /**
- * Map display.
+ * Map view panel.
+ * It manages:
+ * <ul>
+ * <li>a view reference (geographic point of top/left corner, and zoom factor)
+ * <li>a zoom filter (optional),
+ * <li>map position constraints (optional),
+ * <li>an input controller,
+ * <li>a collection of layers to paint.
+ * </ul>
  * @author DAM
  */
 public class MapCanvas extends JPanel implements MapView
@@ -38,32 +40,26 @@ public class MapCanvas extends JPanel implements MapView
    */
   private static final int SENSIBILITY=10;
 
-  private GeoreferencedBasemapsManager _basemapsManager;
-  private GeoreferencedBasemap _currentMap;
   // View definition
   private GeoReference _viewReference;
+  // Zoom filter
   private ZoomFilter _zoomFilter;
+  // Map position constraints
   private MapConstraint _constraint;
   // Input controller
   private ViewInputsManager _inputsMgr;
   // Layers
-  private BasemapLayer _basemapLayer;
   private List<Layer> _layers;
 
   /**
    * Constructor.
-   * @param basemapsManager Basemaps manager.
    */
-  public MapCanvas(GeoreferencedBasemapsManager basemapsManager)
+  public MapCanvas()
   {
-    _basemapsManager=basemapsManager;
-    _currentMap=null;
     setToolTipText("");
     // Inputs manager
     _inputsMgr=new ViewInputsManager(this);
     _layers=new ArrayList<Layer>();
-    _basemapLayer=new BasemapLayer();
-    addLayer(_basemapLayer);
   }
 
   /**
@@ -140,15 +136,6 @@ public class MapCanvas extends JPanel implements MapView
     return _layers;
   }
 
-  /**
-   * Get the current basemap.
-   * @return the current basemap.
-   */
-  public GeoreferencedBasemap getCurrentBasemap()
-  {
-    return _currentMap;
-  }
-
   @Override
   public GeoReference getViewReference()
   {
@@ -164,51 +151,13 @@ public class MapCanvas extends JPanel implements MapView
     _viewReference=viewReference;
   }
 
-  @Override
-  public MapViewDefinition getMapViewDefinition()
-  {
-    if (_currentMap==null)
-    {
-      return null;
-    }
-    int basemapId=_currentMap.getIdentifier();
-    Dimension size=getSize();
-    MapViewDefinition mapViewDefinition=new MapViewDefinition(basemapId,_viewReference,size);
-    return mapViewDefinition;
-  }
-
   /**
-   * Get the basemaps manager.
-   * @return the basemaps manager.
+   * Set the zoom filter.
+   * @param zoomFilter Filter to set.
    */
-  public GeoreferencedBasemapsManager getBasemapsManager()
+  public void setZoomFilter(ZoomFilter zoomFilter)
   {
-    return _basemapsManager;
-  }
-
-  /**
-   * Set the map to display.
-   * @param basemapId Map identifier.
-   */
-  public void setMap(int basemapId)
-  {
-    // Get map
-    GeoreferencedBasemap map=_basemapsManager.getMapById(basemapId);
-    if (map==null)
-    {
-      return;
-    }
-    _currentMap=map;
-    // Set base map
-    _basemapLayer.setMap(_currentMap);
-    GeoBox mapBounds=_basemapLayer.getMapBounds();
-    setMapConstraint(new MapBoundsConstraint(this,mapBounds));
-    // Set reference
-    GeoReference mapReference=_currentMap.getGeoReference();
-    _viewReference=new GeoReference(mapReference);
-    // Set zoom filter
-    float geo2pixel=mapReference.getGeo2PixelFactor();
-    _zoomFilter=new BoundedZoomFilter(Float.valueOf(geo2pixel),Float.valueOf(geo2pixel*16));
+    _zoomFilter=zoomFilter;
   }
 
   /**
@@ -278,17 +227,6 @@ public class MapCanvas extends JPanel implements MapView
     _viewReference=new GeoReference(newStart,geo2pixel);
     //System.out.println("New view reference: "+_viewReference);
     repaint();
-  }
-
-  @Override
-  public Dimension getPreferredSize()
-  {
-    Dimension baseMapPreferredSize=_basemapLayer.getPreferredSize();
-    if (baseMapPreferredSize!=null)
-    {
-      return baseMapPreferredSize;
-    }
-    return super.getPreferredSize();
   }
 
   @Override
@@ -363,10 +301,18 @@ public class MapCanvas extends JPanel implements MapView
    */
   public void dispose()
   {
+    _viewReference=null;
+    _zoomFilter=null;
+    _constraint=null;
     if (_inputsMgr!=null)
     {
       _inputsMgr.dispose();
       _inputsMgr=null;
+    }
+    if (_layers!=null)
+    {
+      _layers.clear();
+      _layers=null;
     }
   }
 }

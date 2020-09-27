@@ -57,8 +57,7 @@ public class MainTestCustomMarkersLayer
   {
     File rootDir=new File("../lotro-maps-db");
     MapsManager mapsManager=new MapsManager(rootDir);
-
-    MapPanelController panel=new MapPanelController(mapsManager);
+    BasemapPanelController panel=new BasemapPanelController(mapsManager.getBasemapsManager());
     int key=268452526; // Northern Mirkwood
     panel.setMap(key);
     MapCanvas canvas=panel.getCanvas();
@@ -74,7 +73,7 @@ public class MainTestCustomMarkersLayer
 
     JFrame f=new JFrame();
     f.setTitle(mapTitle);
-    f.getContentPane().add(panel.getLayers());
+    f.getContentPane().add(panel.getComponent());
     f.pack();
     f.setVisible(true);
     f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

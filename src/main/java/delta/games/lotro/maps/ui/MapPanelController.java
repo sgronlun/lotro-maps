@@ -12,24 +12,22 @@ import java.awt.event.MouseWheelEvent;
 import javax.swing.JCheckBox;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import delta.common.ui.swing.GuiFactory;
 import delta.common.ui.swing.labels.LabelWithHalo;
-import delta.games.lotro.maps.data.GeoReference;
-import delta.games.lotro.maps.data.MapsManager;
 import delta.games.lotro.maps.ui.layers.Layer;
 import delta.games.lotro.maps.ui.layers.MarkersLayer;
 import delta.games.lotro.maps.ui.location.MapLocationController;
 import delta.games.lotro.maps.ui.location.MapLocationPanelController;
-import delta.games.lotro.maps.ui.navigation.MapViewDefinition;
 
 /**
  * Controller for a map panel.
  * <p>This includes:
  * <ul>
- * <li>a map canvas,
- * <li>a location display.
+ * <li>a map view panel,
+ * <li>a location display,
+ * <li>a 'labeled' checkbox,
+ * <li>zoom/pan controllers.
  * </ul>
  * @author DAM
  */
@@ -46,11 +44,10 @@ public class MapPanelController
 
   /**
    * Constructor.
-   * @param mapsManager Maps manager.
    */
-  public MapPanelController(MapsManager mapsManager)
+  public MapPanelController()
   {
-    _canvas=new MapCanvas(mapsManager.getBasemapsManager());
+    _canvas=new MapCanvas();
     // Init zoom controller
     initZoomController();
     // Init pan controller
@@ -194,36 +191,11 @@ public class MapPanelController
   }
 
   /**
-   * Set the map to display.
-   * @param mapKey Map identifier.
+   * Set the size of the managed view.
+   * @param viewSize Size to set.
    */
-  public void setMap(int mapKey)
+  public void setViewSize(Dimension viewSize)
   {
-    MapViewDefinition mapViewDefinition=new MapViewDefinition(mapKey,null,null);
-    setMap(mapViewDefinition);
-  }
-
-  /**
-   * Set the map to display.
-   * @param mapViewDefinition Map view definition.
-   */
-  public void setMap(MapViewDefinition mapViewDefinition)
-  {
-    int mapKey=mapViewDefinition.getMapKey();
-    _canvas.setMap(mapKey);
-    //System.out.println("Key: "+key);
-    // Set map size
-    Dimension viewSize=mapViewDefinition.getDimension();
-    if (viewSize==null)
-    {
-      Dimension size=new Dimension(1024,768);
-      viewSize=fitInSize(size);
-    }
-    GeoReference viewReference=mapViewDefinition.getViewReference();
-    if (viewReference!=null)
-    {
-      _canvas.setViewReference(viewReference);
-    }
     _canvas.setSize(viewSize);
     _layers.setPreferredSize(viewSize);
     int height=viewSize.height;
@@ -237,38 +209,17 @@ public class MapPanelController
     _canvas.repaint();
   }
 
-  private Dimension fitInSize(Dimension maxSize)
-  {
-    // Compute adequate zoom factor
-    final Dimension mapSize=_canvas.getPreferredSize();
-    //System.out.println("Map size: "+mapSize);
-    //System.out.println("Size: "+maxSize);
-    if ((mapSize.width<=maxSize.width) && (mapSize.height<=maxSize.height))
-    {
-      return mapSize;
-    }
-    float xFactor=(float)mapSize.width/maxSize.width;
-    float yFactor=(float)mapSize.height/maxSize.height;
-    final float factor=Math.max(xFactor,yFactor);
-    //System.out.println("Factor: "+factor);
-    Runnable r=new Runnable()
-    {
-      public void run()
-      {
-        _canvas.pan(mapSize.width/2,mapSize.height/2);
-        _canvas.zoom(1/factor);
-      }
-    };
-    SwingUtilities.invokeLater(r);
-    Dimension size=new Dimension((int)(mapSize.width/factor),(int)(mapSize.height/factor));
-    return size;
-  }
-
   /**
    * Release all managed resources.
    */
   public void dispose()
   {
+    // Data
+    if (_canvas!=null)
+    {
+      _canvas.dispose();
+      _canvas=null;
+    }
     // Controllers
     if (_locationDisplay!=null)
     {
@@ -283,12 +234,6 @@ public class MapPanelController
     {
       _locationController.dispose();
       _locationController=null;
-    }
-    // Data
-    if (_canvas!=null)
-    {
-      _canvas.dispose();
-      _canvas=null;
     }
     // UI
     _layers=null;

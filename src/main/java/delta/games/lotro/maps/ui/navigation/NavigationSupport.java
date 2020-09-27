@@ -4,6 +4,7 @@ import java.util.List;
 
 import delta.common.utils.ListenersManager;
 import delta.games.lotro.maps.data.links.MapLink;
+import delta.games.lotro.maps.ui.BasemapPanelController;
 import delta.games.lotro.maps.ui.MapCanvas;
 import delta.games.lotro.maps.ui.controllers.ViewInputsManager;
 import delta.games.lotro.maps.ui.layers.LinksLayer;
@@ -24,16 +25,17 @@ public class NavigationSupport
    * Constructor.
    * @param canvas Map view to use.
    */
-  public NavigationSupport(MapCanvas canvas)
+  public NavigationSupport(BasemapPanelController canvas)
   {
     init(canvas);
   }
 
-  private void init(MapCanvas canvas)
+  private void init(BasemapPanelController mapPanel)
   {
     // Navigation support
-    _navigation=new NavigationManager(canvas);
+    _navigation=new NavigationManager(mapPanel);
     _linksLayer=new LinksLayer();
+    MapCanvas canvas=mapPanel.getCanvas();
     canvas.addLayer(_linksLayer);
     _navigationController=new NavigationController(canvas,_navigation);
     ViewInputsManager inputsMgr=canvas.getInputsManager();

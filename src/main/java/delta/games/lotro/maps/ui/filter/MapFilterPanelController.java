@@ -11,7 +11,7 @@ import delta.common.ui.swing.GuiFactory;
 import delta.common.ui.swing.text.DynamicTextEditionController;
 import delta.common.ui.swing.text.TextListener;
 import delta.games.lotro.maps.data.categories.CategoriesManager;
-import delta.games.lotro.maps.ui.MapPanelController;
+import delta.games.lotro.maps.ui.MapCanvas;
 
 /**
  * Controller for a map filter edition panel.
@@ -27,18 +27,18 @@ public class MapFilterPanelController
   // Controllers
   private CategoryChooserController _categoryChooser;
   private DynamicTextEditionController _textController;
-  private MapPanelController _mapController;
+  private MapCanvas _mapCanvas;
 
   /**
    * Constructor.
    * @param categoriesManager Categories manager.
    * @param filter Markers filter.
-   * @param mapController Associated map controller.
+   * @param mapCanvas Associated map canvas.
    */
-  public MapFilterPanelController(CategoriesManager categoriesManager, MapMarkersFilter filter, MapPanelController mapController)
+  public MapFilterPanelController(CategoriesManager categoriesManager, MapMarkersFilter filter, MapCanvas mapCanvas)
   {
     _filter=filter;
-    _mapController=mapController;
+    _mapCanvas=mapCanvas;
     _categoryChooser=new CategoryChooserController(categoriesManager);
     initCategoriesFilter(categoriesManager);
   }
@@ -132,7 +132,7 @@ public class MapFilterPanelController
   public void filterUpdated()
   {
     // Repaint the associated map
-    _mapController.getCanvas().repaint();
+    _mapCanvas.repaint();
   }
 
   /**

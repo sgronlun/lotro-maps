@@ -3,7 +3,7 @@ package delta.games.lotro.maps.ui.navigation;
 import java.util.Stack;
 
 import delta.common.utils.ListenersManager;
-import delta.games.lotro.maps.ui.MapView;
+import delta.games.lotro.maps.ui.BasemapPanelController;
 
 /**
  * Manages navigation on a map canvas.
@@ -12,7 +12,7 @@ import delta.games.lotro.maps.ui.MapView;
 public class NavigationManager
 {
   // Map view
-  private MapView _view;
+  private BasemapPanelController _view;
   // Listeners
   private ListenersManager<NavigationListener> _navigationListeners;
   // Maps history
@@ -22,7 +22,7 @@ public class NavigationManager
    * Constructor.
    * @param view Associated view.
    */
-  public NavigationManager(MapView view)
+  public NavigationManager(BasemapPanelController view)
   {
     _view=view;
     _navigationListeners=new ListenersManager<NavigationListener>();

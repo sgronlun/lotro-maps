@@ -33,7 +33,7 @@ public class MainTestMapCanvas
     int breeMapId=268437716;
     int breaArea=1879064015;
     GeoreferencedBasemap basemap=basemapsManager.getMapById(breeMapId);
-    MapPanelController panel=new MapPanelController(mapsManager);
+    BasemapPanelController panel=new BasemapPanelController(mapsManager.getBasemapsManager());
     int basemapId=basemap.getIdentifier();
     panel.setMap(basemapId);
     MapCanvas canvas=panel.getCanvas();
@@ -50,7 +50,7 @@ public class MainTestMapCanvas
     JFrame f=new JFrame();
     String title=basemap.getName();
     f.setTitle(title);
-    f.getContentPane().add(panel.getLayers());
+    f.getContentPane().add(panel.getComponent());
     f.pack();
     f.setVisible(true);
     f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
