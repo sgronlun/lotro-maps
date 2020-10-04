@@ -49,10 +49,10 @@ public class BasemapLayer implements RasterLayer
   }
 
   /**
-   * Get the preferred size for map display.
-   * @return A size or <code>null</code> if no map.
+   * Get the basemap dimension.
+   * @return A dimension or <code>null</code> if no map.
    */
-  public Dimension getPreferredSize()
+  public Dimension getBasemapDimension()
   {
     if (_background!=null)
     {

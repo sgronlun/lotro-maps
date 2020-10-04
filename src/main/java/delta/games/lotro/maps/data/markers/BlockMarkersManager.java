@@ -41,6 +41,15 @@ public class BlockMarkersManager
   }
 
   /**
+   * Get the markers in this block.
+   * @return A list of markers, possibly empty bu tnever <code>null</code>.
+   */
+  public List<Marker> getMarkers()
+  {
+    return new ArrayList<Marker>(_markers.values());
+  }
+
+  /**
    * Get a marker using its identifier.
    * @param markerId Marker identifier.
    * @return A marker or <code>null</code> if not found.

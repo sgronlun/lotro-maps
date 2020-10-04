@@ -88,14 +88,14 @@ public class BasemapPanelController
    * Set the basemap to display.
    * @param basemap Basemap.
    */
-  public void setMapOnCanvas(GeoreferencedBasemap basemap)
+  private void setMapOnCanvas(GeoreferencedBasemap basemap)
   {
     MapCanvas canvas=_mapPanel.getCanvas();
     // Set base map
     _currentMap=basemap;
     _basemapLayer.setMap(basemap);
-    Dimension baseMapPreferredSize=_basemapLayer.getPreferredSize();
-    canvas.setPreferredSize(baseMapPreferredSize);
+    Dimension baseMapDimension=_basemapLayer.getBasemapDimension();
+    canvas.setPreferredSize(baseMapDimension);
     GeoBox mapBounds=_basemapLayer.getMapBounds();
     canvas.setMapConstraint(new MapBoundsConstraint(canvas,mapBounds));
     // Set reference
@@ -126,19 +126,20 @@ public class BasemapPanelController
     int mapKey=mapViewDefinition.getMapKey();
     GeoreferencedBasemap basemap=_basemapsManager.getMapById(mapKey);
     setMapOnCanvas(basemap);
-    // Set map size
+    // Set map view size
     Dimension viewSize=mapViewDefinition.getDimension();
     if (viewSize==null)
     {
       viewSize=fitInSize(new Dimension(1024,768));
     }
+    _mapPanel.setViewSize(viewSize);
+    // Set view reference
     GeoReference viewReference=mapViewDefinition.getViewReference();
     if (viewReference!=null)
     {
       MapCanvas canvas=_mapPanel.getCanvas();
       canvas.setViewReference(viewReference);
     }
-    _mapPanel.setViewSize(viewSize);
   }
 
   private Dimension fitInSize(Dimension maxSize)

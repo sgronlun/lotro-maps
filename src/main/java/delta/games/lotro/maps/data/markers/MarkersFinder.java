@@ -47,6 +47,19 @@ public class MarkersFinder
     return getMarkers(markersToGet);
   }
 
+  /**
+   * Find the markers for the given zone and content layer.
+   * @param zoneId Zone identifier (area or dungeon).
+   * @param contentLayer Content layer (0 for world).
+   * @return A possibly empty but never <code>null</code> list of markers.
+   */
+  public List<Marker> findMarkersForContentLayer(int contentLayer)
+  {
+    MarkersIndex contentLayerIndex=_indexsMgr.getContentLayerIndex(contentLayer);
+    Set<Integer> contentLayerMarkers=contentLayerIndex.getMarkers();
+    return getMarkers(contentLayerMarkers);
+  }
+
   private List<Marker> getMarkers(Set<Integer> markerIds)
   {
     List<Marker> ret=new ArrayList<Marker>();
