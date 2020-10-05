@@ -3,6 +3,7 @@ package delta.games.lotro.maps.data.basemaps;
 import java.io.File;
 
 import delta.common.utils.id.Identifiable;
+import delta.games.lotro.maps.data.GeoBox;
 import delta.games.lotro.maps.data.GeoReference;
 
 /**
@@ -14,6 +15,7 @@ public class GeoreferencedBasemap implements Identifiable
   private int _id;
   private String _name;
   private GeoReference _geoRef;
+  private GeoBox _boundingBox;
   private File _imageFile;
 
   /**
@@ -54,6 +56,24 @@ public class GeoreferencedBasemap implements Identifiable
   public GeoReference getGeoReference()
   {
     return _geoRef;
+  }
+
+  /**
+   * Get the geographic bounding box for this basemap.
+   * @return a geographic bounding box.
+   */
+  public GeoBox getBoundingBox()
+  {
+    return _boundingBox;
+  }
+
+  /**
+   * Set the geographic bounding box.
+   * @param boundingBox Geographic bounding box to set.
+   */
+  public void setBoundingBox(GeoBox boundingBox)
+  {
+    _boundingBox=boundingBox;
   }
 
   /**

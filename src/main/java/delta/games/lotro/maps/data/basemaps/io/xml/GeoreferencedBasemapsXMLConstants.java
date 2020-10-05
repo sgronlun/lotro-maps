@@ -36,4 +36,13 @@ public class GeoreferencedBasemapsXMLConstants
    * Tag 'point'.
    */
   public static final String POINT_TAG="point";
+
+  /**
+   * Tag 'min'.
+   */
+  public static final String MIN_TAG="min";
+  /**
+   * Tag 'max'.
+   */
+  public static final String MAX_TAG="max";
 }

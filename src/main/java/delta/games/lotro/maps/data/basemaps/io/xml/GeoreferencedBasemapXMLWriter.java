@@ -9,6 +9,7 @@ import org.xml.sax.helpers.AttributesImpl;
 
 import delta.common.utils.io.xml.XmlFileWriterHelper;
 import delta.common.utils.io.xml.XmlWriter;
+import delta.games.lotro.maps.data.GeoBox;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.basemaps.GeoreferencedBasemap;
@@ -85,6 +86,12 @@ public class GeoreferencedBasemapXMLWriter
       }
       hd.endElement("","",GeoreferencedBasemapsXMLConstants.GEO_TAG);
     }
+    // Bounding box
+    GeoBox box=map.getBoundingBox();
+    if (box!=null)
+    {
+      writeGeoBox(hd,box);
+    }
     hd.endElement("","",GeoreferencedBasemapsXMLConstants.MAP_TAG);
   }
 
@@ -100,5 +107,26 @@ public class GeoreferencedBasemapXMLWriter
     MarkersXMLWriter.writeGeoPointAttrs(hd,point,attrs);
     hd.startElement("","",GeoreferencedBasemapsXMLConstants.POINT_TAG,attrs);
     hd.endElement("","",GeoreferencedBasemapsXMLConstants.POINT_TAG);
+  }
+
+
+  /**
+   * Write a box to the given XML stream.
+   * @param hd XML output stream.
+   * @param box Box to write.
+   * @throws Exception
+   */
+  private static void writeGeoBox(TransformerHandler hd, GeoBox box) throws Exception
+  {
+    // Min
+    AttributesImpl minAttrs=new AttributesImpl();
+    MarkersXMLWriter.writeGeoPointAttrs(hd,box.getMin(),minAttrs);
+    hd.startElement("","",GeoreferencedBasemapsXMLConstants.MIN_TAG,minAttrs);
+    hd.endElement("","",GeoreferencedBasemapsXMLConstants.MIN_TAG);
+    // Max
+    AttributesImpl maxAttrs=new AttributesImpl();
+    MarkersXMLWriter.writeGeoPointAttrs(hd,box.getMax(),maxAttrs);
+    hd.startElement("","",GeoreferencedBasemapsXMLConstants.MAX_TAG,maxAttrs);
+    hd.endElement("","",GeoreferencedBasemapsXMLConstants.MAX_TAG);
   }
 }

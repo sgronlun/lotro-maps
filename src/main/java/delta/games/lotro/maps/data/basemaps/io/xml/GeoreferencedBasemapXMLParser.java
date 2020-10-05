@@ -8,6 +8,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 
 import delta.common.utils.xml.DOMParsingTools;
+import delta.games.lotro.maps.data.GeoBox;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.basemaps.GeoreferencedBasemap;
@@ -60,6 +61,16 @@ public class GeoreferencedBasemapXMLParser
       geoReference=parseGeoReference(geoTag);
     }
     GeoreferencedBasemap map=new GeoreferencedBasemap(id,name,geoReference);
+    // Bounding box
+    Element minTag=DOMParsingTools.getChildTagByName(root,GeoreferencedBasemapsXMLConstants.MIN_TAG);
+    Element maxTag=DOMParsingTools.getChildTagByName(root,GeoreferencedBasemapsXMLConstants.MAX_TAG);
+    if ((minTag!=null) && (maxTag!=null))
+    {
+      GeoPoint min=MarkersXMLParser.parsePoint(minTag);
+      GeoPoint max=MarkersXMLParser.parsePoint(maxTag);
+      GeoBox box=new GeoBox(min,max);
+      map.setBoundingBox(box);
+    }
     return map;
   }
 
