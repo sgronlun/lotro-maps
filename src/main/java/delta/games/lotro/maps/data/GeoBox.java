@@ -61,6 +61,28 @@ public class GeoBox
     return false;
   }
 
+  /**
+   * Extend this box so that it includes the given box.
+   * @param inputBox Box to include.
+   */
+  public void extend(GeoBox inputBox)
+  {
+    GeoPoint inputMin=inputBox.getMin();
+    if ((inputMin.getLatitude()<_min.getLatitude()) || (inputMin.getLongitude()<_min.getLatitude()))
+    {
+      float minLat=Math.min(inputMin.getLatitude(),_min.getLatitude());
+      float minLon=Math.min(inputMin.getLongitude(),_min.getLongitude());
+      _min=new GeoPoint(minLon,minLat);
+    }
+    GeoPoint inputMax=inputBox.getMax();
+    if ((inputMax.getLatitude()>_max.getLatitude()) || (inputMax.getLongitude()>_max.getLatitude()))
+    {
+      float maxLat=Math.max(inputMax.getLatitude(),_max.getLatitude());
+      float maxLon=Math.max(inputMax.getLongitude(),_max.getLongitude());
+      _max=new GeoPoint(maxLon,maxLat);
+    }
+  }
+
   @Override
   public String toString()
   {
