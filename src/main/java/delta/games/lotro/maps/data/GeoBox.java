@@ -75,7 +75,7 @@ public class GeoBox
       _min=new GeoPoint(minLon,minLat);
     }
     GeoPoint inputMax=inputBox.getMax();
-    if ((inputMax.getLatitude()>_max.getLatitude()) || (inputMax.getLongitude()>_max.getLatitude()))
+    if ((inputMax.getLatitude()>_max.getLatitude()) || (inputMax.getLongitude()>_max.getLongitude()))
     {
       float maxLat=Math.max(inputMax.getLatitude(),_max.getLatitude());
       float maxLon=Math.max(inputMax.getLongitude(),_max.getLongitude());
