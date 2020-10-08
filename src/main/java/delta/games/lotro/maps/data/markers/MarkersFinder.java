@@ -48,8 +48,7 @@ public class MarkersFinder
   }
 
   /**
-   * Find the markers for the given zone and content layer.
-   * @param zoneId Zone identifier (area or dungeon).
+   * Find the markers for the given content layer.
    * @param contentLayer Content layer (0 for world).
    * @return A possibly empty but never <code>null</code> list of markers.
    */
