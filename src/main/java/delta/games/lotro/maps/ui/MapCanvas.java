@@ -92,6 +92,12 @@ public class MapCanvas extends JPanel implements MapView
     return box;
   }
 
+  @Override
+  public Dimension getViewSize()
+  {
+    return getSize();
+  }
+
   /**
    * Add a layer.
    * @param layer Layer to add.

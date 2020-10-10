@@ -89,12 +89,12 @@ public class BasemapLayer implements RasterLayer
     {
       GeoReference viewReference=view.getViewReference();
       //System.out.println("Repaint!");
-      int dx1=0;int dy1=0;int dx2=_background.getWidth();int dy2=_background.getHeight();
+      Dimension viewSize=view.getViewSize();
+      int dx1=0;int dy1=0;int dx2=viewSize.width;int dy2=viewSize.height;
       GeoReference reference=_currentMap.getGeoReference();
       Dimension startPixels=reference.geo2pixel(viewReference.getStart());
       //System.out.println("Start pixels: "+startPixels);
-      Dimension map=new Dimension(_background.getWidth(),_background.getHeight());
-      GeoPoint endGeo=viewReference.pixel2geo(map);
+      GeoPoint endGeo=viewReference.pixel2geo(viewSize);
       //System.out.println("End geo: "+endGeo);
       Dimension endPixels=reference.geo2pixel(endGeo);
       //System.out.println("End pixels: "+endPixels);

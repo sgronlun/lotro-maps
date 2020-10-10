@@ -1,5 +1,7 @@
 package delta.games.lotro.maps.ui;
 
+import java.awt.Dimension;
+
 import delta.games.lotro.maps.data.GeoBox;
 import delta.games.lotro.maps.data.GeoReference;
 
@@ -20,4 +22,10 @@ public interface MapView
    * @return some geographic bounds.
    */
   GeoBox getGeoBounds();
+
+  /**
+   * Get the size of this map view.
+   * @return a size.
+   */
+  Dimension getViewSize();
 }
