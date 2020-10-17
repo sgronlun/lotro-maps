@@ -31,6 +31,23 @@ public class MarkersFinder
   }
 
   /**
+   * Find the markers for the given zone and DID.
+   * @param did Data identifier.
+   * @param zoneId Zone identifier (area or dungeon).
+   * @return A possibly empty but never <code>null</code> list of markers.
+   */
+  public List<Marker> findMarkersForDid(int did, int zoneId)
+  {
+    MarkersIndex zoneIndex=_indexsMgr.getDidIndex(zoneId);
+    Set<Integer> zoneMarkers=zoneIndex.getMarkers();
+    MarkersIndex didIndex=_indexsMgr.getDidIndex(did);
+    Set<Integer> didMarkers=didIndex.getMarkers();
+    Set<Integer> markersToGet=new TreeSet<Integer>(zoneMarkers);
+    markersToGet.retainAll(didMarkers);
+    return getMarkers(markersToGet);
+  }
+
+  /**
    * Find the markers for the given zone and content layer.
    * @param zoneId Zone identifier (area or dungeon).
    * @param contentLayer Content layer (0 for world).
