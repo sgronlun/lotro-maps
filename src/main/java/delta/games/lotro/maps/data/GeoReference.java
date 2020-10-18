@@ -82,9 +82,9 @@ public class GeoReference
    */
   public Dimension geo2pixel(GeoPoint point)
   {
-    float deltaLongitude = point.getLongitude() - _start.getLongitude();
+    float deltaLongitude = point.getLongitude()-_start.getLongitude();
     int x=Math.round(deltaLongitude * _geo2pixel);
-    float deltaLatitude = _start.getLatitude() - point.getLatitude();
+    float deltaLatitude = _start.getLatitude()-point.getLatitude();
     int y=Math.round(deltaLatitude*_geo2pixel);
     return new Dimension(x,y);
   }

@@ -68,7 +68,7 @@ public class GeoBox
   public void extend(GeoBox inputBox)
   {
     GeoPoint inputMin=inputBox.getMin();
-    if ((inputMin.getLatitude()<_min.getLatitude()) || (inputMin.getLongitude()<_min.getLatitude()))
+    if ((inputMin.getLatitude()<_min.getLatitude()) || (inputMin.getLongitude()<_min.getLongitude()))
     {
       float minLat=Math.min(inputMin.getLatitude(),_min.getLatitude());
       float minLon=Math.min(inputMin.getLongitude(),_min.getLongitude());
