@@ -11,6 +11,7 @@ public class Marker implements MapPoint
   private String _label;
   private int _did;
   private int _categoryCode;
+  private int _parentZoneId;
 
   /**
    * Constructor.
@@ -108,6 +109,24 @@ public class Marker implements MapPoint
   public void setCategoryCode(int categoryCode)
   {
     _categoryCode=categoryCode;
+  }
+
+  /**
+   * Get the parent zone ID.
+   * @return an ID for area/dungeon.
+   */
+  public int getParentZoneId()
+  {
+    return _parentZoneId;
+  }
+
+  /**
+   * Set the parent zone ID.
+   * @param parentZoneId ID to set.
+   */
+  public void setParentZoneId(int parentZoneId)
+  {
+    _parentZoneId=parentZoneId;
   }
 
   @Override

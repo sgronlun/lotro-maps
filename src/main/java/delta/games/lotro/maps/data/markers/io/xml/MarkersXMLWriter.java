@@ -85,6 +85,11 @@ public class MarkersXMLWriter
       {
         markerAttrs.addAttribute("","",MarkersXMLConstants.DID_ATTR,XmlWriter.CDATA,String.valueOf(did));
       }
+      int parentZoneId=marker.getParentZoneId();
+      if (parentZoneId!=0)
+      {
+        markerAttrs.addAttribute("","",MarkersXMLConstants.PARENT_ZONE_ID_ATTR,XmlWriter.CDATA,String.valueOf(parentZoneId));
+      }
       // Position
       GeoPoint position=marker.getPosition();
       if (position!=null)

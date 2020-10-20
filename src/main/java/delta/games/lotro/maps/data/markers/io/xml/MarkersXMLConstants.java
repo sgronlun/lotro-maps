@@ -30,6 +30,10 @@ public class MarkersXMLConstants
    * Tag 'marker', attribute 'did'.
    */
   public static final String DID_ATTR="did";
+  /**
+   * Tag 'marker', attribute 'parentZoneId'.
+   */
+  public static final String PARENT_ZONE_ID_ATTR="parentZoneId";
 
   /**
    * Tag 'point'.

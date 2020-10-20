@@ -58,6 +58,9 @@ public class MarkersXMLParser
     // DID
     int did=DOMParsingTools.getIntAttribute(attrs,MarkersXMLConstants.DID_ATTR,0);
     marker.setDid(did);
+    // Parent zone ID
+    int parentZoneId=DOMParsingTools.getIntAttribute(attrs,MarkersXMLConstants.PARENT_ZONE_ID_ATTR,0);
+    marker.setParentZoneId(parentZoneId);
     // Position
     GeoPoint position=parsePoint(markerTag);
     marker.setPosition(position);
