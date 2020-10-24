@@ -132,6 +132,6 @@ public class Marker implements MapPoint
   @Override
   public String toString()
   {
-    return _id+":"+_label+" @"+_position+", category="+_categoryCode;
+    return _id+":"+_label+" @"+_position+", category="+_categoryCode+", parent="+_parentZoneId;
   }
 }
