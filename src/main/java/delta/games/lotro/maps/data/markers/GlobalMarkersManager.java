@@ -29,18 +29,18 @@ public class GlobalMarkersManager
   /**
    * Get the block manager for a given zone.
    * @param region Region.
-   * @param xBlock X block coordinate.
-   * @param yBlock Y block coordinate.
+   * @param bigXBlock X big block coordinate.
+   * @param bigYBlock Y big block coordinate.
    * @return A markers manager.
    */
-  public BlockMarkersManager getBlockManager(int region, int xBlock, int yBlock)
+  public BlockMarkersManager getBlockManager(int region, int bigXBlock, int bigYBlock)
   {
-    String key=getKey(region,xBlock,yBlock);
+    String key=getKey(region,bigXBlock,bigYBlock);
     BlockMarkersManager blockManager=_cache.get(key);
     if (blockManager==null)
     {
-      File blockFile=getBlockFile(region,xBlock,yBlock);
-      int firstId=getFirstId(region,xBlock,yBlock);
+      File blockFile=getBlockFile(region,bigXBlock,bigYBlock);
+      int firstId=getFirstId(region,bigXBlock,bigYBlock);
       blockManager=new BlockMarkersManager(blockFile,firstId);
       blockManager.load();
       _cache.put(key,blockManager);
@@ -69,23 +69,23 @@ public class GlobalMarkersManager
   public void registerMarker(Marker marker, int region, int landblockX, int landblockY)
   {
     BlockMarkersManager blockManager=getBlockManager(region,landblockX/BLOCK_SIZE,landblockY/BLOCK_SIZE);
-    blockManager.registerMarker(marker);
+    blockManager.allocateMarker(marker,landblockX%BLOCK_SIZE,landblockY%BLOCK_SIZE);
   }
 
-  private static int getFirstId(int region, int xBlock, int yBlock)
+  private static int getFirstId(int region, int bigXBlock, int bigYBlock)
   {
     int id=region<<28;
-    id+=(xBlock<<24);
-    id+=(yBlock<<20);
+    id+=(bigXBlock<<24);
+    id+=(bigYBlock<<20);
     return id;
   }
 
   private BlockMarkersManager getBlockForMarker(int markerId)
   {
     int region=(markerId&0x70000000)>>28;
-    int xBlock=(markerId&0xF000000)>>24;
-    int yBlock=(markerId&0xF00000)>>20;
-    BlockMarkersManager blockManager=getBlockManager(region,xBlock,yBlock);
+    int bigXBlock=(markerId&0xF000000)>>24;
+    int bigYBlock=(markerId&0xF00000)>>20;
+    BlockMarkersManager blockManager=getBlockManager(region,bigXBlock,bigYBlock);
     return blockManager;
   }
 

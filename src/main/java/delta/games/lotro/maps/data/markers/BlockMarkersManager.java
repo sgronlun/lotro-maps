@@ -15,38 +15,41 @@ import delta.games.lotro.maps.data.markers.io.xml.MarkersIO;
 import delta.games.lotro.maps.data.markers.io.xml.MarkersXMLWriter;
 
 /**
- * Markers manager for a single block.
+ * Markers manager for a single BIG block (16x16 landblocks).
  * @author DAM
  */
 public class BlockMarkersManager
 {
   private static final Logger LOGGER=Logger.getLogger(BlockMarkersManager.class);
 
-  private Map<Integer,Marker> _markers;
+  private Map<Integer,LandblockMarkersManager> _markers;
   private File _markersFile;
-  private int _firstId;
-  private int _nextId;
+  private int _baseId;
 
   /**
    * Constructor.
    * @param from Markers file.
-   * @param firstId First markerId in this block.
+   * @param baseId Base markerId in this block.
    */
-  public BlockMarkersManager(File from, int firstId)
+  public BlockMarkersManager(File from, int baseId)
   {
     _markersFile=from;
-    _markers=new HashMap<Integer,Marker>();
-    _firstId=firstId;
-    _nextId=firstId;
+    _markers=new HashMap<Integer,LandblockMarkersManager>();
+    _baseId=baseId;
   }
 
   /**
    * Get the markers in this block.
-   * @return A list of markers, possibly empty bu tnever <code>null</code>.
+   * @return A list of markers, possibly empty but never <code>null</code>.
    */
   public List<Marker> getMarkers()
   {
-    return new ArrayList<Marker>(_markers.values());
+    List<Marker> ret=new ArrayList<Marker>();
+    for(LandblockMarkersManager block : _markers.values())
+    {
+      ret.addAll(block.getMarkers());
+    }
+    return ret;
   }
 
   /**
@@ -56,7 +59,39 @@ public class BlockMarkersManager
    */
   public Marker getMarkerById(int markerId)
   {
-    return _markers.get(Integer.valueOf(markerId));
+    int smallBlockX=(markerId&0xF0000)>>16;
+    int smallBlockY=(markerId&0x0F000)>>12;
+    LandblockMarkersManager block=getBlock(smallBlockX,smallBlockY,false);
+    if (block!=null)
+    {
+      return block.getMarkerById(markerId);
+    }
+    return null;
+  }
+
+  private LandblockMarkersManager getBlock(int smallBlockX, int smallBlockY, boolean createIfNeeded)
+  {
+    Integer key=Integer.valueOf((smallBlockX<<16)+smallBlockY);
+    LandblockMarkersManager block=_markers.get(key);
+    if ((block==null) && (createIfNeeded))
+    {
+      int firstId=_baseId+(smallBlockX<<16)+(smallBlockY<<12);
+      block=new LandblockMarkersManager(firstId);
+      _markers.put(key,block);
+    }
+    return block;
+  }
+
+  /**
+   * Register a marker.
+   * @param marker Marker to add.
+   * @param smallBlockX Small block X.
+   * @param smallBlockY Small block Y.
+   */
+  public void allocateMarker(Marker marker, int smallBlockX, int smallBlockY)
+  {
+    LandblockMarkersManager block=getBlock(smallBlockX,smallBlockY,true);
+    block.registerMarker(marker);
   }
 
   /**
@@ -66,21 +101,10 @@ public class BlockMarkersManager
   public void registerMarker(Marker marker)
   {
     int markerId=marker.getId();
-    if (markerId==0)
-    {
-      markerId=_nextId;
-      _nextId++;
-      marker.setId(markerId);
-    }
-    else
-    {
-      if (markerId>=_nextId)
-      {
-        _nextId=markerId+1;
-      }
-    }
-    Integer key=Integer.valueOf(markerId);
-    _markers.put(key,marker);
+    int smallBlockX=(markerId&0xF0000)>>16;
+    int smallBlockY=(markerId&0x0F000)>>12;
+    LandblockMarkersManager block=getBlock(smallBlockX,smallBlockY,true);
+    block.registerMarker(marker);
   }
 
   /**
@@ -106,7 +130,6 @@ public class BlockMarkersManager
    */
   public void clear()
   {
-    _nextId=_firstId;
     _markers.clear();
   }
 
@@ -115,7 +138,7 @@ public class BlockMarkersManager
    */
   public void write()
   {
-    List<Marker> markers=new ArrayList<Marker>(_markers.values());
+    List<Marker> markers=getMarkers();
     Collections.sort(markers,new MarkerIdentifierComparator());
     MarkersXMLWriter.writeMarkersFile(_markersFile,markers);
   }
