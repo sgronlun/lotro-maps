@@ -27,6 +27,19 @@ public class GlobalMarkersManager
   }
 
   /**
+   * Get the landblock manager for the given landblock.
+   * @param region Region.
+   * @param landblockX Landblock X.
+   * @param landblockY Landblock Y.
+   * @return A landblock manager or <code>null</code> if not found.
+   */
+  public LandblockMarkersManager getLandblockMarkersManager(int region, int landblockX, int landblockY)
+  {
+    BlockMarkersManager blockManager=getBlockManager(region,landblockX/BLOCK_SIZE,landblockY/BLOCK_SIZE);
+    return blockManager.getLandblockMarkersManager(landblockX%BLOCK_SIZE,landblockY%BLOCK_SIZE);
+  }
+
+  /**
    * Get the block manager for a given zone.
    * @param region Region.
    * @param bigXBlock X big block coordinate.

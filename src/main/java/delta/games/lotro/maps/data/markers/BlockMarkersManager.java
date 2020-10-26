@@ -39,6 +39,18 @@ public class BlockMarkersManager
   }
 
   /**
+   * Get the landblock manager for the given landblock.
+   * @param landblockX Landblock 'small' X.
+   * @param landblockY Landblock 'small' Y.
+   * @return A landblock manager or <code>null</code> if not found.
+   */
+  public LandblockMarkersManager getLandblockMarkersManager(int landblockX, int landblockY)
+  {
+    LandblockMarkersManager block=getBlock(landblockX,landblockY,false);
+    return block;
+  }
+
+  /**
    * Get the markers in this block.
    * @return A list of markers, possibly empty but never <code>null</code>.
    */

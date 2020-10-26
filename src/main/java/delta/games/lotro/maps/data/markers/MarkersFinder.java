@@ -31,6 +31,41 @@ public class MarkersFinder
   }
 
   /**
+   * Get all the markers in the given landblock, using an option content layer filter.
+   * @param region Region.
+   * @param blockX Landblock X.
+   * @param blockY Landblock Y.
+   * @param contentLayer Optional content layer filter.
+   * @return A possibly empty, but never <code>null</code> list of markers.
+   */
+  public List<Marker> findMarkersForBlock(int region, int blockX, int blockY, Integer contentLayer)
+  {
+    List<Marker> ret=new ArrayList<Marker>();
+    LandblockMarkersManager landblockMarkersManager=_markersMgr.getLandblockMarkersManager(region,blockX,blockY);
+    if (landblockMarkersManager!=null)
+    {
+      List<Marker> landblockMarkers=landblockMarkersManager.getMarkers();
+      if (contentLayer!=null)
+      {
+        MarkersIndex markersIndex=_indexsMgr.getContentLayerIndex(contentLayer.intValue());
+        Set<Integer> markerIds=markersIndex.getMarkers();
+        for(Marker marker : landblockMarkers)
+        {
+          if (markerIds.contains(Integer.valueOf(marker.getId())))
+          {
+            ret.add(marker);
+          }
+        }
+      }
+      else
+      {
+        ret.addAll(landblockMarkers);
+      }
+    }
+    return ret;
+  }
+
+  /**
    * Find the markers for the given zone and DID.
    * @param did Data identifier.
    * @param zoneId Zone identifier (area or dungeon).
