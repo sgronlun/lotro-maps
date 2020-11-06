@@ -8,6 +8,7 @@ import java.util.Comparator;
  */
 public class MapPointNameComparator implements Comparator<MapPoint>
 {
+  @Override
   public int compare(MapPoint o1, MapPoint o2)
   {
     String label1=o1.getLabel();
