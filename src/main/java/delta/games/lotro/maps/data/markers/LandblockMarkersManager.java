@@ -76,6 +76,15 @@ public class LandblockMarkersManager
   }
 
   /**
+   * Remove a marker.
+   * @param marker Marker to remove.
+   */
+  public void removeMarker(Marker marker)
+  {
+    _markers.remove(Integer.valueOf(marker.getId()));
+  }
+
+  /**
    * Remove all markers.
    */
   public void clear()
