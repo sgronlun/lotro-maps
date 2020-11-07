@@ -17,6 +17,6 @@ public class MapPointNameComparator implements Comparator<MapPoint>
     {
       return (label2!=null)?1:0;
     }
-    return label1.compareTo(label2);
+    return (label2!=null)?label1.compareTo(label2):-1;
   }
 }
