@@ -1,7 +1,9 @@
 package delta.games.lotro.maps.data.markers;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import delta.games.lotro.maps.data.Marker;
@@ -37,6 +39,20 @@ public class GlobalMarkersManager
   {
     BlockMarkersManager blockManager=getBlockManager(region,landblockX/BLOCK_SIZE,landblockY/BLOCK_SIZE);
     return blockManager.getLandblockMarkersManager(landblockX%BLOCK_SIZE,landblockY%BLOCK_SIZE);
+  }
+
+  /**
+   * Get all the landblock markers managers.
+   * @return a list of these.
+   */
+  public List<LandblockMarkersManager> getAllManagers()
+  {
+    List<LandblockMarkersManager> ret=new ArrayList<LandblockMarkersManager>();
+    for(BlockMarkersManager blockManager : _cache.values())
+    {
+      ret.addAll(blockManager.getManagers());
+    }
+    return ret;
   }
 
   /**
