@@ -13,7 +13,6 @@ import delta.games.lotro.maps.data.GeoBox;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.MapPoint;
-import delta.games.lotro.maps.data.MapPointNameComparator;
 import delta.games.lotro.maps.data.view.ZoomFilter;
 import delta.games.lotro.maps.ui.constraints.MapConstraint;
 import delta.games.lotro.maps.ui.controllers.ViewInputsManager;
@@ -280,26 +279,7 @@ public class MapCanvas extends JPanel implements MapView
   public String getToolTipText(MouseEvent event)
   {
     List<MapPoint> points=findPointsAtLocation(event.getX(),event.getY(),SENSIBILITY);
-    if (points.size()>0)
-    {
-      Collections.sort(points,new MapPointNameComparator());
-      StringBuilder sb=new StringBuilder();
-      sb.append("<html>");
-      int count=0;
-      for(MapPoint point : points)
-      {
-        String label=point.getLabel();
-        if (label!=null)
-        {
-          if (count>0) sb.append("<br>");
-          sb.append(label);
-          count++;
-        }
-      }
-      sb.append("</html>");
-      return sb.toString();
-    }
-    return null;
+    return TooltipHelper.buildTooltip(points);
   }
 
   /**
