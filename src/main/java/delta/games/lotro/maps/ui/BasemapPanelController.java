@@ -3,15 +3,9 @@ package delta.games.lotro.maps.ui;
 import java.awt.Component;
 import java.awt.Dimension;
 
-import javax.swing.SwingUtilities;
-
-import delta.games.lotro.maps.data.GeoBox;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.basemaps.GeoreferencedBasemap;
 import delta.games.lotro.maps.data.basemaps.GeoreferencedBasemapsManager;
-import delta.games.lotro.maps.data.view.BoundedZoomFilter;
-import delta.games.lotro.maps.data.view.ZoomFilter;
-import delta.games.lotro.maps.ui.constraints.MapBoundsConstraint;
 import delta.games.lotro.maps.ui.layers.BasemapLayer;
 import delta.games.lotro.maps.ui.navigation.MapViewDefinition;
 
@@ -22,6 +16,8 @@ import delta.games.lotro.maps.ui.navigation.MapViewDefinition;
  */
 public class BasemapPanelController
 {
+  private static final Dimension MAX_SIZE=new Dimension(1024,768);
+
   private MapPanelController _mapPanel;
   private GeoreferencedBasemapsManager _basemapsManager;
   private GeoreferencedBasemap _currentMap;
@@ -85,29 +81,6 @@ public class BasemapPanelController
   }
 
   /**
-   * Set the basemap to display.
-   * @param basemap Basemap.
-   */
-  private void setMapOnCanvas(GeoreferencedBasemap basemap)
-  {
-    MapCanvas canvas=_mapPanel.getCanvas();
-    // Set base map
-    _currentMap=basemap;
-    _basemapLayer.setMap(basemap);
-    Dimension baseMapDimension=_basemapLayer.getBasemapDimension();
-    canvas.setPreferredSize(baseMapDimension);
-    GeoBox mapBounds=_basemapLayer.getMapBounds();
-    canvas.setMapConstraint(new MapBoundsConstraint(canvas,mapBounds));
-    // Set reference
-    GeoReference mapReference=basemap.getGeoReference();
-    canvas.setViewReference(mapReference);
-    // Set zoom filter
-    float geo2pixel=mapReference.getGeo2PixelFactor();
-    ZoomFilter zoomFilter=new BoundedZoomFilter(Float.valueOf(geo2pixel),Float.valueOf(geo2pixel*16));
-    canvas.setZoomFilter(zoomFilter);
-  }
-
-  /**
    * Set the map to display.
    * @param mapKey Map identifier.
    */
@@ -125,14 +98,9 @@ public class BasemapPanelController
   {
     int mapKey=mapViewDefinition.getMapKey();
     GeoreferencedBasemap basemap=_basemapsManager.getMapById(mapKey);
-    setMapOnCanvas(basemap);
-    // Set map view size
-    Dimension viewSize=mapViewDefinition.getDimension();
-    if (viewSize==null)
-    {
-      viewSize=fitInSize(new Dimension(1024,768));
-    }
-    _mapPanel.setViewSize(viewSize);
+    MapUiUtils.configureMapPanel(_mapPanel,basemap.getBoundingBox(),MAX_SIZE);
+    _currentMap=basemap;
+    _basemapLayer.setMap(basemap);
     // Set view reference
     GeoReference viewReference=mapViewDefinition.getViewReference();
     if (viewReference!=null)
@@ -140,34 +108,6 @@ public class BasemapPanelController
       MapCanvas canvas=_mapPanel.getCanvas();
       canvas.setViewReference(viewReference);
     }
-  }
-
-  private Dimension fitInSize(Dimension maxSize)
-  {
-    final MapCanvas canvas=_mapPanel.getCanvas();
-    // Compute adequate zoom factor
-    final Dimension mapSize=canvas.getPreferredSize();
-    //System.out.println("Map size: "+mapSize);
-    //System.out.println("Size: "+maxSize);
-    if ((mapSize.width<=maxSize.width) && (mapSize.height<=maxSize.height))
-    {
-      return mapSize;
-    }
-    float xFactor=(float)mapSize.width/maxSize.width;
-    float yFactor=(float)mapSize.height/maxSize.height;
-    final float factor=Math.max(xFactor,yFactor);
-    //System.out.println("Factor: "+factor);
-    Runnable r=new Runnable()
-    {
-      public void run()
-      {
-        canvas.pan(mapSize.width/2,mapSize.height/2);
-        canvas.zoom(1/factor);
-      }
-    };
-    SwingUtilities.invokeLater(r);
-    Dimension size=new Dimension((int)(mapSize.width/factor),(int)(mapSize.height/factor));
-    return size;
   }
 
   /**
