@@ -37,6 +37,15 @@ public class LinksManager
   }
 
   /**
+   * Get a list of all managed links.
+   * @return a list of links.
+   */
+  public List<MapLink> getAll()
+  {
+    return _links;
+  }
+
+  /**
    * Get the links for the given parent ID and content layer ID.
    * @param parentId Parent ID.
    * @param contentLayerId Content layer ID.
