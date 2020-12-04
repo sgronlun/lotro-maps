@@ -30,4 +30,8 @@ public class LinksXMLConstants
    * Tag 'link', attribute 'label'.
    */
   public static final String LINK_LABEL_ATTR="label";
+  /**
+   * Tag 'link', attribute 'type'.
+   */
+  public static final String LINK_TYPE_ATTR="type";
 }

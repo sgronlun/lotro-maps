@@ -12,6 +12,7 @@ import delta.common.utils.io.xml.XmlWriter;
 import delta.common.utils.text.EncodingNames;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.links.MapLink;
+import delta.games.lotro.maps.data.links.MapLinkType;
 import delta.games.lotro.maps.data.markers.io.xml.MarkersXMLWriter;
 
 /**
@@ -66,6 +67,12 @@ public class LinksXMLWriter
       // Position
       GeoPoint hotPoint=link.getPosition();
       MarkersXMLWriter.writeGeoPointAttrs(hd,hotPoint,linkAttrs);
+      // Type
+      MapLinkType type=link.getType();
+      if (type!=MapLinkType.TO_PARCHMENT_MAP)
+      {
+        linkAttrs.addAttribute("","",LinksXMLConstants.LINK_TYPE_ATTR,XmlWriter.CDATA,type.name());
+      }
       hd.startElement("","",LinksXMLConstants.LINK_TAG,linkAttrs);
       hd.endElement("","",LinksXMLConstants.LINK_TAG);
     }

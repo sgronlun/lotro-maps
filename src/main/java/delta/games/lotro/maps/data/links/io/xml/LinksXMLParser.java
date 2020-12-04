@@ -10,6 +10,7 @@ import org.w3c.dom.NamedNodeMap;
 import delta.common.utils.xml.DOMParsingTools;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.links.MapLink;
+import delta.games.lotro.maps.data.links.MapLinkType;
 import delta.games.lotro.maps.data.markers.io.xml.MarkersXMLParser;
 
 /**
@@ -75,6 +76,13 @@ public class LinksXMLParser
     GeoPoint hotPoint=MarkersXMLParser.parsePoint(linkTag);
     MapLink link=new MapLink(parentId,contentLayerId,target,hotPoint);
     link.setLabel(label);
+    // Type
+    String linkTypeStr=DOMParsingTools.getStringAttribute(attrs,LinksXMLConstants.LINK_TYPE_ATTR,null);
+    if (linkTypeStr!=null)
+    {
+      MapLinkType type=MapLinkType.valueOf(linkTypeStr);
+      link.setType(type);
+    }
     return link;
   }
 }

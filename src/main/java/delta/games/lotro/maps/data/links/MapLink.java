@@ -11,6 +11,7 @@ public class MapLink implements MapPoint
 {
   private int _parentId; // Parchment map ID, area ID or dungeon ID
   private int _contentLayerId;
+  private MapLinkType _type;
   private GeoPoint _hotPoint;
   private int _targetMapKey;
   private String _text;
@@ -28,6 +29,25 @@ public class MapLink implements MapPoint
     _contentLayerId=contentLayerId;
     _hotPoint=hotPoint;
     _targetMapKey=targetMapKey;
+    _type=MapLinkType.TO_PARCHMENT_MAP;
+  }
+
+  /**
+   * Get the map link type.
+   * @return the map link type.
+   */
+  public MapLinkType getType()
+  {
+    return _type;
+  }
+
+  /**
+   * Set the map link type.
+   * @param type Type to set.
+   */
+  public void setType(MapLinkType type)
+  {
+    _type=type;
   }
 
   /**
@@ -87,6 +107,6 @@ public class MapLink implements MapPoint
   @Override
   public String toString()
   {
-    return "Link to " + _targetMapKey + "@" + _hotPoint + ", from="+_parentId+", layer="+_contentLayerId+", label="+_text;
+    return "Link to " + _targetMapKey + "@" + _hotPoint + ", from="+_parentId+", layer="+_contentLayerId+", label="+_text+", type="+_type;
   }
 }
