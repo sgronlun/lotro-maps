@@ -11,6 +11,7 @@ import delta.common.ui.swing.icons.IconsManager;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.MapPoint;
 import delta.games.lotro.maps.data.links.MapLink;
+import delta.games.lotro.maps.data.links.MapLinkType;
 import delta.games.lotro.maps.ui.MapView;
 
 /**
@@ -19,7 +20,8 @@ import delta.games.lotro.maps.ui.MapView;
  */
 public class LinksLayer implements VectorLayer
 {
-  private BufferedImage _gotoIcon;
+  private BufferedImage _mapIcon;
+  private BufferedImage _dungeonIcon;
   private List<MapLink> _links;
 
   /**
@@ -27,7 +29,8 @@ public class LinksLayer implements VectorLayer
    */
   public LinksLayer()
   {
-    _gotoIcon=IconsManager.getImage("/resources/icons/goto.png");
+    _mapIcon=IconsManager.getImage("/resources/icons/link.png");
+    _dungeonIcon=IconsManager.getImage("/resources/icons/dungeonDoor.png");
     _links=new ArrayList<MapLink>();
   }
 
@@ -77,11 +80,12 @@ public class LinksLayer implements VectorLayer
 
     int x=pixelPosition.width;
     int y=pixelPosition.height;
-    if (_gotoIcon!=null)
+    BufferedImage icon=(link.getType()==MapLinkType.TO_PARCHMENT_MAP)?_mapIcon:_dungeonIcon;
+    if (icon!=null)
     {
-      int width=_gotoIcon.getWidth();
-      int height=_gotoIcon.getHeight();
-      g.drawImage(_gotoIcon,x-width/2,y-height/2,null);
+      int width=icon.getWidth();
+      int height=icon.getHeight();
+      g.drawImage(icon,x-width/2,y-height/2,null);
     }
     else
     {
