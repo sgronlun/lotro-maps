@@ -32,14 +32,15 @@ public class NavigationSupport
 
   private void init(BasemapPanelController mapPanel)
   {
-    // Navigation support
     _navigation=new NavigationManager(mapPanel);
     _linksLayer=new LinksLayer();
     MapCanvas canvas=mapPanel.getCanvas();
     canvas.addLayer(_linksLayer);
-    _navigationController=new NavigationController(canvas,_navigation);
+    _navigationController=new NavigationController(_navigation);
     ViewInputsManager inputsMgr=canvas.getInputsManager();
     inputsMgr.addInputController(_navigationController);
+    LinkSelectionManager linkSelectionMgr=new LinkSelectionManager(_navigation);
+    mapPanel.getMapPanelController().getSelectionManager().addListener(linkSelectionMgr);
   }
 
   /**
@@ -66,7 +67,6 @@ public class NavigationSupport
    */
   public void setLinks(List<MapLink> links)
   {
-    _navigationController.setLinks(links);
     _linksLayer.setLinks(links);
   }
 

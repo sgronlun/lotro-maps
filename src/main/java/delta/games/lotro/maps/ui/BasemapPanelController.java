@@ -46,6 +46,15 @@ public class BasemapPanelController
   }
 
   /**
+   * Get the managed map panel controller.
+   * @return the managed map panel controller.
+   */
+  public MapPanelController getMapPanelController()
+  {
+    return _mapPanel;
+  }
+
+  /**
    * Get the managed map canvas.
    * @return a map canvas.
    */

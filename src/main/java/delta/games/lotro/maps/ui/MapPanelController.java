@@ -15,10 +15,12 @@ import javax.swing.JPanel;
 
 import delta.common.ui.swing.GuiFactory;
 import delta.common.ui.swing.labels.LabelWithHalo;
+import delta.games.lotro.maps.ui.controllers.SelectionController;
 import delta.games.lotro.maps.ui.layers.Layer;
 import delta.games.lotro.maps.ui.layers.MarkersLayer;
 import delta.games.lotro.maps.ui.location.MapLocationController;
 import delta.games.lotro.maps.ui.location.MapLocationPanelController;
+import delta.games.lotro.maps.ui.selection.SelectionManager;
 
 /**
  * Controller for a map panel.
@@ -38,6 +40,7 @@ public class MapPanelController
   // Controllers
   private MapLocationController _locationController;
   private MapLocationPanelController _locationDisplay;
+  private SelectionManager _selectionManager;
   // UI
   private JLayeredPane _layers;
   private JPanel _labeled;
@@ -52,6 +55,8 @@ public class MapPanelController
     initZoomController();
     // Init pan controller
     initPanController();
+    // Init selection controller
+    initSelectionController();
     // Location
     _locationController=new MapLocationController(_canvas);
     // Location display
@@ -138,6 +143,13 @@ public class MapPanelController
     _canvas.addMouseMotionListener(adapter);
   }
 
+  private void initSelectionController()
+  {
+    _selectionManager=new SelectionManager();
+    SelectionController ctrl=new SelectionController(_canvas,_selectionManager);
+    _canvas.getInputsManager().addInputController(ctrl);
+  }
+
   private JPanel buildLabeledCheckboxPanel()
   {
     JPanel panel=GuiFactory.buildPanel(new FlowLayout(FlowLayout.LEADING));
@@ -188,6 +200,15 @@ public class MapPanelController
   public JLayeredPane getLayers()
   {
     return _layers;
+  }
+
+  /**
+   * Get the selection manager.
+   * @return the selection manager.
+   */
+  public SelectionManager getSelectionManager()
+  {
+    return _selectionManager;
   }
 
   /**
