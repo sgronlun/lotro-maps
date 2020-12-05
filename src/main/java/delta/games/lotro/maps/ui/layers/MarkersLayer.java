@@ -114,7 +114,14 @@ public class MarkersLayer implements VectorLayer
   private void paintMarker(MapView view, Marker marker, Graphics g)
   {
     GeoReference viewReference=view.getViewReference();
+    Dimension viewSize=view.getViewSize();
     Dimension pixelPosition=viewReference.geo2pixel(marker.getPosition());
+    if ((pixelPosition.width<0)||(pixelPosition.height<0)||
+        (pixelPosition.width>viewSize.width)||(pixelPosition.height>viewSize.height))
+    {
+      // Point is out of view bounds, do not paint!
+      return;
+    }
 
     // Grab icon
     BufferedImage image=null;
