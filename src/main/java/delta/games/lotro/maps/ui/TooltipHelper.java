@@ -38,7 +38,7 @@ public class TooltipHelper
         if (count>0) sb.append("<br>");
         int nb=pointsList.size();
         if (nb>1) sb.append(nb).append("x ");
-        sb.append(label);
+        sb.append(label.replace("\n","&nbsp;-&nbsp;"));
         count++;
       }
     }

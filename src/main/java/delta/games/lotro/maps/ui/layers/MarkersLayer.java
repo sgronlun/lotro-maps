@@ -136,7 +136,16 @@ public class MarkersLayer implements VectorLayer
       String label=marker.getLabel();
       if ((label!=null) && (label.length()>0))
       {
-        HaloPainter.drawStringWithHalo(g,x+10,y,label,Color.WHITE,Color.BLACK);
+        int index=label.indexOf('\n');
+        if (index==-1)
+        {
+          HaloPainter.drawStringWithHalo(g,x+10,y,label,Color.WHITE,Color.BLACK);
+        }
+        else
+        {
+          String[] lines=label.split("\n");
+          HaloPainter.drawStringsWithHalo(g,x+10,y,lines,Color.WHITE,Color.BLACK);
+        }
       }
     }
   }

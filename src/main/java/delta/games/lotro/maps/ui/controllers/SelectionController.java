@@ -157,7 +157,9 @@ public class SelectionController implements MouseInputController
     JPopupMenu popup=new JPopupMenu();
     for(final MapPoint point : points)
     {
-      JMenuItem item=new JMenuItem(point.getLabel());
+      String label=point.getLabel();
+      label=label.replace("\n"," - ");
+      JMenuItem item=new JMenuItem(label);
       ActionListener l=new ActionListener()
       {
         @Override
