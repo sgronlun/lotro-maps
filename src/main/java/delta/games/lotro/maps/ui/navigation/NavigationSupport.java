@@ -45,11 +45,11 @@ public class NavigationSupport
 
   /**
    * Request a map change.
-   * @param key Key of the map to show.
+   * @param mapId Identifier of the map to show.
    */
-  public void requestMap(int key)
+  public void requestMap(int mapId)
   {
-    _navigation.requestMap(key);
+    _navigation.requestMap(mapId);
   }
 
   /**
