@@ -9,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
@@ -16,6 +17,8 @@ import javax.swing.JPanel;
 import delta.common.ui.swing.GuiFactory;
 import delta.common.ui.swing.labels.LabelWithHalo;
 import delta.games.lotro.maps.ui.controllers.SelectionController;
+import delta.games.lotro.maps.ui.filter.FilterButtonController;
+import delta.games.lotro.maps.ui.filter.MapFilterPanelController;
 import delta.games.lotro.maps.ui.layers.Layer;
 import delta.games.lotro.maps.ui.layers.MarkersLayer;
 import delta.games.lotro.maps.ui.location.MapLocationController;
@@ -41,6 +44,7 @@ public class MapPanelController
   private MapLocationController _locationController;
   private MapLocationPanelController _locationDisplay;
   private SelectionManager _selectionManager;
+  private FilterButtonController _filterButton;
   // UI
   private JLayeredPane _layers;
   private JPanel _labeled;
@@ -73,6 +77,16 @@ public class MapPanelController
     // - labeled checkbox
     _labeled=buildLabeledCheckboxPanel();
     _layers.add(_labeled,Integer.valueOf(1),0);
+  }
+
+  /**
+   * Add the filter button.
+   * @param mapFilterCtrl Filter UI.
+   */
+  public void addFilterButton(MapFilterPanelController mapFilterCtrl)
+  {
+    _filterButton=new FilterButtonController(mapFilterCtrl);
+    _layers.add(_filterButton.getTriggerButton(),Integer.valueOf(1),0);
   }
 
   private void initZoomController()
@@ -225,8 +239,15 @@ public class MapPanelController
     locationPanel.setSize(100,40);
     locationPanel.setLocation(0,height-locationPanel.getHeight());
     // Place 'labeled' checkbox
-    _labeled.setLocation(55,17);
     _labeled.setSize(_labeled.getPreferredSize());
+    _labeled.setLocation(viewSize.width-_labeled.getWidth()-10,17);
+    // Place the 'filter' button
+    if (_filterButton!=null)
+    {
+      JButton filterButton=_filterButton.getTriggerButton();
+      filterButton.setLocation(10,17);
+      filterButton.setSize(filterButton.getPreferredSize());
+    }
     _canvas.repaint();
   }
 
@@ -260,6 +281,11 @@ public class MapPanelController
     {
       _locationController.dispose();
       _locationController=null;
+    }
+    if (_filterButton!=null)
+    {
+      _filterButton.dispose();
+      _filterButton=null;
     }
     // UI
     _layers=null;

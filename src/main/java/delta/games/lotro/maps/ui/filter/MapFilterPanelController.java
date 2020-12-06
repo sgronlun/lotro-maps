@@ -1,9 +1,11 @@
 package delta.games.lotro.maps.ui.filter;
 
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.Set;
 
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -32,15 +34,32 @@ public class MapFilterPanelController
   /**
    * Constructor.
    * @param categoriesManager Categories manager.
-   * @param filter Markers filter.
    * @param mapCanvas Associated map canvas.
    */
-  public MapFilterPanelController(CategoriesManager categoriesManager, MapMarkersFilter filter, MapCanvas mapCanvas)
+  public MapFilterPanelController(CategoriesManager categoriesManager, MapCanvas mapCanvas)
   {
-    _filter=filter;
+    _filter=new MapMarkersFilter();
     _mapCanvas=mapCanvas;
-    _categoryChooser=new CategoryChooserController(categoriesManager);
+    buildCategoriesChooser(categoriesManager);
     initCategoriesFilter(categoriesManager);
+  }
+
+  /**
+   * Get the managed filter.
+   * @return the managed filter.
+   */
+  public MapMarkersFilter getFilter()
+  {
+    return _filter;
+  }
+
+  /**
+   * Get the category chooser.
+   * @return the category chooser.
+   */
+  public CategoryChooserController getCategoryChooser()
+  {
+    return _categoryChooser;
   }
 
   private void initCategoriesFilter(CategoriesManager categoriesManager)
@@ -79,19 +98,29 @@ public class MapFilterPanelController
 
   private JPanel build()
   {
-    JPanel panel=GuiFactory.buildPanel(new FlowLayout());
-    // Categories
-    JButton button=buildCategoriesChooser();
-    panel.add(button);
-    // Label filter
-    JPanel containsPanel=buildLabelFilter();
-    panel.add(containsPanel);
-    // 
+    JPanel panel=GuiFactory.buildBackgroundPanel(new GridBagLayout());
+    JPanel topPanel=builTopPanel();
+    GridBagConstraints c=new GridBagConstraints(0,0,1,1,0.0,0.0,GridBagConstraints.WEST,GridBagConstraints.NONE,new Insets(0,0,0,0),0,0);
+    panel.add(topPanel,c);
+    // Categories editor
+    JPanel categoriesPanel=_categoryChooser.getPanel();
+    c=new GridBagConstraints(0,1,1,1,1.0,1.0,GridBagConstraints.WEST,GridBagConstraints.BOTH,new Insets(0,0,0,0),0,0);
+    panel.add(categoriesPanel,c);
     return panel;
   }
 
-  private JButton buildCategoriesChooser()
+  private JPanel builTopPanel()
   {
+    JPanel panel=GuiFactory.buildPanel(new FlowLayout());
+    // Label filter
+    JPanel containsPanel=buildLabelFilter();
+    panel.add(containsPanel);
+    return panel;
+  }
+
+  private void buildCategoriesChooser(CategoriesManager categoriesManager)
+  {
+    _categoryChooser=new CategoryChooserController(categoriesManager);
     CategoryFilterUpdateListener listener=new CategoryFilterUpdateListener()
     {
       public void categoryFilterUpdated(CategoryChooserController controller)
@@ -102,8 +131,6 @@ public class MapFilterPanelController
       }
     };
     _categoryChooser.setListener(listener);
-    JButton button=_categoryChooser.getTriggerButton();
-    return button;
   }
 
   private JPanel buildLabelFilter()

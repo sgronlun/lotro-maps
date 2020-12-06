@@ -2,7 +2,6 @@ package delta.games.lotro.maps.ui;
 
 import java.io.File;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 
 import delta.games.lotro.maps.data.categories.CategoriesManager;
@@ -24,8 +23,7 @@ public class MainTestCategoryChooser
     CategoriesManager categoriesManager=new CategoriesManager(from);
     CategoryChooserController controller=new CategoryChooserController(categoriesManager);
     JFrame f=new JFrame();
-    JButton button=controller.getTriggerButton();
-    f.getContentPane().add(button);
+    f.getContentPane().add(controller.getPanel());
     f.pack();
     f.setVisible(true);
     f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

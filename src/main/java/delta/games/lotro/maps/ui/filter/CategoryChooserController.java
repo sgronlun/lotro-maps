@@ -5,7 +5,6 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -21,8 +20,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.Popup;
-import javax.swing.PopupFactory;
 import javax.swing.border.TitledBorder;
 
 import delta.common.ui.ImageUtils;
@@ -44,8 +41,7 @@ public class CategoryChooserController
   // UI
   private JPanel _panel;
   private HashMap<Integer,JCheckBox> _checkboxes;
-  private JButton _triggerButton;
-  private Popup _popup;
+  private JButton _close;
   // Listeners
   private CategoryFilterUpdateListener _listener;
 
@@ -58,16 +54,25 @@ public class CategoryChooserController
     _categoriesManager=categoriesManager;
     _selectedCodes=new HashSet<Integer>();
     _checkboxes=new HashMap<Integer,JCheckBox>();
-    build();
+    _panel=buildPanel();
   }
 
   /**
-   * Get the button used to trigger the popup for choosing categories.
-   * @return A button.
+   * Get the managed panel.
+   * @return the managed panel.
    */
-  public JButton getTriggerButton()
+  public JPanel getPanel()
   {
-    return _triggerButton;
+    return _panel;
+  }
+
+  /**
+   * Get the managed close button.
+   * @return the managed close button.
+   */
+  public JButton getCloseButton()
+  {
+    return _close;
   }
 
   /**
@@ -112,37 +117,6 @@ public class CategoryChooserController
     }
   }
 
-  private void build()
-  {
-    _panel=buildPanel();
-    _triggerButton=GuiFactory.buildButton("Categories...");
-    ActionListener al=new ActionListener()
-    {
-      public void actionPerformed(ActionEvent event)
-      {
-        if (_popup!=null)
-        {
-          hide();
-        }
-        else
-        {
-          show();
-        }
-      }
-    };
-    _triggerButton.addActionListener(al);
-  }
-
-  private void show()
-  {
-    PopupFactory popupFactory=PopupFactory.getSharedInstance();
-    Point p=_triggerButton.getLocationOnScreen();
-    int x=p.x;
-    int y=p.y+_triggerButton.getHeight()+5;
-    _popup=popupFactory.getPopup(_triggerButton,_panel,x,y);
-    _popup.show();
-  }
-
   private void selectAll()
   {
     for(Integer code : _checkboxes.keySet())
@@ -168,15 +142,6 @@ public class CategoryChooserController
     if (_listener!=null)
     {
       _listener.categoryFilterUpdated(CategoryChooserController.this);
-    }
-  }
-
-  private void hide()
-  {
-    if (_popup!=null)
-    {
-      _popup.hide();
-      _popup=null;
     }
   }
 
@@ -223,16 +188,8 @@ public class CategoryChooserController
     }
     // Close button
     {
-      JButton closeButton=GuiFactory.buildButton("Close");
-      ActionListener al=new ActionListener()
-      {
-        public void actionPerformed(ActionEvent event)
-        {
-          hide();
-        }
-      };
-      closeButton.addActionListener(al);
-      panel.add(closeButton);
+      _close=GuiFactory.buildButton("Close");
+      panel.add(_close);
     }
     return panel;
   }
@@ -317,8 +274,7 @@ public class CategoryChooserController
       _panel=null;
     }
     _checkboxes=null;
-    _triggerButton=null;
-    _popup=null;
+    _close=null;
     // Data
     _categoriesManager=null;
     // Listeners
