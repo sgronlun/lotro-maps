@@ -3,6 +3,7 @@ package delta.games.lotro.maps.ui.selection;
 import java.util.ArrayList;
 import java.util.List;
 
+import delta.common.ui.swing.misc.Disposable;
 import delta.games.lotro.maps.data.MapPoint;
 import delta.games.lotro.maps.ui.controllers.SelectionListener;
 
@@ -10,7 +11,7 @@ import delta.games.lotro.maps.ui.controllers.SelectionListener;
  * Map point selection manager.
  * @author DAM
  */
-public class SelectionManager implements SelectionListener
+public class SelectionManager implements SelectionListener,Disposable
 {
   private List<SelectionListener> _listeners;
 
@@ -43,5 +44,24 @@ public class SelectionManager implements SelectionListener
       }
     }
     return false;
+  }
+
+  /**
+   * Release all managed resources.
+   */
+  public void dispose()
+  {
+    if (_listeners!=null)
+    {
+      for(SelectionListener listener : _listeners)
+      {
+        if (listener instanceof Disposable)
+        {
+          ((Disposable)listener).dispose();
+        }
+      }
+      _listeners.clear();
+      _listeners=null;
+    }
   }
 }

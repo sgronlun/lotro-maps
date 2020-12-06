@@ -251,6 +251,11 @@ public class MapPanelController
       _locationDisplay.dispose();
       _locationDisplay=null;
     }
+    if (_selectionManager!=null)
+    {
+      _selectionManager.dispose();
+      _selectionManager=null;
+    }
     if (_locationController!=null)
     {
       _locationController.dispose();
