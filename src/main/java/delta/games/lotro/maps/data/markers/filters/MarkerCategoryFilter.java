@@ -41,6 +41,16 @@ public class MarkerCategoryFilter implements Filter<Marker>
     _acceptedCategoryCodes.addAll(categories);
   }
 
+  /**
+   * Remove a category.
+   * @param categoryCode Code of category to remove.
+   */
+  public void removeCategory(int categoryCode)
+  {
+    _acceptedCategoryCodes.remove(Integer.valueOf(categoryCode));
+  }
+
+  @Override
   public boolean accept(Marker item)
   {
     int code=item.getCategoryCode();
