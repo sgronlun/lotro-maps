@@ -64,9 +64,15 @@ public class LinksXMLWriter
       {
         linkAttrs.addAttribute("","",LinksXMLConstants.LINK_LABEL_ATTR,XmlWriter.CDATA,label);
       }
-      // Position
-      GeoPoint hotPoint=link.getPosition();
-      MarkersXMLWriter.writeGeoPointAttrs(hd,hotPoint,linkAttrs);
+      // From
+      GeoPoint fromPoint=link.getPosition();
+      MarkersXMLWriter.writeGeoPointAttrs(hd,LinksXMLConstants.LINK_FROM_ATTR,fromPoint,linkAttrs);
+      // To
+      GeoPoint targetPoint=link.getTargetPoint();
+      if (targetPoint!=null)
+      {
+        MarkersXMLWriter.writeGeoPointAttrs(hd,LinksXMLConstants.LINK_TO_ATTR,targetPoint,linkAttrs);
+      }
       // Type
       MapLinkType type=link.getType();
       if (type!=MapLinkType.TO_PARCHMENT_MAP)

@@ -37,6 +37,22 @@ public class MarkersXMLWriter
   }
 
   /**
+   * Write the given point as an attribute in the given XML stream.
+   * @param hd XML output stream.
+   * @param attributeName Attribute name.
+   * @param point Point to write.
+   * @param attrs Attributes to use.
+   * @throws Exception
+   */
+  public static void writeGeoPointAttrs(TransformerHandler hd, String attributeName, GeoPoint point, AttributesImpl attrs) throws Exception
+  {
+    float longitude=point.getLongitude();
+    float latitude=point.getLatitude();
+    String lonLatStr=String.valueOf(longitude)+"/"+String.valueOf(latitude);
+    attrs.addAttribute("","",attributeName,XmlWriter.CDATA,lonLatStr);
+  }
+
+  /**
    * Write map markers to an XML file.
    * @param outFile Output file.
    * @param markers Markers to use.

@@ -31,6 +31,14 @@ public class LinksXMLConstants
    */
   public static final String LINK_LABEL_ATTR="label";
   /**
+   * Tag 'link', attribute 'from'.
+   */
+  public static final String LINK_FROM_ATTR="from";
+  /**
+   * Tag 'link', attribute 'to'.
+   */
+  public static final String LINK_TO_ATTR="to";
+  /**
    * Tag 'link', attribute 'type'.
    */
   public static final String LINK_TYPE_ATTR="type";

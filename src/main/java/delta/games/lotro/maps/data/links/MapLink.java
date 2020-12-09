@@ -13,6 +13,7 @@ public class MapLink implements MapPoint
   private int _contentLayerId;
   private MapLinkType _type;
   private GeoPoint _hotPoint;
+  private GeoPoint _targetPoint;
   private int _targetMapKey;
   private String _text;
 
@@ -22,14 +23,16 @@ public class MapLink implements MapPoint
    * @param contentLayerId Content layer identifier.
    * @param targetMapKey Key of the targeted map.
    * @param hotPoint Geographic point ("hot point") of the link.
+   * @param targetPoint Target point.
    */
-  public MapLink(int parentId, int contentLayerId, int targetMapKey, GeoPoint hotPoint)
+  public MapLink(int parentId, int contentLayerId, int targetMapKey, GeoPoint hotPoint, GeoPoint targetPoint)
   {
     _parentId=parentId;
     _contentLayerId=contentLayerId;
     _hotPoint=hotPoint;
     _targetMapKey=targetMapKey;
     _type=MapLinkType.TO_PARCHMENT_MAP;
+    _targetPoint=targetPoint;
   }
 
   /**
@@ -87,6 +90,15 @@ public class MapLink implements MapPoint
   }
 
   /**
+   * Get the target point.
+   * @return the target point.
+   */
+  public GeoPoint getTargetPoint()
+  {
+    return _targetPoint;
+  }
+
+  /**
    * Get the parent identifier.
    * @return the parent identifier.
    */
@@ -107,6 +119,6 @@ public class MapLink implements MapPoint
   @Override
   public String toString()
   {
-    return "Link to " + _targetMapKey + "@" + _hotPoint + ", from="+_parentId+", layer="+_contentLayerId+", label="+_text+", type="+_type;
+    return "Link to " + _targetPoint + "@" + _targetMapKey + ", from=" + _hotPoint + "@" + _parentId + ", layer="+_contentLayerId+", label="+_text+", type="+_type;
   }
 }

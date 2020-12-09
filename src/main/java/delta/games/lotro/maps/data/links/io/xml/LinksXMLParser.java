@@ -72,9 +72,13 @@ public class LinksXMLParser
     int target=DOMParsingTools.getIntAttribute(attrs,LinksXMLConstants.LINK_TARGET_ATTR,0);
     // Label
     String label=DOMParsingTools.getStringAttribute(attrs,LinksXMLConstants.LINK_LABEL_ATTR,null);
-    // Position
-    GeoPoint hotPoint=MarkersXMLParser.parsePoint(linkTag);
-    MapLink link=new MapLink(parentId,contentLayerId,target,hotPoint);
+    // From
+    String from=DOMParsingTools.getStringAttribute(attrs,LinksXMLConstants.LINK_FROM_ATTR,null);
+    GeoPoint fromPoint=MarkersXMLParser.parsePoint(from);
+    // To
+    String to=DOMParsingTools.getStringAttribute(attrs,LinksXMLConstants.LINK_TO_ATTR,null);
+    GeoPoint targetPoint=MarkersXMLParser.parsePoint(to);
+    MapLink link=new MapLink(parentId,contentLayerId,target,fromPoint,targetPoint);
     link.setLabel(label);
     // Type
     String linkTypeStr=DOMParsingTools.getStringAttribute(attrs,LinksXMLConstants.LINK_TYPE_ATTR,null);
