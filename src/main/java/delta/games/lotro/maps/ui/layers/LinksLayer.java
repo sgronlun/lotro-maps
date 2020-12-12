@@ -3,10 +3,12 @@ package delta.games.lotro.maps.ui.layers;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import delta.common.ui.swing.draw.Arrows;
 import delta.common.ui.swing.icons.IconsManager;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.MapPoint;
@@ -80,18 +82,33 @@ public class LinksLayer implements VectorLayer
 
     int x=pixelPosition.width;
     int y=pixelPosition.height;
-    BufferedImage icon=(link.getType()==MapLinkType.TO_PARCHMENT_MAP)?_mapIcon:_dungeonIcon;
-    if (icon!=null)
+    if (link.getTargetMapKey()==link.getParentId())
     {
-      int width=icon.getWidth();
-      int height=icon.getHeight();
-      g.drawImage(icon,x-width/2,y-height/2,null);
+      g.fillRect(x-3,y-3,6,6);
+      Dimension toPosition=viewReference.geo2pixel(link.getTargetPoint());
+      if (toPosition!=null)
+      {
+        g.setColor(Color.GREEN);
+        int toX=toPosition.width;
+        int toY=toPosition.height;
+        g.drawLine(x,y,toX,toY);
+        Arrows.drawArrow((Graphics2D)g,x,y,x+(toX-x)/2,y+(toY-y)/2);
+      }
     }
     else
     {
-      g.setColor(Color.RED);
-      g.fillRect(x-10,y-10,20,20);
+      BufferedImage icon=(link.getType()==MapLinkType.TO_PARCHMENT_MAP)?_mapIcon:_dungeonIcon;
+      if (icon!=null)
+      {
+        int width=icon.getWidth();
+        int height=icon.getHeight();
+        g.drawImage(icon,x-width/2,y-height/2,null);
+      }
+      else
+      {
+        g.setColor(Color.RED);
+        g.fillRect(x-10,y-10,20,20);
+      }
     }
   }
-
 }
