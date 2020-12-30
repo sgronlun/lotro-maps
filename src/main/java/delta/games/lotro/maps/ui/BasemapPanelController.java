@@ -120,6 +120,15 @@ public class BasemapPanelController
   }
 
   /**
+   * Set the maximum size.
+   * @param dimension Maximum size (pixels).
+   */
+  public void setMaxSize(Dimension dimension)
+  {
+    MapUiUtils.configureMapPanel(_mapPanel,_currentMap.getBoundingBox(),dimension);
+  }
+
+  /**
    * Release all managed resources.
    */
   public void dispose()
