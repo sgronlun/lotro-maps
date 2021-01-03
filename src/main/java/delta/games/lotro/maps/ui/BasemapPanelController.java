@@ -46,6 +46,15 @@ public class BasemapPanelController
   }
 
   /**
+   * Get the managed basemap layer.
+   * @return the managed basemap layer.
+   */
+  public BasemapLayer getBasemapLayer()
+  {
+    return _basemapLayer;
+  }
+
+  /**
    * Get the managed map panel controller.
    * @return the managed map panel controller.
    */

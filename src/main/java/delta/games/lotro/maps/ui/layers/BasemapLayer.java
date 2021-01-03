@@ -5,14 +5,14 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.io.File;
 
-import delta.common.ui.ImageUtils;
 import delta.games.lotro.maps.data.GeoBox;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.basemaps.GeoreferencedBasemap;
 import delta.games.lotro.maps.ui.MapView;
+import delta.games.lotro.maps.ui.layers.basemap.BasemapImageProvider;
+import delta.games.lotro.maps.ui.layers.basemap.DefaultBasemapImageProvider;
 
 /**
  * Base map layer.
@@ -21,6 +21,7 @@ import delta.games.lotro.maps.ui.MapView;
 public class BasemapLayer implements RasterLayer
 {
   private GeoreferencedBasemap _currentMap;
+  private BasemapImageProvider _imageProvider;
   private BufferedImage _background;
 
   /**
@@ -29,6 +30,7 @@ public class BasemapLayer implements RasterLayer
   public BasemapLayer()
   {
     _background=null;
+    _imageProvider=new DefaultBasemapImageProvider();
   }
 
   @Override
@@ -44,8 +46,16 @@ public class BasemapLayer implements RasterLayer
   public void setMap(GeoreferencedBasemap basemap)
   {
     _currentMap=basemap;
-    File mapImageFile=_currentMap.getImageFile();
-    _background=ImageUtils.loadImage(mapImageFile);
+    _background=_imageProvider.getImage(basemap);
+  }
+
+  /**
+   * Set the image provider to use.
+   * @param imageProvider Image provider to use.
+   */
+  public void setBasemapImageProvider(BasemapImageProvider imageProvider)
+  {
+    _imageProvider=imageProvider;
   }
 
   /**
