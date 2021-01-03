@@ -22,6 +22,10 @@ public class GeoreferencedBasemapsXMLConstants
    * Tag 'map', attribute 'name'.
    */
   public static final String MAP_NAME_ATTR="name";
+  /**
+   * Tag 'map', attribute 'imageId'.
+   */
+  public static final String MAP_IMAGE_ID_ATTR="imageId";
 
   /**
    * Tag 'geo'.

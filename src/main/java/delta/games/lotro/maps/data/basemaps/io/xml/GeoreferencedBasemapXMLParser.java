@@ -53,6 +53,8 @@ public class GeoreferencedBasemapXMLParser
     int id=DOMParsingTools.getIntAttribute(attrs,GeoreferencedBasemapsXMLConstants.MAP_ID_ATTR,0);
     // Name
     String name=DOMParsingTools.getStringAttribute(attrs,GeoreferencedBasemapsXMLConstants.MAP_NAME_ATTR,"");
+    // Image ID
+    int imageId=DOMParsingTools.getIntAttribute(attrs,GeoreferencedBasemapsXMLConstants.MAP_IMAGE_ID_ATTR,0);
     // Geographic reference
     GeoReference geoReference=null;
     Element geoTag=DOMParsingTools.getChildTagByName(root,GeoreferencedBasemapsXMLConstants.GEO_TAG);
@@ -71,6 +73,7 @@ public class GeoreferencedBasemapXMLParser
       GeoBox box=new GeoBox(min,max);
       map.setBoundingBox(box);
     }
+    map.setImageId(imageId);
     return map;
   }
 

@@ -69,6 +69,9 @@ public class GeoreferencedBasemapXMLWriter
     // Name
     String name=map.getName();
     attrs.addAttribute("","",GeoreferencedBasemapsXMLConstants.MAP_NAME_ATTR,XmlWriter.CDATA,name);
+    // Image ID
+    int imageId=map.getImageId();
+    attrs.addAttribute("","",GeoreferencedBasemapsXMLConstants.MAP_IMAGE_ID_ATTR,XmlWriter.CDATA,String.valueOf(imageId));
     hd.startElement("","",GeoreferencedBasemapsXMLConstants.MAP_TAG,attrs);
 
     // Geo reference

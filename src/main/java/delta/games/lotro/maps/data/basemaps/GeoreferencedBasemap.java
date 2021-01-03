@@ -16,6 +16,7 @@ public class GeoreferencedBasemap implements Identifiable
   private String _name;
   private GeoReference _geoRef;
   private GeoBox _boundingBox;
+  private int _imageId;
   private File _imageFile;
 
   /**
@@ -94,9 +95,27 @@ public class GeoreferencedBasemap implements Identifiable
     _imageFile=imageFile;
   }
 
+  /**
+   * Get the basemap image identifier.
+   * @return a basemap image identifier.
+   */
+  public int getImageId()
+  {
+    return _imageId;
+  }
+
+  /**
+   * Set the basemap image identifier.
+   * @param imageId Image identifier to set.
+   */
+  public void setImageId(int imageId)
+  {
+    _imageId=imageId;
+  }
+
   @Override
   public String toString()
   {
-    return "Basemap: ID="+_id+", name="+_name+", reference=" + _geoRef + ", file="+_imageFile;
+    return "Basemap: ID="+_id+", name="+_name+", reference=" + _geoRef + ", file="+_imageFile+", imageId="+_imageId;
   }
 }
