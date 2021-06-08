@@ -1,7 +1,8 @@
 package delta.games.lotro.maps.data.links;
 
 /**
- * @author dm
+ * Map link type.
+ * @author DAM
  */
 public enum MapLinkType
 {

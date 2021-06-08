@@ -3,7 +3,8 @@ package delta.games.lotro.maps.ui.constraints;
 import delta.games.lotro.maps.data.GeoPoint;
 
 /**
- * @author dm
+ * Interface of map constraints.
+ * @author DAM
  */
 public interface MapConstraint
 {
