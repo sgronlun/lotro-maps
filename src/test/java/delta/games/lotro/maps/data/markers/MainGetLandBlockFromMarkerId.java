@@ -13,7 +13,7 @@ public class MainGetLandBlockFromMarkerId
   public static void main(String[] args)
   {
     int markerId=523939870;
-    int region=(markerId&0x70000000)>>28;
+    int region=((markerId&0xF0000000)>>28)&0xF;
     int bigXBlock=(markerId&0xF000000)>>24;
     int bigYBlock=(markerId&0xF00000)>>20;
     int smallBlockX=(markerId&0xF0000)>>16;
