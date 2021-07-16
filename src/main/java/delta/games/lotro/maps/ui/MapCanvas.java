@@ -240,7 +240,10 @@ public class MapCanvas extends JPanel implements MapView
     super.paintComponent(g);
     for(Layer layer : _layers)
     {
-      layer.paintLayer(this,g);
+      if (layer.isVisible())
+      {
+        layer.paintLayer(this,g);
+      }
     }
   }
 

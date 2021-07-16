@@ -20,7 +20,7 @@ import delta.games.lotro.maps.ui.layers.basemap.DefaultBasemapImageProvider;
  * Base map layer.
  * @author DAM
  */
-public class BasemapLayer implements RasterLayer
+public class BasemapLayer extends BaseRasterLayer 
 {
   private static final Logger LOGGER=Logger.getLogger(BasemapLayer.class);
 
@@ -33,6 +33,8 @@ public class BasemapLayer implements RasterLayer
    */
   public BasemapLayer()
   {
+    super();
+    setName("Base Map");
     _background=null;
     _imageProvider=new DefaultBasemapImageProvider();
   }

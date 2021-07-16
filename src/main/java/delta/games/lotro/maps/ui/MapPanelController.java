@@ -21,6 +21,9 @@ import delta.games.lotro.maps.ui.filter.FilterButtonController;
 import delta.games.lotro.maps.ui.filter.MapFilterPanelController;
 import delta.games.lotro.maps.ui.layers.Layer;
 import delta.games.lotro.maps.ui.layers.MarkersLayer;
+import delta.games.lotro.maps.ui.layersmgr.LayersButtonController;
+import delta.games.lotro.maps.ui.layersmgr.LayersDisplayController;
+import delta.games.lotro.maps.ui.layersmgr.LayersManagerListener;
 import delta.games.lotro.maps.ui.location.MapLocationController;
 import delta.games.lotro.maps.ui.location.MapLocationPanelController;
 import delta.games.lotro.maps.ui.selection.SelectionManager;
@@ -45,6 +48,7 @@ public class MapPanelController
   private MapLocationPanelController _locationDisplay;
   private SelectionManager _selectionManager;
   private FilterButtonController _filterButton;
+  private LayersButtonController _layersButton;
   // UI
   private JLayeredPane _layers;
   private JPanel _labeled;
@@ -77,6 +81,8 @@ public class MapPanelController
     // - labeled checkbox
     _labeled=buildLabeledCheckboxPanel();
     _layers.add(_labeled,Integer.valueOf(1),0);
+    // Layers manager
+    addLayersButton();
   }
 
   /**
@@ -87,6 +93,25 @@ public class MapPanelController
   {
     _filterButton=new FilterButtonController(mapFilterCtrl);
     _layers.add(_filterButton.getTriggerButton(),Integer.valueOf(1),0);
+  }
+
+  /**
+   * Add the layers button.
+   */
+  private void addLayersButton()
+  {
+    LayersDisplayController layersMgrController=new LayersDisplayController(_canvas.getLayers());
+    LayersManagerListener listener=new LayersManagerListener()
+    {
+      @Override
+      public void layersManagerUpdated(LayersDisplayController controller)
+      {
+        _canvas.repaint();
+      }
+    };
+    layersMgrController.setListener(listener);
+    _layersButton=new LayersButtonController(layersMgrController);
+    _layers.add(_layersButton.getTriggerButton(),Integer.valueOf(1),0);
   }
 
   private void initZoomController()
@@ -241,11 +266,20 @@ public class MapPanelController
     // Place 'labeled' checkbox
     _labeled.setSize(_labeled.getPreferredSize());
     _labeled.setLocation(viewSize.width-_labeled.getWidth()-10,17);
+    // Place the 'layers' button
+    int x=10;
+    if (_layersButton!=null)
+    {
+      JButton layersButton=_layersButton.getTriggerButton();
+      layersButton.setLocation(x,17);
+      layersButton.setSize(layersButton.getPreferredSize());
+      x+=layersButton.getPreferredSize().width+10;
+    }
     // Place the 'filter' button
     if (_filterButton!=null)
     {
       JButton filterButton=_filterButton.getTriggerButton();
-      filterButton.setLocation(10,17);
+      filterButton.setLocation(x,17);
       filterButton.setSize(filterButton.getPreferredSize());
     }
     _canvas.repaint();
@@ -286,6 +320,11 @@ public class MapPanelController
     {
       _filterButton.dispose();
       _filterButton=null;
+    }
+    if (_layersButton!=null)
+    {
+      _layersButton.dispose();
+      _layersButton=null;
     }
     // UI
     _layers=null;

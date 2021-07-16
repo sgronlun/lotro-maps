@@ -20,7 +20,7 @@ import delta.games.lotro.maps.ui.MapView;
  * Layer for map links.
  * @author DAM
  */
-public class LinksLayer implements VectorLayer
+public class LinksLayer extends BaseVectorLayer
 {
   private BufferedImage _mapIcon;
   private BufferedImage _dungeonIcon;
@@ -34,6 +34,7 @@ public class LinksLayer implements VectorLayer
     _mapIcon=IconsManager.getImage("/resources/icons/link.png");
     _dungeonIcon=IconsManager.getImage("/resources/icons/dungeonDoor.png");
     _links=new ArrayList<MapLink>();
+    setName("Navigation");
   }
 
   @Override

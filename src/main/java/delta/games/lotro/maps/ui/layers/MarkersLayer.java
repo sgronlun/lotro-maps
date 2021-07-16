@@ -19,7 +19,7 @@ import delta.games.lotro.maps.ui.MarkerIconProvider;
  * Layer for markers.
  * @author DAM
  */
-public class MarkersLayer implements VectorLayer
+public class MarkersLayer extends BaseVectorLayer
 {
   private Filter<Marker> _filter;
   private boolean _useLabels;
@@ -39,6 +39,7 @@ public class MarkersLayer implements VectorLayer
     _priority=50;
     _iconProvider=iconProvider;
     _markersProvider=markersProvider;
+    setName("Markers");
   }
 
   @Override
