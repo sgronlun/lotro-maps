@@ -1,9 +1,6 @@
 package delta.games.lotro.maps.data.markers.index.io.xml;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
 
@@ -54,13 +51,12 @@ public class MarkersIndexXMLWriter
     attrs.addAttribute("","",MarkersIndexXMLConstants.INDEX_KEY_ATTR,XmlWriter.CDATA,String.valueOf(key));
     hd.startElement("","",MarkersIndexXMLConstants.INDEX_TAG,attrs);
 
-    List<Integer> markerIds=new ArrayList<Integer>(index.getMarkers());
-    Collections.sort(markerIds);
-    for(Integer markerId : markerIds)
+    int[] markerIds=index.getMarkers().getValues();
+    for(int markerId : markerIds)
     {
       AttributesImpl markerAttrs=new AttributesImpl();
       // Identifier
-      markerAttrs.addAttribute("","",MarkersIndexXMLConstants.MARKER_ID_ATTR,XmlWriter.CDATA,markerId.toString());
+      markerAttrs.addAttribute("","",MarkersIndexXMLConstants.MARKER_ID_ATTR,XmlWriter.CDATA,String.valueOf(markerId));
       hd.startElement("","",MarkersIndexXMLConstants.MARKER_TAG,markerAttrs);
       hd.endElement("","",MarkersIndexXMLConstants.MARKER_TAG);
     }

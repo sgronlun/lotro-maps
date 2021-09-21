@@ -1,6 +1,8 @@
 package delta.games.lotro.maps.data.markers.index.io.xml;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -21,7 +23,7 @@ public class MarkersIndexXMLParser extends DefaultHandler
 {
   private static final Logger LOGGER=Logger.getLogger(MarkersIndexXMLParser.class);
 
-  private MarkersIndex _index;
+  private Set<Integer> _ids;
 
   /**
    * Parse the XML file.
@@ -31,7 +33,7 @@ public class MarkersIndexXMLParser extends DefaultHandler
    */
   public MarkersIndex parseXML(File source, int key)
   {
-    _index=new MarkersIndex(key);
+    _ids=new HashSet<Integer>();
     try
     {
       // Use the default (non-validating) parser
@@ -39,7 +41,7 @@ public class MarkersIndexXMLParser extends DefaultHandler
       SAXParser saxParser = factory.newSAXParser();
       saxParser.parse(source, this);
       saxParser.reset();
-      return _index;
+      return new MarkersIndex(key,_ids);
     }
     catch(Exception e)
     {
@@ -56,7 +58,7 @@ public class MarkersIndexXMLParser extends DefaultHandler
     {
       String markerIdStr=attributes.getValue(MarkersIndexXMLConstants.MARKER_ID_ATTR);
       int markerId=NumericTools.parseInt(markerIdStr,-1);
-      _index.addMarker(markerId);
+      _ids.add(Integer.valueOf(markerId));
     }
   }
 }

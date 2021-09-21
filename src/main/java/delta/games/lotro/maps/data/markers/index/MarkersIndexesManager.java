@@ -2,6 +2,7 @@ package delta.games.lotro.maps.data.markers.index;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import delta.common.utils.text.EncodingNames;
@@ -47,7 +48,7 @@ public class MarkersIndexesManager
       }
       else
       {
-        index=new MarkersIndex(did);
+        index=new MarkersIndex(did,new HashSet<Integer>());
       }
       _didIndexes.put(key,index);
     }
@@ -72,11 +73,29 @@ public class MarkersIndexesManager
       }
       else
       {
-        index=new MarkersIndex(contentLayerId);
+        index=new MarkersIndex(contentLayerId,new HashSet<Integer>());
       }
       _contentLayerIndexes.put(key,index);
     }
     return index;
+  }
+
+  /**
+   * Set a DID index.
+   * @param index Index to set.
+   */
+  public void setDidIndex(MarkersIndex index)
+  {
+    _didIndexes.put(Integer.valueOf(index.getKey()),index);
+  }
+
+  /**
+   * Set a content layer index.
+   * @param index Index to set.
+   */
+  public void setContentLayerIndex(MarkersIndex index)
+  {
+    _contentLayerIndexes.put(Integer.valueOf(index.getKey()),index);
   }
 
   /**

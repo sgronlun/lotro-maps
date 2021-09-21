@@ -3,9 +3,8 @@ package delta.games.lotro.maps.data.markers;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
+import delta.common.utils.collections.ThriftyIntSet;
 import delta.games.lotro.maps.data.Marker;
 import delta.games.lotro.maps.data.markers.index.MarkersIndex;
 import delta.games.lotro.maps.data.markers.index.MarkersIndexesManager;
@@ -48,10 +47,10 @@ public class MarkersFinder
       if (contentLayer!=null)
       {
         MarkersIndex markersIndex=_indexsMgr.getContentLayerIndex(contentLayer.intValue());
-        Set<Integer> markerIds=markersIndex.getMarkers();
+        ThriftyIntSet markerIds=markersIndex.getMarkers();
         for(Marker marker : landblockMarkers)
         {
-          if (markerIds.contains(Integer.valueOf(marker.getId())))
+          if (markerIds.contains(marker.getId()))
           {
             ret.add(marker);
           }
@@ -74,10 +73,10 @@ public class MarkersFinder
   public List<Marker> findMarkersForDid(int did, int zoneId)
   {
     MarkersIndex zoneIndex=_indexsMgr.getDidIndex(zoneId);
-    Set<Integer> zoneMarkers=zoneIndex.getMarkers();
+    ThriftyIntSet zoneMarkers=zoneIndex.getMarkers();
     MarkersIndex didIndex=_indexsMgr.getDidIndex(did);
-    Set<Integer> didMarkers=didIndex.getMarkers();
-    Set<Integer> markersToGet=new TreeSet<Integer>(zoneMarkers);
+    ThriftyIntSet didMarkers=didIndex.getMarkers();
+    ThriftyIntSet markersToGet=new ThriftyIntSet(zoneMarkers);
     markersToGet.retainAll(didMarkers);
     return getMarkers(markersToGet);
   }
@@ -91,10 +90,10 @@ public class MarkersFinder
   public List<Marker> findMarkers(int zoneId, int contentLayer)
   {
     MarkersIndex zoneIndex=_indexsMgr.getDidIndex(zoneId);
-    Set<Integer> zoneMarkers=zoneIndex.getMarkers();
+    ThriftyIntSet zoneMarkers=zoneIndex.getMarkers();
     MarkersIndex contentLayerIndex=_indexsMgr.getContentLayerIndex(contentLayer);
-    Set<Integer> contentLayerMarkers=contentLayerIndex.getMarkers();
-    Set<Integer> markersToGet=new TreeSet<Integer>(zoneMarkers);
+    ThriftyIntSet contentLayerMarkers=contentLayerIndex.getMarkers();
+    ThriftyIntSet markersToGet=new ThriftyIntSet(zoneMarkers);
     markersToGet.retainAll(contentLayerMarkers);
     return getMarkers(markersToGet);
   }
@@ -107,16 +106,16 @@ public class MarkersFinder
   public List<Marker> findMarkersForContentLayer(int contentLayer)
   {
     MarkersIndex contentLayerIndex=_indexsMgr.getContentLayerIndex(contentLayer);
-    Set<Integer> contentLayerMarkers=contentLayerIndex.getMarkers();
+    ThriftyIntSet contentLayerMarkers=contentLayerIndex.getMarkers();
     return getMarkers(contentLayerMarkers);
   }
 
-  private List<Marker> getMarkers(Set<Integer> markerIds)
+  private List<Marker> getMarkers(ThriftyIntSet markerIds)
   {
     List<Marker> ret=new ArrayList<Marker>();
-    for(Integer markerId : markerIds)
+    for(int markerId : markerIds.getValues())
     {
-      Marker marker=_markersMgr.getMarkerById(markerId.intValue());
+      Marker marker=_markersMgr.getMarkerById(markerId);
       if (marker!=null)
       {
         ret.add(marker);
