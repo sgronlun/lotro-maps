@@ -4,9 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.w3c.dom.Element;
+import org.apache.log4j.Logger;
 
-import delta.common.utils.xml.DOMParsingTools;
 import delta.games.lotro.maps.data.Marker;
 
 /**
@@ -15,6 +14,8 @@ import delta.games.lotro.maps.data.Marker;
  */
 public class MarkersIO
 {
+  private static final Logger LOGGER=Logger.getLogger(MarkersIO.class);
+
   /**
    * Load map markers from the given file.
    * @param markersFile Markers file.
@@ -36,12 +37,10 @@ public class MarkersIO
 
   private static List<Marker> parseMarkers(File markersFile)
   {
-    List<Marker> markers=null;
-    Element root=DOMParsingTools.parse(markersFile);
-    if (root!=null)
-    {
-      markers=MarkersXMLParser.parseMarkers(root);
-    }
+    long now1=System.currentTimeMillis();
+    List<Marker> markers=MarkersSaxParser.parseMarkersFile(markersFile);
+    long now2=System.currentTimeMillis();
+    LOGGER.info("Loaded "+markers.size()+" markers from file "+markersFile.getName()+" in "+(now2-now1)+"ms");
     return markers;
   }
 }
