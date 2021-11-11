@@ -41,4 +41,10 @@ public class MarkersIndex
   {
     return _markers;
   }
+
+  @Override
+  public String toString()
+  {
+    return "Key: "+_key+", markers: "+_markers;
+  }
 }
