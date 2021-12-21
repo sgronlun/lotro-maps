@@ -3,7 +3,6 @@ package delta.games.lotro.maps.ui.navigation;
 import delta.games.lotro.maps.data.MapPoint;
 import delta.games.lotro.maps.data.links.MapLink;
 import delta.games.lotro.maps.ui.controllers.SelectionListener;
-import delta.games.lotro.maps.ui.navigation.NavigationManager;
 
 /**
  * Map point selection manager.

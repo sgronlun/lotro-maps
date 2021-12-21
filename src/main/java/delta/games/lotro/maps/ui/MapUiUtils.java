@@ -7,8 +7,6 @@ import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.view.BoundedZoomFilter;
 import delta.games.lotro.maps.data.view.ZoomFilter;
-import delta.games.lotro.maps.ui.MapCanvas;
-import delta.games.lotro.maps.ui.MapPanelController;
 import delta.games.lotro.maps.ui.constraints.MapBoundsConstraint;
 
 /**
