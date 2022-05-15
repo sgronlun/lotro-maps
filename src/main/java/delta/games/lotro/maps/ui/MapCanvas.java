@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+import org.apache.log4j.Logger;
+
 import delta.games.lotro.maps.data.GeoBox;
 import delta.games.lotro.maps.data.GeoPoint;
 import delta.games.lotro.maps.data.GeoReference;
@@ -34,6 +36,7 @@ import delta.games.lotro.maps.ui.layers.VectorLayer;
  */
 public class MapCanvas extends JPanel implements MapView
 {
+  private static final Logger LOGGER=Logger.getLogger(MapCanvas.class);
   /**
    * Sensibility of tooltips (pixels).
    */
@@ -178,21 +181,21 @@ public class MapCanvas extends JPanel implements MapView
     }
     int width=getWidth();
     int height=getHeight();
-    //System.out.println("Zoom: "+factor);
+    LOGGER.debug("Zoom: "+factor);
     Dimension centerPixels=new Dimension(width/2,height/2);
     GeoPoint centerGeo=_viewReference.pixel2geo(centerPixels);
-    //System.out.println("Center geo: "+centerGeo);
+    LOGGER.debug("Center geo: "+centerGeo);
     Dimension endPixels=new Dimension(width,height);
     GeoPoint endGeo=_viewReference.pixel2geo(endPixels);
-    //System.out.println("End geo: "+endGeo);
+    LOGGER.debug("End geo: "+endGeo);
     float deltaLon=endGeo.getLongitude()-_viewReference.getStart().getLongitude();
-    //System.out.println("Delta lon="+deltaLon);
+    LOGGER.debug("Delta lon="+deltaLon);
     float newDeltaLon=deltaLon/factor;
-    //System.out.println("New delta lon="+newDeltaLon);
+    LOGGER.debug("New delta lon="+newDeltaLon);
     float deltaLat=_viewReference.getStart().getLatitude()-endGeo.getLatitude();
-    //System.out.println("Delta lat="+deltaLat);
+    LOGGER.debug("Delta lat="+deltaLat);
     float newDeltaLat=deltaLat/factor;
-    //System.out.println("New delta lat="+newDeltaLat);
+    LOGGER.debug("New delta lat="+newDeltaLat);
     float latCenter=centerGeo.getLatitude();
     float lonCenter=centerGeo.getLongitude();
     GeoPoint newStart=new GeoPoint(lonCenter-newDeltaLon/2,latCenter+newDeltaLat/2);
@@ -200,9 +203,9 @@ public class MapCanvas extends JPanel implements MapView
     {
       newStart=_constraint.checkNewStart(newStart,newGeo2PixelFactor);
     }
-    //System.out.println("New start geo: "+newStart);
+    LOGGER.debug("New start geo: "+newStart);
     _viewReference=new GeoReference(newStart,newGeo2PixelFactor);
-    //System.out.println("New view reference: "+_viewReference);
+    LOGGER.debug("New view reference: "+_viewReference);
     repaint();
   }
 
@@ -230,7 +233,7 @@ public class MapCanvas extends JPanel implements MapView
       newStart=_constraint.checkNewStart(newStart,geo2pixel);
     }
     _viewReference=new GeoReference(newStart,geo2pixel);
-    //System.out.println("New view reference: "+_viewReference);
+    LOGGER.debug("New view reference: "+_viewReference);
     repaint();
   }
 

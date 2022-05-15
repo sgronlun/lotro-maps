@@ -12,7 +12,7 @@ public class GeoReference
   /**
    * Geographics position of top-left corner.
    */
-  private GeoPoint _start; 
+  private GeoPoint _start;
   /**
    * Scale factor from geographic to pixel.
    */

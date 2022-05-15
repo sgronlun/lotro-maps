@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -146,6 +147,7 @@ public class MapPanelController
       private int _lastX;
       private int _lastY;
 
+      @Override
       public void mouseDragged(MouseEvent e)
       {
         int deltaX=e.getX()-_lastX;
@@ -172,7 +174,7 @@ public class MapPanelController
         int x=event.getX();
         int y=event.getY();
 
-        if ((button==MouseEvent.BUTTON1) && ((modifiers&MouseEvent.SHIFT_MASK)!=0))
+        if ((button==MouseEvent.BUTTON1) && ((modifiers&InputEvent.SHIFT_MASK)!=0))
         {
           _canvas.pan(x,y);
         }

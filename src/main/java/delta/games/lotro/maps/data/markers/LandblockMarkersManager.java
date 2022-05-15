@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import delta.games.lotro.maps.data.Marker;
 
 /**
@@ -13,6 +15,7 @@ import delta.games.lotro.maps.data.Marker;
  */
 public class LandblockMarkersManager
 {
+  private static final Logger LOGGER=Logger.getLogger(LandblockMarkersManager.class);
   private Map<Integer,Marker> _markers;
   private int _firstId;
   private int _nextId;
@@ -71,7 +74,7 @@ public class LandblockMarkersManager
     _markers.put(key,marker);
     if (_markers.size()==256*16)
     {
-      System.out.println("Markers block overwhelmed: "+this);
+      LOGGER.warn("Markers block overwhelmed: "+this);
     }
   }
 
@@ -93,6 +96,7 @@ public class LandblockMarkersManager
     _markers.clear();
   }
 
+  @Override
   public String toString()
   {
     StringBuilder sb=new StringBuilder("Markers block: firstId=");

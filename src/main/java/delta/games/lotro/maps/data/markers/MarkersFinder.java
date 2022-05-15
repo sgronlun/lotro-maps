@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import delta.common.utils.collections.ThriftyIntSet;
 import delta.games.lotro.maps.data.Marker;
 import delta.games.lotro.maps.data.markers.index.MarkersIndex;
@@ -15,6 +17,7 @@ import delta.games.lotro.maps.data.markers.index.MarkersIndexesManager;
  */
 public class MarkersFinder
 {
+  private static final Logger LOGGER=Logger.getLogger(MarkersFinder.class);
   private GlobalMarkersManager _markersMgr;
   private MarkersIndexesManager _indexsMgr;
 
@@ -78,7 +81,16 @@ public class MarkersFinder
     ThriftyIntSet didMarkers=didIndex.getMarkers();
     ThriftyIntSet markersToGet=new ThriftyIntSet(zoneMarkers);
     markersToGet.retainAll(didMarkers);
-    return getMarkers(markersToGet);
+    List<Marker> ret=getMarkers(markersToGet);
+    if (LOGGER.isDebugEnabled())
+    {
+      LOGGER.debug("Found "+ret.size()+" markers for zoneID="+zoneId+" and DID="+did);
+      for(Marker marker : ret)
+      {
+        LOGGER.debug(marker);
+      }
+    }
+    return ret;
   }
 
   /**
@@ -95,7 +107,16 @@ public class MarkersFinder
     ThriftyIntSet contentLayerMarkers=contentLayerIndex.getMarkers();
     ThriftyIntSet markersToGet=new ThriftyIntSet(zoneMarkers);
     markersToGet.retainAll(contentLayerMarkers);
-    return getMarkers(markersToGet);
+    List<Marker> ret=getMarkers(markersToGet);
+    if (LOGGER.isDebugEnabled())
+    {
+      LOGGER.debug("Found "+ret.size()+" markers for zoneID="+zoneId+" and contentLayer="+contentLayer);
+      for(Marker marker : ret)
+      {
+        LOGGER.debug(marker);
+      }
+    }
+    return ret;
   }
 
   /**
@@ -107,7 +128,17 @@ public class MarkersFinder
   {
     MarkersIndex contentLayerIndex=_indexsMgr.getContentLayerIndex(contentLayer);
     ThriftyIntSet contentLayerMarkers=contentLayerIndex.getMarkers();
-    return getMarkers(contentLayerMarkers);
+    List<Marker> ret=getMarkers(contentLayerMarkers);
+    if (LOGGER.isDebugEnabled())
+    {
+      LOGGER.debug("Found "+ret.size()+" markers for contentLayer="+contentLayer);
+      for(Marker marker : ret)
+      {
+        LOGGER.debug(marker);
+      }
+    }
+    return ret;
+
   }
 
   private List<Marker> getMarkers(ThriftyIntSet markerIds)

@@ -106,18 +106,23 @@ public class BasemapLayer extends BaseRasterLayer
     if (_background!=null)
     {
       GeoReference viewReference=view.getViewReference();
-      //System.out.println("Repaint!");
+      LOGGER.debug("Repaint!");
       Dimension viewSize=view.getViewSize();
-      int dx1=0;int dy1=0;int dx2=viewSize.width;int dy2=viewSize.height;
+      int dx1=0;
+      int dy1=0;
+      int dx2=viewSize.width;
+      int dy2=viewSize.height;
       GeoReference reference=_currentMap.getGeoReference();
       Dimension startPixels=reference.geo2pixel(viewReference.getStart());
-      //System.out.println("Start pixels: "+startPixels);
+      LOGGER.debug("Start pixels: "+startPixels);
       GeoPoint endGeo=viewReference.pixel2geo(viewSize);
-      //System.out.println("End geo: "+endGeo);
+      LOGGER.debug("End geo: "+endGeo);
       Dimension endPixels=reference.geo2pixel(endGeo);
-      //System.out.println("End pixels: "+endPixels);
-      int sx1=startPixels.width;int sy1=startPixels.height;
-      int sx2=endPixels.width;int sy2=endPixels.height;
+      LOGGER.debug("End pixels: "+endPixels);
+      int sx1=startPixels.width;
+      int sy1=startPixels.height;
+      int sx2=endPixels.width;
+      int sy2=endPixels.height;
       Graphics2D g2d=(Graphics2D)g;
       //g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
       g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);

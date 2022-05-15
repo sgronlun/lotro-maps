@@ -3,6 +3,7 @@ package delta.games.lotro.maps.ui.controllers;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,6 +11,8 @@ import java.util.List;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+
+import org.apache.log4j.Logger;
 
 import delta.games.lotro.maps.data.GeoReference;
 import delta.games.lotro.maps.data.MapPoint;
@@ -32,6 +35,7 @@ import delta.games.lotro.maps.ui.layers.VectorLayer;
  */
 public class SelectionController implements MouseInputController
 {
+  private static final Logger LOGGER=Logger.getLogger(SelectionController.class);
   /**
    * Sensibility of link hot points.
    */
@@ -59,7 +63,7 @@ public class SelectionController implements MouseInputController
     int x=event.getX();
     int y=event.getY();
 
-    if ((button==MouseEvent.BUTTON1) && ((modifiers&MouseEvent.SHIFT_MASK)==0))
+    if ((button==MouseEvent.BUTTON1) && ((modifiers&InputEvent.SHIFT_MASK)==0))
     {
       handleLeftClick(x,y);
     }
@@ -176,11 +180,11 @@ public class SelectionController implements MouseInputController
 
   private void handleMapPointSelection(MapPoint point)
   {
+    LOGGER.debug("Selected map point: "+point);
     if (_listener!=null)
     {
       _listener.handleSelection(point);
     }
-    //System.out.println("Selected map point: "+point);
   }
 
   /**

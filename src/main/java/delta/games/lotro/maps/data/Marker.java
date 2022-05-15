@@ -43,6 +43,7 @@ public class Marker implements MapPoint
    * Get the position of this marker.
    * @return a geographic position or <code>null</code> if not set.
    */
+  @Override
   public GeoPoint getPosition()
   {
     return _position;
@@ -61,6 +62,7 @@ public class Marker implements MapPoint
    * Get the label for this marker.
    * @return a label.
    */
+  @Override
   public String getLabel()
   {
     return _label;

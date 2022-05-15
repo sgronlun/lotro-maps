@@ -36,6 +36,7 @@ public class GeoreferencedBasemap implements Identifiable
    * Get the identifier for this basemap.
    * @return an identifier.
    */
+  @Override
   public int getIdentifier()
   {
     return _id;

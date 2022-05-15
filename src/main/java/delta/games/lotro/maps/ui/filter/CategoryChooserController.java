@@ -226,7 +226,6 @@ public class CategoryChooserController
     int nbItems=categories.size();
     int nbItemsPerColumn=nbItems/nbColumns+(nbItems%nbColumns>0?1:0);
     int currentColumn=0;
-    int x=currentColumn*3;
     int y=0;
     for(Category category : categories)
     {
@@ -246,7 +245,7 @@ public class CategoryChooserController
       checkbox.setActionCommand(String.valueOf(category.getCode()));
       checkbox.addActionListener(al);
       _checkboxes.put(Integer.valueOf(category.getCode()),checkbox);
-      x=currentColumn*3;
+      int x=currentColumn*3;
       GridBagConstraints c=new GridBagConstraints(x,y,1,1,0,0,GridBagConstraints.WEST,GridBagConstraints.NONE,new Insets(0,0,0,0),0,0);
       panel.add(checkbox,c);
       c.gridx++;

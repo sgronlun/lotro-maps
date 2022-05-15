@@ -12,7 +12,7 @@ public abstract class BaseLayer implements Layer
   /**
    * Constructor.
    */
-  public BaseLayer()
+  protected BaseLayer()
   {
     _visible=true;
     _name="";

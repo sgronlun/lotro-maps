@@ -29,16 +29,13 @@ public class NavigationController implements MouseInputController
   public void handleMouseClicked(MouseEvent event)
   {
     int button=event.getButton();
-    int x=event.getX();
-    int y=event.getY();
-
     if (button==MouseEvent.BUTTON3)
     {
-      handleRightClick(x,y);
+      handleRightClick();
     }
   }
 
-  private void handleRightClick(int x, int y)
+  private void handleRightClick()
   {
     _navigationMgr.back();
   }

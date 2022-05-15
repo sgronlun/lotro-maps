@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
 
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import delta.common.utils.io.xml.XmlFileWriterHelper;
@@ -42,7 +43,7 @@ public class LinksXMLWriter
     return ret;
   }
 
-  private static void writeLinks(TransformerHandler hd, List<MapLink> links) throws Exception
+  private static void writeLinks(TransformerHandler hd, List<MapLink> links) throws SAXException
   {
     hd.startElement("","",LinksXMLConstants.LINKS_TAG,new AttributesImpl());
     // Links
@@ -66,12 +67,12 @@ public class LinksXMLWriter
       }
       // From
       GeoPoint fromPoint=link.getPosition();
-      MarkersXMLWriter.writeGeoPointAttrs(hd,LinksXMLConstants.LINK_FROM_ATTR,fromPoint,linkAttrs);
+      MarkersXMLWriter.writeGeoPointAttrs(LinksXMLConstants.LINK_FROM_ATTR,fromPoint,linkAttrs);
       // To
       GeoPoint targetPoint=link.getTargetPoint();
       if (targetPoint!=null)
       {
-        MarkersXMLWriter.writeGeoPointAttrs(hd,LinksXMLConstants.LINK_TO_ATTR,targetPoint,linkAttrs);
+        MarkersXMLWriter.writeGeoPointAttrs(LinksXMLConstants.LINK_TO_ATTR,targetPoint,linkAttrs);
       }
       // Type
       MapLinkType type=link.getType();

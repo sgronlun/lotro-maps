@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
 
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import delta.common.utils.io.xml.XmlFileWriterHelper;
@@ -21,12 +22,10 @@ public class MarkersXMLWriter
 {
   /**
    * Write the attributes of a point to the given XML stream.
-   * @param hd XML output stream.
    * @param point Point to write.
    * @param attrs Attributes to use.
-   * @throws Exception
    */
-  public static void writeGeoPointAttrs(TransformerHandler hd, GeoPoint point, AttributesImpl attrs) throws Exception
+  public static void writeGeoPointAttrs(GeoPoint point, AttributesImpl attrs)
   {
     // Longitude
     float longitude=point.getLongitude();
@@ -38,13 +37,11 @@ public class MarkersXMLWriter
 
   /**
    * Write the given point as an attribute in the given XML stream.
-   * @param hd XML output stream.
    * @param attributeName Attribute name.
    * @param point Point to write.
    * @param attrs Attributes to use.
-   * @throws Exception
    */
-  public static void writeGeoPointAttrs(TransformerHandler hd, String attributeName, GeoPoint point, AttributesImpl attrs) throws Exception
+  public static void writeGeoPointAttrs(String attributeName, GeoPoint point, AttributesImpl attrs)
   {
     float longitude=point.getLongitude();
     float latitude=point.getLatitude();
@@ -77,9 +74,9 @@ public class MarkersXMLWriter
    * Write a markers structure to the given XML stream.
    * @param hd XML output stream.
    * @param markers Markers to write.
-   * @throws Exception
+   * @throws SAXException
    */
-  private static void writeMarkers(TransformerHandler hd, List<Marker> markers) throws Exception
+  private static void writeMarkers(TransformerHandler hd, List<Marker> markers) throws SAXException
   {
     AttributesImpl attrs=new AttributesImpl();
     hd.startElement("","",MarkersXMLConstants.MARKERS_TAG,attrs);
@@ -110,7 +107,7 @@ public class MarkersXMLWriter
       GeoPoint position=marker.getPosition();
       if (position!=null)
       {
-        writeGeoPointAttrs(hd,position,markerAttrs);
+        writeGeoPointAttrs(position,markerAttrs);
       }
       hd.startElement("","",MarkersXMLConstants.MARKER_TAG,markerAttrs);
       hd.endElement("","",MarkersXMLConstants.MARKER_TAG);

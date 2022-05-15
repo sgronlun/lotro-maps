@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.xml.transform.sax.TransformerHandler;
 
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import delta.common.utils.io.xml.XmlFileWriterHelper;
@@ -43,7 +44,7 @@ public class GeoreferencedBasemapXMLWriter
     return ret;
   }
 
-  private static void writeMaps(TransformerHandler hd, List<GeoreferencedBasemap> maps) throws Exception
+  private static void writeMaps(TransformerHandler hd, List<GeoreferencedBasemap> maps) throws SAXException
   {
     AttributesImpl attrs=new AttributesImpl();
     hd.startElement("","",GeoreferencedBasemapsXMLConstants.MAPS_TAG,attrs);
@@ -58,9 +59,9 @@ public class GeoreferencedBasemapXMLWriter
    * Write a basemap definition to the given XML stream.
    * @param hd XML output stream.
    * @param map Map to use.
-   * @throws Exception If an error occurs.
+   * @throws SAXException If an error occurs.
    */
-  private static void writeMap(TransformerHandler hd, GeoreferencedBasemap map) throws Exception
+  private static void writeMap(TransformerHandler hd, GeoreferencedBasemap map) throws SAXException
   {
     AttributesImpl attrs=new AttributesImpl();
     // Identifier
@@ -102,12 +103,12 @@ public class GeoreferencedBasemapXMLWriter
    * Write a point to the given XML stream.
    * @param hd XML output stream.
    * @param point Point to write.
-   * @throws Exception
+   * @throws SAXException
    */
-  private static void writeGeoPoint(TransformerHandler hd, GeoPoint point) throws Exception
+  private static void writeGeoPoint(TransformerHandler hd, GeoPoint point) throws SAXException
   {
     AttributesImpl attrs=new AttributesImpl();
-    MarkersXMLWriter.writeGeoPointAttrs(hd,point,attrs);
+    MarkersXMLWriter.writeGeoPointAttrs(point,attrs);
     hd.startElement("","",GeoreferencedBasemapsXMLConstants.POINT_TAG,attrs);
     hd.endElement("","",GeoreferencedBasemapsXMLConstants.POINT_TAG);
   }
@@ -117,18 +118,18 @@ public class GeoreferencedBasemapXMLWriter
    * Write a box to the given XML stream.
    * @param hd XML output stream.
    * @param box Box to write.
-   * @throws Exception
+   * @throws SAXException
    */
-  private static void writeGeoBox(TransformerHandler hd, GeoBox box) throws Exception
+  private static void writeGeoBox(TransformerHandler hd, GeoBox box) throws SAXException
   {
     // Min
     AttributesImpl minAttrs=new AttributesImpl();
-    MarkersXMLWriter.writeGeoPointAttrs(hd,box.getMin(),minAttrs);
+    MarkersXMLWriter.writeGeoPointAttrs(box.getMin(),minAttrs);
     hd.startElement("","",GeoreferencedBasemapsXMLConstants.MIN_TAG,minAttrs);
     hd.endElement("","",GeoreferencedBasemapsXMLConstants.MIN_TAG);
     // Max
     AttributesImpl maxAttrs=new AttributesImpl();
-    MarkersXMLWriter.writeGeoPointAttrs(hd,box.getMax(),maxAttrs);
+    MarkersXMLWriter.writeGeoPointAttrs(box.getMax(),maxAttrs);
     hd.startElement("","",GeoreferencedBasemapsXMLConstants.MAX_TAG,maxAttrs);
     hd.endElement("","",GeoreferencedBasemapsXMLConstants.MAX_TAG);
   }

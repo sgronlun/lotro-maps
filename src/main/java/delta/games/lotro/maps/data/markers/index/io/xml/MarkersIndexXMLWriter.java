@@ -4,6 +4,7 @@ import java.io.File;
 
 import javax.xml.transform.sax.TransformerHandler;
 
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import delta.common.utils.io.xml.XmlFileWriterHelper;
@@ -42,9 +43,9 @@ public class MarkersIndexXMLWriter
    * Write a markers index to the given XML stream.
    * @param hd XML output stream.
    * @param index Index to write.
-   * @throws Exception
+   * @throws SAXException
    */
-  public void write(TransformerHandler hd, MarkersIndex index) throws Exception
+  public void write(TransformerHandler hd, MarkersIndex index) throws SAXException
   {
     AttributesImpl attrs=new AttributesImpl();
     int key=index.getKey();

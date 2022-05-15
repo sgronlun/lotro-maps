@@ -80,11 +80,6 @@ public class NavigationSupport
       _navigation.dispose();
       _navigation=null;
     }
-    if (_navigation!=null)
-    {
-      _navigation.dispose();
-      _navigation=null;
-    }
     if (_navigationController!=null)
     {
       _navigationController.dispose();

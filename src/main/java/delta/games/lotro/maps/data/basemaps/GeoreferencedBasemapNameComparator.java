@@ -8,6 +8,7 @@ import java.util.Comparator;
  */
 public class GeoreferencedBasemapNameComparator implements Comparator<GeoreferencedBasemap>
 {
+  @Override
   public int compare(GeoreferencedBasemap o1, GeoreferencedBasemap o2)
   {
     String name1=o1.getName();

@@ -57,6 +57,7 @@ public class MapLink implements MapPoint
    * Get the label for this point.
    * @return a label or <code>null</code> if none.
    */
+  @Override
   public String getLabel()
   {
     return _text;
@@ -75,6 +76,7 @@ public class MapLink implements MapPoint
    * Get the geographic hot point.
    * @return the hot point.
    */
+  @Override
   public GeoPoint getPosition()
   {
     return _hotPoint;
