@@ -13,6 +13,7 @@ import delta.common.ui.swing.GuiFactory;
 import delta.common.ui.swing.text.DynamicTextEditionController;
 import delta.common.ui.swing.text.TextListener;
 import delta.games.lotro.maps.data.categories.CategoriesManager;
+import delta.games.lotro.maps.data.markers.filters.MapMarkersFilter;
 import delta.games.lotro.maps.ui.MapCanvas;
 
 /**
