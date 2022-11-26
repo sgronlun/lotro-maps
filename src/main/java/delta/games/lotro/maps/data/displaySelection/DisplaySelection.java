@@ -7,14 +7,14 @@ import java.util.Map;
  * Display selection.
  * @author DAM
  */
-public class DisplaySection
+public class DisplaySelection
 {
   private Map<Integer,DisplaySelectionForCategory> _displaySelections;
 
   /**
    * Constructor.
    */
-  public DisplaySection()
+  public DisplaySelection()
   {
     _displaySelections=new HashMap<Integer,DisplaySelectionForCategory>();
   }
