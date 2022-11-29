@@ -27,6 +27,17 @@ public class DisplaySelection
    */
   public void addElement(int code, int did, boolean visible)
   {
+    DisplaySelectionForCategory displaySelection=getDisplaySelectionForCategory(code);
+    displaySelection.addDID(did,visible);
+  }
+
+  /**
+   * Get the display selection for the given category (create it if needed).
+   * @param code Category code.
+   * @return A display selection for the given category.
+   */
+  public DisplaySelectionForCategory getDisplaySelectionForCategory(int code)
+  {
     Integer codeKey=Integer.valueOf(code);
     DisplaySelectionForCategory displaySelection=_displaySelections.get(codeKey);
     if (displaySelection==null)
@@ -34,7 +45,7 @@ public class DisplaySelection
       displaySelection=new DisplaySelectionForCategory(code);
       _displaySelections.put(codeKey,displaySelection);
     }
-    displaySelection.addDID(did,visible);
+    return displaySelection;
   }
 
   /**

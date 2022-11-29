@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import delta.games.lotro.maps.data.Marker;
+import delta.games.lotro.maps.data.displaySelection.DisplaySelection;
+import delta.games.lotro.maps.data.displaySelection.DisplaySelectionForCategory;
 
 /**
  * Access point for display selection details.
@@ -14,13 +16,16 @@ import delta.games.lotro.maps.data.Marker;
  */
 public class DisplaySelectionDetails
 {
+  private DisplaySelection _displaySelection;
   private Map<Integer,DisplaySelectionDetailsForCategory> _details;
 
   /**
    * Constructor.
+   * @param displaySelection Display selection.
    */
-  public DisplaySelectionDetails()
+  public DisplaySelectionDetails(DisplaySelection displaySelection)
   {
+    _displaySelection=displaySelection;
     _details=new HashMap<Integer,DisplaySelectionDetailsForCategory>();
   }
 
@@ -32,13 +37,14 @@ public class DisplaySelectionDetails
   {
     int code=marker.getCategoryCode();
     Integer codeKey=Integer.valueOf(code);
-    DisplaySelectionDetailsForCategory displaySelection=_details.get(codeKey);
-    if (displaySelection==null)
+    DisplaySelectionDetailsForCategory displaySelectionDetails=_details.get(codeKey);
+    if (displaySelectionDetails==null)
     {
-      displaySelection=new DisplaySelectionDetailsForCategory(code);
-      _details.put(codeKey,displaySelection);
+      DisplaySelectionForCategory displaySelection=_displaySelection.getDisplaySelectionForCategory(code);
+      displaySelectionDetails=new DisplaySelectionDetailsForCategory(displaySelection,code);
+      _details.put(codeKey,displaySelectionDetails);
     }
-    displaySelection.addMarker(marker);
+    displaySelectionDetails.addMarker(marker);
   }
 
   /**
@@ -50,5 +56,15 @@ public class DisplaySelectionDetails
     List<Integer> ret=new ArrayList<Integer>(_details.keySet());
     Collections.sort(ret);
     return ret;
+  }
+
+  /**
+   * Get the display selection for a single category.
+   * @param code Category code.
+   * @return A display selection or <code>null</code> if not found.
+   */
+  public DisplaySelectionDetailsForCategory getDisplaySelection(int code)
+  {
+    return _details.get(Integer.valueOf(code));
   }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import delta.common.utils.id.Identifiable;
 import delta.games.lotro.maps.data.Marker;
+import delta.games.lotro.maps.data.displaySelection.DisplaySelectionForCategory;
 
 /**
  * Element of the display selection UI.
@@ -12,15 +13,18 @@ import delta.games.lotro.maps.data.Marker;
  */
 public class DisplaySelectionUIItem implements Identifiable
 {
+  DisplaySelectionForCategory _displaySelection;
   private Marker _reference;
   private List<Marker> _markers;
 
   /**
    * Constructor.
+   * @param displaySelection Display selection.
    * @param marker Template marker.
    */
-  public DisplaySelectionUIItem(Marker marker)
+  public DisplaySelectionUIItem(DisplaySelectionForCategory displaySelection, Marker marker)
   {
+    _displaySelection=displaySelection;
     _reference=marker;
     _markers=new ArrayList<Marker>();
     _markers.add(marker);
@@ -76,4 +80,23 @@ public class DisplaySelectionUIItem implements Identifiable
   {
     return _markers.size();
   }
+
+  /**
+   * Indicates if the managed markers are visible or not.
+   * @return <code>true</code> if visible, <code>false</code> otherwise.
+   */
+  public boolean isVisible()
+  {
+    return _displaySelection.isVisible(getDID());
+  }
+
+  /**
+   * Set the visibility.
+   * @param visible <code>true</code> if visible, <code>false</code> otherwise.
+   */
+  public void setVisible(boolean visible)
+  {
+    _displaySelection.setVisible(getDID(),visible);
+  }
 }
+

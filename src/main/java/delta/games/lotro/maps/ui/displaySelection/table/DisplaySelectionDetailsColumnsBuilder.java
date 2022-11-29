@@ -11,20 +11,21 @@ import delta.common.ui.swing.tables.panel.FilterUpdateListener;
 import delta.games.lotro.maps.ui.displaySelection.DisplaySelectionUIItem;
 
 /**
- * Builds column definitions for AchievableStatus data.
+ * Builds column definitions for display selection UI items.
  * @author DAM
  */
 public class DisplaySelectionDetailsColumnsBuilder
 {
   /**
    * Build the columns to show the attributes of a display selection item.
+   * @param listener Filter update listener.
    * @return a list of columns.
    */
-  public static List<TableColumnController<DisplaySelectionUIItem,?>> buildColumns()
+  public static List<TableColumnController<DisplaySelectionUIItem,?>> buildColumns(FilterUpdateListener listener)
   {
     List<TableColumnController<DisplaySelectionUIItem,?>> ret=new ArrayList<TableColumnController<DisplaySelectionUIItem,?>>();
     // Visibility
-    ret.add(buildVisbilityColumn(null));
+    ret.add(buildVisbilityColumn(listener));
     // Name
     ret.add(buildNameColumn());
     // Count
@@ -42,10 +43,9 @@ public class DisplaySelectionDetailsColumnsBuilder
     CellDataProvider<DisplaySelectionUIItem,Boolean> visibleCell=new CellDataProvider<DisplaySelectionUIItem,Boolean>()
     {
       @Override
-      public Boolean getData(DisplaySelectionUIItem status)
+      public Boolean getData(DisplaySelectionUIItem item)
       {
-        // TODO
-        return Boolean.TRUE;
+        return Boolean.valueOf(item.isVisible());
       }
     };
     DefaultTableColumnController<DisplaySelectionUIItem,Boolean> visibleColumn=new DefaultTableColumnController<DisplaySelectionUIItem,Boolean>(DisplaySelectionDetailsColumnIds.VISIBLE.name(),"Visible",Boolean.class,visibleCell);
@@ -55,10 +55,11 @@ public class DisplaySelectionDetailsColumnsBuilder
     CellDataUpdater<DisplaySelectionUIItem> updater=new CellDataUpdater<DisplaySelectionUIItem>()
     {
       @Override
-      public void setData(DisplaySelectionUIItem status, Object value)
+      public void setData(DisplaySelectionUIItem item, Object value)
       {
         // Update visibility
-        // TODO
+        boolean visible=((Boolean)value).booleanValue();
+        item.setVisible(visible);
         // Broadcast filter change
         if (listener!=null)
         {
@@ -98,6 +99,6 @@ public class DisplaySelectionDetailsColumnsBuilder
     };
     DefaultTableColumnController<DisplaySelectionUIItem,Integer> countColumn=new DefaultTableColumnController<DisplaySelectionUIItem,Integer>(DisplaySelectionDetailsColumnIds.COUNT.name(),"Count",Integer.class,countCell);
     countColumn.setWidthSpecs(50,50,50);
-    ret.add(countColumn);
+    return countColumn;
   }
 }

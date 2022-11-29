@@ -8,6 +8,7 @@ import java.util.Map;
 
 import delta.common.utils.id.IdentifiableComparator;
 import delta.games.lotro.maps.data.Marker;
+import delta.games.lotro.maps.data.displaySelection.DisplaySelectionForCategory;
 
 /**
  * Details for a single category.
@@ -15,15 +16,18 @@ import delta.games.lotro.maps.data.Marker;
  */
 public class DisplaySelectionDetailsForCategory
 {
+  private DisplaySelectionForCategory _displaySelection;
   private int _code;
   private Map<Integer,DisplaySelectionUIItem> _details;
 
   /**
    * Constructor.
+   * @param displaySelection Display selection.
    * @param code Category code.
    */
-  public DisplaySelectionDetailsForCategory(int code)
+  public DisplaySelectionDetailsForCategory(DisplaySelectionForCategory displaySelection, int code)
   {
+    _displaySelection=displaySelection;
     _code=code;
     _details=new HashMap<Integer,DisplaySelectionUIItem>();
   }
@@ -49,6 +53,15 @@ public class DisplaySelectionDetailsForCategory
   }
 
   /**
+   * Get the number of managed items.
+   * @return an items count.
+   */
+  public int getItemsCount()
+  {
+    return _details.size();
+  }
+
+  /**
    * Get the managed items.
    * @return a list of managed items, sorted by DID.
    */
@@ -71,8 +84,9 @@ public class DisplaySelectionDetailsForCategory
     DisplaySelectionUIItem details=_details.get(key);
     if (details==null)
     {
-      details=new DisplaySelectionUIItem(marker);
+      details=new DisplaySelectionUIItem(_displaySelection,marker);
       _details.put(key,details);
+      _displaySelection.setVisible(did,true);
     }
     else
     {

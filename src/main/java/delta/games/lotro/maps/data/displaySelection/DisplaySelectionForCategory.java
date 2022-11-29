@@ -44,6 +44,24 @@ public class DisplaySelectionForCategory
   }
 
   /**
+   * Set the visibility of a given DID.
+   * @param did Data identifier to use.
+   * @param visible <code>true</code> if visible, <code>false</code> otherwise.
+   */
+  public void setVisible(int did, boolean visible)
+  {
+    Integer key=Integer.valueOf(did);
+    if (visible)
+    {
+      _visibleDIDs.add(key);
+    }
+    else
+    {
+      _visibleDIDs.remove(key);
+    }
+  }
+
+  /**
    * Add a DID.
    * @param did Data identifier to use.
    * @param visible Initial visibility.
