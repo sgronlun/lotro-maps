@@ -7,6 +7,7 @@ import javax.swing.JTable;
 
 import delta.common.ui.swing.tables.GenericTableController;
 import delta.common.ui.swing.tables.ListDataProvider;
+import delta.common.ui.swing.tables.Sort;
 import delta.common.ui.swing.tables.TableColumnController;
 import delta.common.ui.swing.tables.TableColumnsManager;
 import delta.common.ui.swing.tables.panel.FilterUpdateListener;
@@ -54,6 +55,9 @@ public class DisplaySelectionCategoryTableController
     TableColumnsManager<DisplaySelectionUIItem> columnsManager=table.getColumnsManager();
     columnsManager.setColumns(columnsIds);
 
+    // Sort
+    Sort sort=Sort.buildFromString(Sort.SORT_ASCENDING+DisplaySelectionDetailsColumnIds.NAME);
+    table.setSort(sort);
     return table;
   }
 
